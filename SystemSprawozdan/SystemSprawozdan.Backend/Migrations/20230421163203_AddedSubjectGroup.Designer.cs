@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SystemSprawozdan.Backend.Data;
@@ -11,9 +12,11 @@ using SystemSprawozdan.Backend.Data;
 namespace SystemSprawozdan.Backend.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    partial class ApiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230421163203_AddedSubjectGroup")]
+    partial class AddedSubjectGroup
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,27 +24,6 @@ namespace SystemSprawozdan.Backend.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseSerialColumns(modelBuilder);
-
-            modelBuilder.Entity("SystemSprawozdan.Backend.Data.Models.DbModels.Admin", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseSerialColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Login")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Admin");
-                });
 
             modelBuilder.Entity("SystemSprawozdan.Backend.Data.Models.DbModels.Major", b =>
                 {
@@ -159,72 +141,6 @@ namespace SystemSprawozdan.Backend.Migrations
                     b.ToTable("SubjectGroup");
                 });
 
-            modelBuilder.Entity("SystemSprawozdan.Backend.Data.Models.DbModels.SubjectSubgroup", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseSerialColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("SubjectGroupId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SubjectGroupId");
-
-                    b.ToTable("SubjectSubgroup");
-                });
-
-            modelBuilder.Entity("SystemSprawozdan.Backend.Data.Models.DbModels.Teacher", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseSerialColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Degree")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("Login")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Position")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Surname")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Teacher");
-                });
-
             modelBuilder.Entity("SystemSprawozdan.Backend.Data.Models.DbModels.Term", b =>
                 {
                     b.Property<int>("Id")
@@ -274,17 +190,6 @@ namespace SystemSprawozdan.Backend.Migrations
                     b.Navigation("Subject");
                 });
 
-            modelBuilder.Entity("SystemSprawozdan.Backend.Data.Models.DbModels.SubjectSubgroup", b =>
-                {
-                    b.HasOne("SystemSprawozdan.Backend.Data.Models.DbModels.SubjectGroup", "SubjectGroup")
-                        .WithMany("subjectSubgroups")
-                        .HasForeignKey("SubjectGroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("SubjectGroup");
-                });
-
             modelBuilder.Entity("SystemSprawozdan.Backend.Data.Models.DbModels.Major", b =>
                 {
                     b.Navigation("Subjects");
@@ -293,11 +198,6 @@ namespace SystemSprawozdan.Backend.Migrations
             modelBuilder.Entity("SystemSprawozdan.Backend.Data.Models.DbModels.Subject", b =>
                 {
                     b.Navigation("SubjectGroups");
-                });
-
-            modelBuilder.Entity("SystemSprawozdan.Backend.Data.Models.DbModels.SubjectGroup", b =>
-                {
-                    b.Navigation("subjectSubgroups");
                 });
 
             modelBuilder.Entity("SystemSprawozdan.Backend.Data.Models.DbModels.Term", b =>
