@@ -10,6 +10,7 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.16" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.5">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -23,11 +24,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data\Models\MappingProfiles\" />
     <Folder Include="Data\Models\Filters\" />
     <Folder Include="Data\Models\Pagination\" />
     <Folder Include="Data\Models\Validators\" />
-    <Folder Include="Data\Seeder\" />
   </ItemGroup>
 
 </Project>
