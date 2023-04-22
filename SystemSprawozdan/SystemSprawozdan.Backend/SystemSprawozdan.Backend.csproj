@@ -26,7 +26,6 @@
   <ItemGroup>
     <Folder Include="Data\Models\Filters\" />
     <Folder Include="Data\Models\Pagination\" />
-    <Folder Include="Data\Models\Validators\" />
   </ItemGroup>
 
 </Project>

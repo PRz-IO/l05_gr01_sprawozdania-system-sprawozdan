@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using SystemSprawozdan.Backend.Authorization;
 using SystemSprawozdan.Backend.Data;
 using SystemSprawozdan.Backend.Data.Enums;
 using SystemSprawozdan.Backend.Data.Models.DbModels;
@@ -29,6 +30,7 @@ namespace SystemSprawozdan.Backend.Services
         private readonly IPasswordHasher<Teacher> _passwordHasherTeacher;
         private readonly IPasswordHasher<Admin> _passwordHasherAdmin;
         private readonly AuthenticationSettings _authenticationSettings;
+        private readonly IAuthorizationService _authorizationService;
         private readonly IUserContextService _userContextService;
         public readonly IMapper _mapper;
 
@@ -36,7 +38,8 @@ namespace SystemSprawozdan.Backend.Services
             IPasswordHasher<Student> passwordHasherStudent, 
             IPasswordHasher<Teacher> passwordHasherTeacher, 
             IPasswordHasher<Admin> passwordHasherAdmin, 
-            AuthenticationSettings authenticationSettings, 
+            AuthenticationSettings authenticationSettings,
+            IAuthorizationService authorizationService,
             IUserContextService userContextService, 
             IMapper mapper)
         {
@@ -45,6 +48,7 @@ namespace SystemSprawozdan.Backend.Services
             _passwordHasherTeacher = passwordHasherTeacher;
             _passwordHasherAdmin = passwordHasherAdmin;
             _authenticationSettings = authenticationSettings;
+            _authorizationService = authorizationService;
             _userContextService = userContextService;
             _mapper = mapper;
         }
@@ -66,37 +70,34 @@ namespace SystemSprawozdan.Backend.Services
                 result = _passwordHasherStudent
                     .VerifyHashedPassword(student, student.Password, loginUserDto.Password);
 
-                if (result == PasswordVerificationResult.Failed)
-                    throw new BadRequestException("Wrong username or password!");
+                PasswordVerification(result);
 
                 user = _mapper.Map<User>(student);
                 user.UserRole = UserRoleEnum.Student;
-
-                return _GenerateJwt(user);
             }
+
             else if (teacher is not null)
             {
                 result = _passwordHasherTeacher
                     .VerifyHashedPassword(teacher, teacher.Password, loginUserDto.Password);
 
-                if (result == PasswordVerificationResult.Failed)
-                    throw new BadRequestException("Wrong username or password!");
+                PasswordVerification(result);
 
                 user = _mapper.Map<User>(teacher);
                 user.UserRole = UserRoleEnum.Teacher;
-
-                return _GenerateJwt(user);
             }
+            
+            else if (admin is not null)
+            {
+                result = _passwordHasherAdmin
+                    .VerifyHashedPassword(admin, admin.Password, loginUserDto.Password);
 
-            result = _passwordHasherAdmin
-                .VerifyHashedPassword(admin, admin.Password, loginUserDto.Password);
+                PasswordVerification(result);
 
-            if (result == PasswordVerificationResult.Failed)
-                throw new BadRequestException("Wrong username or password!");
-
-            user = _mapper.Map<User>(admin);
-            user.UserRole = UserRoleEnum.Admin;
-
+                user = _mapper.Map<User>(admin);
+                user.UserRole = UserRoleEnum.Admin;
+            }
+            
             return _GenerateJwt(user);
         }
 
@@ -109,6 +110,8 @@ namespace SystemSprawozdan.Backend.Services
                 Email = registerStudentDto.Email,
                 Login = registerStudentDto.Login,
             };
+            var user = _mapper.Map<User>(newStudent);
+
             newStudent.Password = _passwordHasherStudent.HashPassword(newStudent, registerStudentDto.Password);
 
             _dbContext.Student.Add(newStudent);
@@ -117,6 +120,14 @@ namespace SystemSprawozdan.Backend.Services
 
         public void RegisterTeacherOrAdmin(RegisterTeacherOrAdminDto registerTeacherOrAdminDto)
         {
+            var authorizationResult = _authorizationService
+                .AuthorizeAsync(_userContextService.User, null, new UserResourceOperationRequirement(UserResourceOperation.Create)).Result;
+
+            if (!authorizationResult.Succeeded) 
+            {
+                throw new ForbidException();
+            }
+
             if (registerTeacherOrAdminDto.UserRole == UserRoleEnum.Teacher)
             {
                 var newTeacher = new Teacher()
@@ -145,7 +156,7 @@ namespace SystemSprawozdan.Backend.Services
                 _dbContext.SaveChanges();
             }
             else
-                throw new BadRequestException("Wrong user role!");
+                throw new BadRequestException("Wrong role of created user!");
 
         }
 
@@ -172,6 +183,12 @@ namespace SystemSprawozdan.Backend.Services
             var tokenStr = new JwtSecurityTokenHandler().WriteToken(token);
 
             return tokenStr;
+        }
+
+        private void PasswordVerification(PasswordVerificationResult result)
+        {
+            if (result == PasswordVerificationResult.Failed)
+                throw new BadRequestException("Wrong username or password!");
         }
     }
 }

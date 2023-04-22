@@ -11,6 +11,10 @@ using SystemSprawozdan.Backend.Data.Models.DbModels;
 using SystemSprawozdan.Backend.Services;
 using SystemSprawozdan.Backend.Middleware;
 using SystemSprawozdan.Backend.Data.Seeder;
+using SystemSprawozdan.Backend.Authorization;
+using FluentValidation;
+using SystemSprawozdan.Backend.Data.Models.Dto;
+using SystemSprawozdan.Backend.Data.Models.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration["ConnectionString"];
@@ -49,14 +53,19 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<DbSeeder>();
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
-builder.Services.AddControllers().AddFluentValidation();
 builder.Services.AddScoped<ErrorHandlingMiddleware>();
 builder.Services.AddScoped<IUserContextService, UserContextService>();
+builder.Services.AddControllers().AddFluentValidation();
 builder.Services.AddHttpContextAccessor();
 
+builder.Services.AddScoped<IAuthorizationHandler, UserResourceOperationRequirementHandler>();
 builder.Services.AddScoped<IPasswordHasher<Student>, PasswordHasher<Student>>();
 builder.Services.AddScoped<IPasswordHasher<Teacher>, PasswordHasher<Teacher>>();
 builder.Services.AddScoped<IPasswordHasher<Admin>, PasswordHasher<Admin>>();
+builder.Services.AddScoped<IValidator<LoginUserDto>, LoginUserDtoValidator>();
+builder.Services.AddScoped<IValidator<RegisterStudentDto>, RegisterStudentDtoValidator>();
+builder.Services.AddScoped<IValidator<RegisterTeacherOrAdminDto>, RegisterTeacherOrAdminDtoValidator>();
+
 
 builder.Services.AddScoped<IReportTopicService, ReportTopicService>();
 builder.Services.AddScoped<IStudentReportService, StudentReportService>();

@@ -15,6 +15,10 @@ namespace SystemSprawozdan.Backend.Middleware
                 context.Response.StatusCode = 400;
                 await context.Response.WriteAsync(badRequestException.Message);
             }
+            catch (ForbidException forbidException)
+            {
+                context.Response.StatusCode = 403;
+            }
             catch (Exception ex) 
             {
                 context.Response.StatusCode = 500;
