@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using SystemSprawozdan.Backend.Data.Models.DbModels;
 
 namespace SystemSprawozdan.Backend.Data
@@ -16,6 +16,10 @@ namespace SystemSprawozdan.Backend.Data
         public DbSet<SubjectSubgroup> SubjectSubgroup { get; set; }
         public DbSet<Teacher> Teacher { get; set; }
         public DbSet<Admin> Admin { get; set; }
+        public DbSet<ReportTopic> ReportTopic { get; set; }
+        public DbSet<StudentReport> StudentReport { get; set; }
+        public DbSet<ReportComment> ReportComment { get; set; }
+        public DbSet<StudentReportFile> StudentReportFile { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

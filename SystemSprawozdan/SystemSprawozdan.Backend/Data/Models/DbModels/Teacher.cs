@@ -1,4 +1,4 @@
-﻿namespace SystemSprawozdan.Backend.Data.Models.DbModels
+namespace SystemSprawozdan.Backend.Data.Models.DbModels
 {
     public class Teacher
     {
@@ -11,5 +11,8 @@
         public string Degree { get; set; }
         public string Position { get; set; }
         public Boolean IsDeleted { get; set; } = false;
+
+        public ICollection<ReportComment> ReportComments { get; set; }
+        public ICollection<SubjectGroup> SubjectGroups { get; set; }
     }
 }

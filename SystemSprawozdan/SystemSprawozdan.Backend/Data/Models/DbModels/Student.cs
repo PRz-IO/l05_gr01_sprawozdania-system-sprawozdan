@@ -1,4 +1,4 @@
-﻿namespace SystemSprawozdan.Backend.Data.Models.DbModels
+namespace SystemSprawozdan.Backend.Data.Models.DbModels
 {
     public class Student
     {
@@ -9,5 +9,8 @@
         public string Login { get; set; }
         public string Password { get; set; }
         public Boolean IsDeleted { get; set; } = false;
+
+        public ICollection<SubjectSubgroup> SubjectSubgroup { get; set; }
+        public ICollection<ReportComment> ReportComments { get; set; }
     }
 }

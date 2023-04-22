@@ -1,4 +1,4 @@
-﻿namespace SystemSprawozdan.Backend.Data.Models.DbModels
+namespace SystemSprawozdan.Backend.Data.Models.DbModels
 {
     public class SubjectGroup
     {
@@ -9,5 +9,7 @@
 
         public Subject Subject { get; set; }
         public ICollection<SubjectSubgroup> subjectSubgroups { get; set; }
+        public ICollection<ReportTopic> reportTopics { get; set; }
+        public ICollection<Teacher> Teachers { get; set; }
     }
 }
