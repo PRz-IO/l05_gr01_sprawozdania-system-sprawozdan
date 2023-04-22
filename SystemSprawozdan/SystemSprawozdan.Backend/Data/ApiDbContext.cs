@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using SystemSprawozdan.Backend.Data.Models.DbModels;
 
 namespace SystemSprawozdan.Backend.Data

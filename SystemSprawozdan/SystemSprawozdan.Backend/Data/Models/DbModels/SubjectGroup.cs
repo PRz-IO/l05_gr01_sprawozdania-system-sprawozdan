@@ -1,4 +1,4 @@
-﻿namespace SystemSprawozdan.Backend.Data.Models.DbModels
+namespace SystemSprawozdan.Backend.Data.Models.DbModels
 {
     public class SubjectGroup
     {
