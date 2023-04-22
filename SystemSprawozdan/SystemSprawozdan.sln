@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33516.290
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SystemSprawozdan.Backend", "SystemSprawozdan.Backend\SystemSprawozdan.Backend.csproj", "{61230369-1993-40D5-8F61-8B73FF3E1759}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SystemSprawozdan.Backend", "SystemSprawozdan.Backend\SystemSprawozdan.Backend.csproj", "{61230369-1993-40D5-8F61-8B73FF3E1759}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SystemSprawozdan.Frontend", "SystemSprawozdan.Frontend\SystemSprawozdan.Frontend.csproj", "{9D656C5C-AEF4-4B1D-BF62-FCAED63763CE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SystemSprawozdan.Frontend", "SystemSprawozdan.Frontend\SystemSprawozdan.Frontend.csproj", "{9D656C5C-AEF4-4B1D-BF62-FCAED63763CE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
