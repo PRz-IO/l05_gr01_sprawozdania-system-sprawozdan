@@ -51,6 +51,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddRazorPages();
+builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<DbSeeder>();
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 builder.Services.AddScoped<ErrorHandlingMiddleware>();
@@ -85,6 +87,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseWebAssemblyDebugging();
 }
 
 app.UseAuthentication();
@@ -93,8 +96,13 @@ app.UseMiddleware<ErrorHandlingMiddleware>();
 
 app.UseHttpsRedirection();
 
+app.UseBlazorFrameworkFiles();
+app.UseStaticFiles();
+
 app.UseAuthorization();
 
+app.MapRazorPages();
 app.MapControllers();
+app.MapFallbackToFile("index.html");
 
 app.Run();
