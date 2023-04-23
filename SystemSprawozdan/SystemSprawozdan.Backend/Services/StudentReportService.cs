@@ -8,7 +8,7 @@ namespace SystemSprawozdan.Backend.Services
 {
     public interface IStudentReportService
     {
-        void SendStudentReport(SendStudentReportDto sendStudentReportDto, int reportTopicId, int subjectGroupId);
+        void SendStudentReport(SendStudentReportDto sendStudentReportDto);
         void EditStudentReport(int studentReportId);
     }
 
@@ -22,16 +22,27 @@ namespace SystemSprawozdan.Backend.Services
             _userContextService = userContextService;
         }
 
-        public void SendStudentReport(SendStudentReportDto sendStudentReportDto,int reportTopicId, int subjectGroupId)
+        public void SendStudentReport(SendStudentReportDto sendStudentReportDto)
         {
-            //var subjectSubGroup = _dbContext.SubjectSubgroup. FirstOrDefault(subjectSubGroup => subjectSubGroup.Students.Equals(_userContextService.User.FindFirst(claim => claim.Type == ClaimTypes.NameIdentifier).Value)
+            var loginUserId = int.Parse(_userContextService.User.FindFirst(claim => claim.Type == ClaimTypes.NameIdentifier).Value);
+
+            var subjectGroup = _dbContext
+                .SubjectGroup.FirstOrDefault(subjectGroup =>
+                    subjectGroup.reportTopics.Any(reportTopic =>
+                        reportTopic.Id == sendStudentReportDto.reportTopicId
+                    )
+                );
+
+            var subjectSubgroup = _dbContext.SubjectSubgroup.FirstOrDefault(subjectSubgroup =>
+                subjectSubgroup.SubjectGroup.Id == subjectGroup.Id && 
+                subjectSubgroup.Students.Any(student => student.Id == loginUserId)
+            );
 
             var newStudentReport = new StudentReport()
             {   
                 SentAt = DateTime.UtcNow,
                 Note = sendStudentReportDto.Note,
-                ReportTopicId = reportTopicId,
-                SubjectSubgroupId = sendStudentReportDto.SubjectSubgroupId,
+                ReportTopicId = sendStudentReportDto.reportTopicId
                 // TODO
                 /*
                 studentReportFiles = new List<StudentReportFile>
