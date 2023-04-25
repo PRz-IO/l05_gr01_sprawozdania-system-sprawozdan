@@ -2,4 +2,10 @@
     --primary-color: #4099E5;
     --background-color: #EAEAEA;
     --panel-background-color: #FEFEFE;
+
+    --font-color-dark: #373737;
+    --font-color-gray: #868484;
+    --font-size-large: 24px;
+
+    --panel-line-color: var(--font-color-gray);
 }

@@ -1,0 +1,54 @@
+﻿@typeparam TValue
+
+<style>
+	.button {
+		border-radius: 0 !important;
+	}
+	.mdc-button__ripple{
+		border-radius: 0 !important;
+	}
+	.mdc-button{
+		border-radius: 0 !important;
+	}
+</style>
+
+<div class="container" style="flex-direction: @FlexDirection">
+	@foreach(var buttonData in Data)
+	{
+		<MatButton 
+			Class="button" 
+			Style="@ButtonWidth()"
+			OnClick="() => ChangeStatus(buttonData)" 
+			Unelevated="buttonData.IsActive" 	
+		>@buttonData.Text</MatButton>
+	}
+</div>
+
+@code {
+
+	[Parameter, EditorRequired]
+	public TValue Value { get; set; }
+
+	[Parameter]
+	public EventCallback<TValue> ValueChanged { get; set; }
+
+	[Parameter, EditorRequired]
+	public IEnumerable<SwitchBarData<TValue>> Data { get; set; }
+
+	[Parameter]
+	public string? FlexDirection { get; set; } = "row";
+
+	public string ButtonWidth(){
+		return $"width: {(FlexDirection == "column" ? "100%" : "initial")}";
+	}
+
+	public void ChangeStatus(SwitchBarData<TValue> clickedButton) {
+		foreach(var value in Data){
+			value.IsActive = false;
+		}
+		clickedButton.IsActive = true;
+		Value = clickedButton.Value;
+		ValueChanged.InvokeAsync(Value);
+	}
+
+}
