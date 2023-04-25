@@ -4,23 +4,24 @@
 	.button {
 		border-radius: 0 !important;
 	}
-	.mdc-button__ripple{
-		border-radius: 0 !important;
-	}
 	.mdc-button{
 		border-radius: 0 !important;
+		border: none;
+		flex: 1 1 0;
+		padding: 10px 0;
 	}
 </style>
 
 <div class="container" style="flex-direction: @FlexDirection">
-	@foreach(var buttonData in Data)
+	@foreach(var button in Data)
 	{
 		<MatButton 
 			Class="button" 
 			Style="@ButtonWidth()"
-			OnClick="() => ChangeStatus(buttonData)" 
-			Unelevated="buttonData.IsActive" 	
-		>@buttonData.Text</MatButton>
+			OnClick="() => ChangeStatus(button)"
+			Unelevated="button.IsActive"
+			Outlined="!button.IsActive"
+		>@button.Text</MatButton>
 	}
 </div>
 
@@ -39,7 +40,7 @@
 	public string? FlexDirection { get; set; } = "row";
 
 	public string ButtonWidth(){
-		return $"width: {(FlexDirection == "column" ? "100%" : "initial")}";
+		return $"width: {(FlexDirection == "column" ? "100%" : "unset")}";
 	}
 
 	public void ChangeStatus(SwitchBarData<TValue> clickedButton) {
