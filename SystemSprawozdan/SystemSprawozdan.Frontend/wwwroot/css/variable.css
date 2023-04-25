@@ -6,6 +6,7 @@
     --font-color-dark: #373737;
     --font-color-gray: #868484;
     --font-size-large: 24px;
+    --font-weight-bold: 600;
 
     --panel-line-color: var(--font-color-gray);
 }
