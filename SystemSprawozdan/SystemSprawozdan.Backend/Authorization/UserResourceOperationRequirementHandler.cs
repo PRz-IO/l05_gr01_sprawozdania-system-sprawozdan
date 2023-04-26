@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
-using SystemSprawozdan.Backend.Data.Enums;
-using SystemSprawozdan.Backend.Data.Models.Others;
+using SystemSprawozdan.Shared.Enums;
 
 namespace SystemSprawozdan.Backend.Authorization
 {

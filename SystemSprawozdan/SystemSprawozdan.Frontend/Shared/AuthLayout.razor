@@ -1,13 +1,43 @@
-﻿@page "/Login"
-@inherits LayoutComponentBase
+﻿@inherits LayoutComponentBase
+@inject NavigationManager navigationManager
 
 <main>
 	<div class="auth-panel">
-		<div class="auth-panel-menu">
-		</div>
+		<TitleBar />
+		<SwitchBar TValue="string" ValueChanged="@NavigateTo" Data="@switchBarData" />
+		<div class="form">
+			@Body
+        </div>
 	</div>
 </main>
 
-@code {
-    int values = 2;
+
+@code
+{
+    public string value { get; set; } = "";
+
+    public void NavigateTo(string link)
+    {
+        this.navigationManager.NavigateTo(link);
+    }
+
+    public IEnumerable<SwitchBarData<string>> switchBarData { get; set; } = new SwitchBarData<string>[]
+    {
+        new()
+        {
+            Text="Zarejestruj konto",
+            Value="/register"
+        },
+        new()
+        {
+            Text="Zaloguj",
+            Value="/login",
+            IsActive = true
+        },
+        new()
+        {
+            Text="Odzyskaj hasło",
+            Value="/restore-password"
+        },
+    };
 }

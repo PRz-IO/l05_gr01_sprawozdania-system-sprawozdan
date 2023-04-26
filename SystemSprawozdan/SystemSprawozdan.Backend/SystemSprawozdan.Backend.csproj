@@ -25,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Data\Enums\" />
     <Folder Include="Data\Models\Filters\" />
     <Folder Include="Data\Models\Pagination\" />
   </ItemGroup>

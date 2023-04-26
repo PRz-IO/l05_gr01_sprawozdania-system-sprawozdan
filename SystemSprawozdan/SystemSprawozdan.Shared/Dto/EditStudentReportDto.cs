@@ -1,8 +1,8 @@
-﻿namespace SystemSprawozdan.Backend.Data.Models.Dto
+﻿namespace SystemSprawozdan.Shared.Dto
 {
     public class EditStudentReportDto
     {
-        
+
         //TODO plik
     }
 }

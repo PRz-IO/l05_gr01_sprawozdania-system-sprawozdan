@@ -1,4 +1,4 @@
-﻿namespace SystemSprawozdan.Backend.Data.Enums
+﻿namespace SystemSprawozdan.Shared.Enums
 {
     public enum UserRoleEnum
     {

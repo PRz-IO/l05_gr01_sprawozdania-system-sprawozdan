@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using SystemSprawozdan.Backend.Data.Models.Dto;
+using SystemSprawozdan.Shared.Dto;
 
 namespace SystemSprawozdan.Backend.Data.Models.Validators
 {

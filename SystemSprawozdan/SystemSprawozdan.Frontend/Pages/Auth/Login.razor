@@ -1,0 +1,24 @@
+﻿@page "/login"
+@inject IAuthService authService
+@inject ISessionStorageService session
+
+<div class="form-block">
+    <MatTextField Style="width: 40%;" @bind-Value="@User.Login" Label="Login" Outlined="true"></MatTextField>
+    <MatTextField Style="width: 40%;" @bind-Value="@User.Password" Label="Haslo" Type="password" Outlined="true"></MatTextField>
+</div>
+<MatButton OnClick="() => TryLogin()" Style="height: 80px; font-size: var(--font-size-large);" Raised="true">Zaloguj</MatButton>
+
+
+@code
+{
+    public LoginUserDto User { get; set; } = new LoginUserDto()
+    {
+        Login = "",
+        Password = ""
+    };
+
+    public void TryLogin()
+    {
+        authService.Login(User);
+    }
+}

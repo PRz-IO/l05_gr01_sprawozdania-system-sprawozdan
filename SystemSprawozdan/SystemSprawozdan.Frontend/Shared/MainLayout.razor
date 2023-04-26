@@ -5,7 +5,19 @@
 			<div class="background">
 			</div>
 			<div class="container">
-				@Body
+				
+			<Router AppAssembly="@typeof(App).Assembly">
+				<Found Context="routeData">
+					<RouteView RouteData="@routeData" DefaultLayout="@typeof(AuthLayout)" />
+					<FocusOnNavigate RouteData="@routeData" Selector="h1" />
+				</Found>
+				<NotFound>
+					<PageTitle>Not found</PageTitle>
+					<LayoutView Layout="@typeof(AuthLayout)">
+						<p role="alert">Sorry, there's nothing at this address.</p>
+					</LayoutView>
+				</NotFound>
+			</Router>
 			</div>
 
 		</div>

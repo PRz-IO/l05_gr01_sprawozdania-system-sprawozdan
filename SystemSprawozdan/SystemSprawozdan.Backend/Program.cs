@@ -13,7 +13,7 @@ using SystemSprawozdan.Backend.Middleware;
 using SystemSprawozdan.Backend.Data.Seeder;
 using SystemSprawozdan.Backend.Authorization;
 using FluentValidation;
-using SystemSprawozdan.Backend.Data.Models.Dto;
+using SystemSprawozdan.Shared.Dto;
 using SystemSprawozdan.Backend.Data.Models.Validators;
 
 var builder = WebApplication.CreateBuilder(args);

@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SystemSprawozdan.Backend", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SystemSprawozdan.Frontend", "SystemSprawozdan.Frontend\SystemSprawozdan.Frontend.csproj", "{9D656C5C-AEF4-4B1D-BF62-FCAED63763CE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SystemSprawozdan.Shared", "SystemSprawozdan.Shared\SystemSprawozdan.Shared.csproj", "{630B1A62-54F7-4D1C-B759-F3C902FA7DF5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{9D656C5C-AEF4-4B1D-BF62-FCAED63763CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9D656C5C-AEF4-4B1D-BF62-FCAED63763CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9D656C5C-AEF4-4B1D-BF62-FCAED63763CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{630B1A62-54F7-4D1C-B759-F3C902FA7DF5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{630B1A62-54F7-4D1C-B759-F3C902FA7DF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{630B1A62-54F7-4D1C-B759-F3C902FA7DF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{630B1A62-54F7-4D1C-B759-F3C902FA7DF5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

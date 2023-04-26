@@ -8,9 +8,9 @@ using System.Security.Claims;
 using System.Text;
 using SystemSprawozdan.Backend.Authorization;
 using SystemSprawozdan.Backend.Data;
-using SystemSprawozdan.Backend.Data.Enums;
+using SystemSprawozdan.Shared.Dto;
+using SystemSprawozdan.Shared.Enums;
 using SystemSprawozdan.Backend.Data.Models.DbModels;
-using SystemSprawozdan.Backend.Data.Models.Dto;
 using SystemSprawozdan.Backend.Data.Models.Others;
 using SystemSprawozdan.Backend.Exceptions;
 

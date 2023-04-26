@@ -7,12 +7,20 @@
 }
 
 .auth-panel{
-	width: 500px;
-	height: 500px;
+	width: 900px;
+	height: 650px;
+	display: flex;
+	flex-direction: column;
 	background-color: var(--panel-background-color);
-	border-radius:20px;
+	border-radius: 20px;
+	overflow: hidden;
 }
 
-.select-bar{
-	width:100%;
+.form {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	height: 100%;
 }
