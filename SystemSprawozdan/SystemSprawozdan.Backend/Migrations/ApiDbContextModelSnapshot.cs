@@ -22,6 +22,36 @@ namespace SystemSprawozdan.Backend.Migrations
 
             NpgsqlModelBuilderExtensions.UseSerialColumns(modelBuilder);
 
+            modelBuilder.Entity("StudentSubjectSubgroup", b =>
+                {
+                    b.Property<int>("StudentsId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("SubjectSubgroupId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("StudentsId", "SubjectSubgroupId");
+
+                    b.HasIndex("SubjectSubgroupId");
+
+                    b.ToTable("StudentSubjectSubgroup");
+                });
+
+            modelBuilder.Entity("SubjectGroupTeacher", b =>
+                {
+                    b.Property<int>("SubjectGroupsId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TeachersId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("SubjectGroupsId", "TeachersId");
+
+                    b.HasIndex("TeachersId");
+
+                    b.ToTable("SubjectGroupTeacher");
+                });
+
             modelBuilder.Entity("SystemSprawozdan.Backend.Data.Models.DbModels.Admin", b =>
                 {
                     b.Property<int>("Id")
@@ -67,6 +97,66 @@ namespace SystemSprawozdan.Backend.Migrations
                     b.ToTable("Major");
                 });
 
+            modelBuilder.Entity("SystemSprawozdan.Backend.Data.Models.DbModels.ReportComment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseSerialColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("StudentId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("StudentReportId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TeacherId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StudentId");
+
+                    b.HasIndex("StudentReportId");
+
+                    b.HasIndex("TeacherId");
+
+                    b.ToTable("ReportComment");
+                });
+
+            modelBuilder.Entity("SystemSprawozdan.Backend.Data.Models.DbModels.ReportTopic", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseSerialColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Deadline")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("SubjectGroupId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SubjectGroupId");
+
+                    b.ToTable("ReportTopic");
+                });
+
             modelBuilder.Entity("SystemSprawozdan.Backend.Data.Models.DbModels.Student", b =>
                 {
                     b.Property<int>("Id")
@@ -101,6 +191,57 @@ namespace SystemSprawozdan.Backend.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Student");
+                });
+
+            modelBuilder.Entity("SystemSprawozdan.Backend.Data.Models.DbModels.StudentReport", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseSerialColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Note")
+                        .HasColumnType("text");
+
+                    b.Property<int>("ReportTopicId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("SentAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("SubjectSubgroupId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReportTopicId");
+
+                    b.HasIndex("SubjectSubgroupId");
+
+                    b.ToTable("StudentReport");
+                });
+
+            modelBuilder.Entity("SystemSprawozdan.Backend.Data.Models.DbModels.StudentReportFile", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseSerialColumn(b.Property<int>("Id"));
+
+                    b.Property<byte[]>("File")
+                        .IsRequired()
+                        .HasColumnType("bytea");
+
+                    b.Property<int>("StudentReportId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StudentReportId");
+
+                    b.ToTable("StudentReportFile");
                 });
 
             modelBuilder.Entity("SystemSprawozdan.Backend.Data.Models.DbModels.Subject", b =>
@@ -244,6 +385,102 @@ namespace SystemSprawozdan.Backend.Migrations
                     b.ToTable("Term");
                 });
 
+            modelBuilder.Entity("StudentSubjectSubgroup", b =>
+                {
+                    b.HasOne("SystemSprawozdan.Backend.Data.Models.DbModels.Student", null)
+                        .WithMany()
+                        .HasForeignKey("StudentsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SystemSprawozdan.Backend.Data.Models.DbModels.SubjectSubgroup", null)
+                        .WithMany()
+                        .HasForeignKey("SubjectSubgroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("SubjectGroupTeacher", b =>
+                {
+                    b.HasOne("SystemSprawozdan.Backend.Data.Models.DbModels.SubjectGroup", null)
+                        .WithMany()
+                        .HasForeignKey("SubjectGroupsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SystemSprawozdan.Backend.Data.Models.DbModels.Teacher", null)
+                        .WithMany()
+                        .HasForeignKey("TeachersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("SystemSprawozdan.Backend.Data.Models.DbModels.ReportComment", b =>
+                {
+                    b.HasOne("SystemSprawozdan.Backend.Data.Models.DbModels.Student", "Student")
+                        .WithMany("ReportComments")
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SystemSprawozdan.Backend.Data.Models.DbModels.StudentReport", "StudentReport")
+                        .WithMany("ReportComments")
+                        .HasForeignKey("StudentReportId");
+
+                    b.HasOne("SystemSprawozdan.Backend.Data.Models.DbModels.Teacher", "Teacher")
+                        .WithMany("ReportComments")
+                        .HasForeignKey("TeacherId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Student");
+
+                    b.Navigation("StudentReport");
+
+                    b.Navigation("Teacher");
+                });
+
+            modelBuilder.Entity("SystemSprawozdan.Backend.Data.Models.DbModels.ReportTopic", b =>
+                {
+                    b.HasOne("SystemSprawozdan.Backend.Data.Models.DbModels.SubjectGroup", "SubjectGroup")
+                        .WithMany("reportTopics")
+                        .HasForeignKey("SubjectGroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("SubjectGroup");
+                });
+
+            modelBuilder.Entity("SystemSprawozdan.Backend.Data.Models.DbModels.StudentReport", b =>
+                {
+                    b.HasOne("SystemSprawozdan.Backend.Data.Models.DbModels.ReportTopic", "ReportTopic")
+                        .WithMany("StudentReports")
+                        .HasForeignKey("ReportTopicId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SystemSprawozdan.Backend.Data.Models.DbModels.SubjectSubgroup", "SubjectSubgroup")
+                        .WithMany("StudentReports")
+                        .HasForeignKey("SubjectSubgroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ReportTopic");
+
+                    b.Navigation("SubjectSubgroup");
+                });
+
+            modelBuilder.Entity("SystemSprawozdan.Backend.Data.Models.DbModels.StudentReportFile", b =>
+                {
+                    b.HasOne("SystemSprawozdan.Backend.Data.Models.DbModels.StudentReport", "StudentReport")
+                        .WithMany("studentReportFiles")
+                        .HasForeignKey("StudentReportId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("StudentReport");
+                });
+
             modelBuilder.Entity("SystemSprawozdan.Backend.Data.Models.DbModels.Subject", b =>
                 {
                     b.HasOne("SystemSprawozdan.Backend.Data.Models.DbModels.Major", "Major")
@@ -290,6 +527,23 @@ namespace SystemSprawozdan.Backend.Migrations
                     b.Navigation("Subjects");
                 });
 
+            modelBuilder.Entity("SystemSprawozdan.Backend.Data.Models.DbModels.ReportTopic", b =>
+                {
+                    b.Navigation("StudentReports");
+                });
+
+            modelBuilder.Entity("SystemSprawozdan.Backend.Data.Models.DbModels.Student", b =>
+                {
+                    b.Navigation("ReportComments");
+                });
+
+            modelBuilder.Entity("SystemSprawozdan.Backend.Data.Models.DbModels.StudentReport", b =>
+                {
+                    b.Navigation("ReportComments");
+
+                    b.Navigation("studentReportFiles");
+                });
+
             modelBuilder.Entity("SystemSprawozdan.Backend.Data.Models.DbModels.Subject", b =>
                 {
                     b.Navigation("SubjectGroups");
@@ -297,7 +551,19 @@ namespace SystemSprawozdan.Backend.Migrations
 
             modelBuilder.Entity("SystemSprawozdan.Backend.Data.Models.DbModels.SubjectGroup", b =>
                 {
+                    b.Navigation("reportTopics");
+
                     b.Navigation("subjectSubgroups");
+                });
+
+            modelBuilder.Entity("SystemSprawozdan.Backend.Data.Models.DbModels.SubjectSubgroup", b =>
+                {
+                    b.Navigation("StudentReports");
+                });
+
+            modelBuilder.Entity("SystemSprawozdan.Backend.Data.Models.DbModels.Teacher", b =>
+                {
+                    b.Navigation("ReportComments");
                 });
 
             modelBuilder.Entity("SystemSprawozdan.Backend.Data.Models.DbModels.Term", b =>

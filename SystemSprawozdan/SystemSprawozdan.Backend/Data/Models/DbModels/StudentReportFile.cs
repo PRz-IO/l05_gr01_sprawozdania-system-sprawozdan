@@ -8,6 +8,6 @@ namespace SystemSprawozdan.Backend.Data.Models.DbModels
         public byte[] File { get; set; }
         public int StudentReportId { get; set; }
 
-        public StudentReport studentReport { get; set; }
+        public StudentReport StudentReport { get; set; }
     }
 }
