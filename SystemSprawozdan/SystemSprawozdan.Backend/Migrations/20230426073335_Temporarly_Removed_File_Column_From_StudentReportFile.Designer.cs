@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SystemSprawozdan.Backend.Data;
@@ -11,9 +12,11 @@ using SystemSprawozdan.Backend.Data;
 namespace SystemSprawozdan.Backend.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    partial class ApiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230426073335_Temporarly_Removed_File_Column_From_StudentReportFile")]
+    partial class Temporarly_Removed_File_Column_From_StudentReportFile
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -109,13 +112,16 @@ namespace SystemSprawozdan.Backend.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("StudentId")
+                    b.Property<int>("StudentId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("StudentReportId")
+                    b.Property<int?>("StudentReportId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("TeacherId")
+                    b.Property<int>("TeacherId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("UserId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -412,17 +418,19 @@ namespace SystemSprawozdan.Backend.Migrations
                 {
                     b.HasOne("SystemSprawozdan.Backend.Data.Models.DbModels.Student", "Student")
                         .WithMany("ReportComments")
-                        .HasForeignKey("StudentId");
-
-                    b.HasOne("SystemSprawozdan.Backend.Data.Models.DbModels.StudentReport", "StudentReport")
-                        .WithMany("ReportComments")
-                        .HasForeignKey("StudentReportId")
+                        .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("SystemSprawozdan.Backend.Data.Models.DbModels.StudentReport", "StudentReport")
+                        .WithMany("ReportComments")
+                        .HasForeignKey("StudentReportId");
+
                     b.HasOne("SystemSprawozdan.Backend.Data.Models.DbModels.Teacher", "Teacher")
                         .WithMany("ReportComments")
-                        .HasForeignKey("TeacherId");
+                        .HasForeignKey("TeacherId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Student");
 
