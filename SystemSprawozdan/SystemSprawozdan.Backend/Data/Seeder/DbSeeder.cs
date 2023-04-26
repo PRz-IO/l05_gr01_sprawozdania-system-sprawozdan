@@ -28,73 +28,61 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                 {
                     var admin = GetAdmin();
                     _dbContext.Admin.AddRange(admin);
-                    //_dbContext.SaveChanges();
                 }
 
                 if (!_dbContext.Major.Any())
                 {
                     _dbContext.Major.AddRange(GetMajors());
-                    //_dbContext.SaveChanges();
                 }
                 
                 if (!_dbContext.Term.Any())
                 {
                     _dbContext.Term.AddRange(GetTerms());
-                    //_dbContext.SaveChanges();
                 }
                 
                 if (!_dbContext.Subject.Any())
                 {
                     _dbContext.Subject.AddRange(GetSubjects());
-                    //_dbContext.SaveChanges();
                 }
                 
                 if (!_dbContext.SubjectGroup.Any())
                 {
                     _dbContext.SubjectGroup.AddRange(GetSubjectGroups());
-                    //_dbContext.SaveChanges();
                 }
                 
                 if (!_dbContext.SubjectSubgroup.Any())
                 {
                     _dbContext.SubjectSubgroup.AddRange(GetSubjectSubgroups());
-                    //_dbContext.SaveChanges();
                 }
                 
                 if (!_dbContext.Student.Any())
                 {
                     _dbContext.Student.AddRange(GetStudents());
-                    //_dbContext.SaveChanges();
                 }
 
                 if (!_dbContext.Teacher.Any())
                 {
                     _dbContext.Teacher.AddRange(GetTeachers());
-                    //_dbContext.SaveChanges();
                 }
 
                 if (!_dbContext.ReportTopic.Any())
                 {
                     _dbContext.ReportTopic.AddRange(GetReportTopics());
-                    //_dbContext.SaveChanges();
                 }
                 
                 if (!_dbContext.StudentReport.Any())
                 {
                     _dbContext.StudentReport.AddRange(GetStudentReports());
-                    //_dbContext.SaveChanges();
                 }
                 
                 if (!_dbContext.StudentReportFile.Any())
                 {
                     _dbContext.StudentReportFile.AddRange(GetStudentReportFiles());
-                    //_dbContext.SaveChanges();
                 }
                 
                 if (!_dbContext.ReportComment.Any())
                 {
                     _dbContext.ReportComment.AddRange(GetReportComments());
-                    //_dbContext.SaveChanges();
                 }
 
                 _dbContext.SaveChanges();
