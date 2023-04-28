@@ -30,58 +30,70 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                     _dbContext.Admin.AddRange(admin);
                 }
 
+                //if (!_dbContext.Student.Any())
+                //{
+                //    _dbContext.Student.AddRange(GetStudents());
+                //    _dbContext.SaveChanges();
+                //}
+
                 if (!_dbContext.Major.Any())
                 {
                     _dbContext.Major.AddRange(GetMajors());
+                    _dbContext.SaveChanges();
                 }
-                
+
                 if (!_dbContext.Term.Any())
                 {
                     _dbContext.Term.AddRange(GetTerms());
+                    _dbContext.SaveChanges();
                 }
 
                 if (!_dbContext.Subject.Any())
                 {
                     _dbContext.Subject.AddRange(GetSubjects());
+                    _dbContext.SaveChanges();
                 }
-                
+
                 if (!_dbContext.SubjectGroup.Any())
                 {
                     _dbContext.SubjectGroup.AddRange(GetSubjectGroups());
+                    _dbContext.SaveChanges();
                 }
-                
-                if (!_dbContext.SubjectSubgroup.Any())
-                {
-                    _dbContext.SubjectSubgroup.AddRange(GetSubjectSubgroups());
-                }
-                
-                {
-                if (!_dbContext.Student.Any())
-                    _dbContext.Student.AddRange(GetStudents());
-                }
-                
+
                 if (!_dbContext.Teacher.Any())
                 {
                     _dbContext.Teacher.AddRange(GetTeachers());
+                    _dbContext.SaveChanges();
                 }
-                
+
+                if (!_dbContext.SubjectSubgroup.Any())
+                {
+                    _dbContext.SubjectSubgroup.AddRange(GetSubjectSubgroups());
+                    _dbContext.SaveChanges();
+                }   
+
                 if (!_dbContext.ReportTopic.Any())
                 {
                     _dbContext.ReportTopic.AddRange(GetReportTopics());
+                    _dbContext.SaveChanges();
                 }
                 
                 if (!_dbContext.StudentReport.Any())
                 {
                     _dbContext.StudentReport.AddRange(GetStudentReports());
+                    _dbContext.SaveChanges();
                 }
-                
+
                 if (!_dbContext.ReportComment.Any())
                 {
                     _dbContext.ReportComment.AddRange(GetReportComments());
+                    _dbContext.SaveChanges();
                 }
 
             }
+            
         }
+
 
         private Admin GetAdmin()
         {
@@ -317,54 +329,187 @@ namespace SystemSprawozdan.Backend.Data.Seeder
 
         private List<SubjectSubgroup> GetSubjectSubgroups()
         {
+            var kusal = new Student()
+            {
+                Id = 169571,
+                Name = "Jakub",
+                Surname = "Kusal",
+                Email = "169571@stud.prz.edu.pl",
+                Login = "169571"
+            };
+            kusal.Password = _passwordHasherStudent.HashPassword(kusal, "Hasło123");
+
+            var kuszowski = new Student()
+            {
+                Id = 169572,
+                Name = "Mikołaj",
+                Surname = "Kuszowski",
+                Email = "169572@stud.prz.edu.pl",
+                Login = "169572"
+            };
+            kuszowski.Password = _passwordHasherStudent.HashPassword(kuszowski, "Hasło123");
+
+            var morawczynski = new Student()
+            {
+                Id = 169587,
+                Name = "Paweł",
+                Surname = "Morawczyński",
+                Email = "169587@stud.prz.edu.pl",
+                Login = "169587"
+            };
+            morawczynski.Password = _passwordHasherStudent.HashPassword(morawczynski, "Hasło123");
+
+            var latawiec = new Student()
+            { 
+                Id = 169576,
+                Name = "Grzegorz",
+                Surname = "Latawiec",
+                Email = "169576@stud.prz.edu.pl",
+                Login = "169576"
+            };
+            latawiec.Password = _passwordHasherStudent.HashPassword(latawiec, "Hasło123");
+
+            var zietek = new Student()
+            {
+                Id = 171685,
+                Name = "Mateusz",
+                Surname = "Ziętek",
+                Email = "171685@stud.prz.edu.pl",
+                Login = "171685"
+            };
+            zietek.Password = _passwordHasherStudent.HashPassword(zietek, "Hasło123");
+
+            var mazur = new Student()
+            {
+                Id = 169584,
+                Name = "Mazur",
+                Surname = "Dominika",
+                Email = "169584@stud.prz.edu.pl",
+                Login = "169584"
+            };
+            mazur.Password = _passwordHasherStudent.HashPassword(mazur, "Hasło123");
+
+            var kaczmarski = new Student()
+            {
+                Id = 213742,
+                Name = "Janusz",
+                Surname = "Kaczmarski",
+                Email = "213742@stud.prz.edu.pl",
+                Login = "213742"
+            };
+            kaczmarski.Password = _passwordHasherStudent.HashPassword(kaczmarski, "Hasło123");
+
+            var parowczak = new Student()
+            {
+                Id = 693141,
+                Name = "Sebastian",
+                Surname = "Parówczak",
+                Email = "693141@stud.prz.edu.pl",
+                Login = "693141"
+            };
+            parowczak.Password = _passwordHasherStudent.HashPassword(parowczak, "Hasło123");
+
+            var kowalski = new Student()
+            {
+                Id = 420691,
+                Name = "Bożydar",
+                Surname = "Kowalski",
+                Email = "420691@stud.prz.edu.pl",
+                Login = "420691"
+            };
+            kowalski.Password = _passwordHasherStudent.HashPassword(kowalski, "Hasło123");
+
+            var nowak = new Student()
+            {
+                Id = 666666,
+                Name = "Romuald",
+                Surname = "Nowak",
+                Email = "666666@stud.prz.edu.pl",
+                Login = "666666"
+            };
+            nowak.Password = _passwordHasherStudent.HashPassword(nowak, "Hasło123");
+
+
             var subjectSubgroups = new List<SubjectSubgroup>()
             {
                 new SubjectSubgroup()
                 {
                     //Id = 1,
                     Name = "Kusal",
-                    SubjectGroupId = 1
+                    SubjectGroupId = 1,
+                    Students = new List<Student>()
+                    {
+                        kusal
+                    }
                 },
 
                 new SubjectSubgroup()
                 {
                     //Id = 2,
                     Name = "Kuszowski-Morawczyński",
-                    SubjectGroupId = 1
+                    SubjectGroupId = 1,
+                    Students = new List<Student>()
+                    {
+                        kuszowski,
+                        morawczynski
+                    }
                 },
 
                 new SubjectSubgroup()
                 {
                     //Id = 3,
                     Name = "Mazur",
-                    SubjectGroupId = 1
+                    SubjectGroupId = 1,
+                    Students = new List<Student>()
+                    {
+                        mazur
+                    }
                 },
                 new SubjectSubgroup()
                 {
                     //Id = 4,
                     Name = "Ziętek-Latawiec",
-                    SubjectGroupId = 1
+                    SubjectGroupId = 1,
+                    Students = new List<Student>()
+                    {
+                        zietek,
+                        latawiec
+                    }
                 },
 
                 new SubjectSubgroup()
                 {
                     //Id = 5,
                     Name = "Kowalski",
-                    SubjectGroupId = 2
+                    SubjectGroupId = 2,
+                    Students = new List<Student>()
+                    {
+                        kowalski
+                    }
                 },
 
                 new SubjectSubgroup()
                 {
                     //Id = 6,
                     Name = "Kowalski-Nowak",
-                    SubjectGroupId = 4
+                    SubjectGroupId = 4,
+                    Students = new List<Student>()
+                    {
+                        kowalski,
+                        nowak
+                    }
                 },
 
                 new SubjectSubgroup()
                 {
                     //Id = 7,
                     Name = "Kaczmarski-Parówczak",
-                    SubjectGroupId = 2
+                    SubjectGroupId = 2,
+                    Students = new List<Student>()
+                    {
+                        kaczmarski,
+                        parowczak
+                    }
                 }
             };
 
@@ -511,6 +656,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
             return studentReports;
         }
 
+        /*
         private List<StudentReportFile> GetStudentReportFiles()
         {
             var studentReports = new List<StudentReportFile>()
@@ -548,91 +694,21 @@ namespace SystemSprawozdan.Backend.Data.Seeder
 
             return studentReports;
         }
+        */
 
         private List<Student> GetStudents()
         {
             var students = new List<Student>();
 
-            var student1 = new Student();
-            student1.Id = 169571;
-            student1.Name = "Jakub";
-            student1.Surname = "Kusal";
-            student1.Email = "169571@stud.prz.edu.pl";
-            student1.Login = "169571";
-            student1.Password = _passwordHasherStudent.HashPassword(student1, "Hasło12345");
-            student1.IsDeleted = false;
-            students.Add(student1);
-
-            var student2 = new Student();
-            student2.Id = 169572;
-            student2.Name = "Mikołaj";
-            student2.Surname = "Kuszowski";
-            student2.Email = "169572@stud.prz.edu.pl";
-            student2.Login = "169572";
-            student2.Password = _passwordHasherStudent.HashPassword(student2,"Masło12345");
-            student2.IsDeleted = false;
-            students.Add(student2);
-
-            var student3 = new Student();
-            student3.Id = 169587;
-            student3.Name = "Paweł";
-            student3.Surname = "Morawczyński";
-            student3.Email = "169587@stud.prz.edu.pl";
-            student3.Login = "169587";
-            student3.Password = _passwordHasherStudent.HashPassword(student3, "Hasło321456");
-            student3.IsDeleted = false;
-            students.Add(student3);
-
-            var student4 = new Student();
-            student4.Id = 169576;
-            student4.Name = "Grzegorz";
-            student4.Surname = "Latawiec";
-            student4.Email = "169576@stud.prz.edu.pl";
-            student4.Login = "169576";
-            student4.Password = _passwordHasherStudent.HashPassword(student4, "Hasło12345678");
-            student4.IsDeleted = false;
-            students.Add(student4);
-
-            var student5 = new Student();
-            student5.Id = 171685;
-            student5.Name = "Mateusz";
-            student5.Surname = "Ziętek";
-            student5.Email = "171685@stud.prz.edu.pl";
-            student5.Login = "171685";
-            student5.Password = _passwordHasherStudent.HashPassword(student5, "Masło456789");
-            student5.IsDeleted = false;
-            students.Add(student5);
-
-            var student6 = new Student();
-            student6.Id = 169584;
-            student6.Name = "Mazur";
-            student6.Surname = "Dominika";
-            student6.Email = "169584@stud.prz.edu.pl";
-            student6.Login = "169584";
-            student6.Password = _passwordHasherStudent.HashPassword(student6, "Masło7891234");
-            student6.IsDeleted = false;
-            students.Add(student6);
-
-            var student7 = new Student();
-            student7.Id = 213742;
-            student7.Name = "Janusz";
-            student7.Surname = "Kaczmarski";
-            student7.Email = "213742@stud.prz.edu.pl";
-            student7.Login = "213742";
-            student7.Password = _passwordHasherStudent.HashPassword(student7, "Hasełko9876");
-            student7.IsDeleted = false;
-            students.Add(student7);
-
-            var student8 = new Student();
-            student8.Id = 693141;
-            student8.Name = "Sebastian";
-            student8.Surname = "Parówczak";
-            student8.Email = "693141@stud.prz.edu.pl";
-            student8.Login = "693141";
-            student8.Password = _passwordHasherStudent.HashPassword(student8, "qwertyuiop12345678");
-            student8.IsDeleted = false;
-            students.Add(student8);
-
+            var turkot = new Student();
+            turkot.Id = 777777;
+            turkot.Name = "Genowefa";
+            turkot.Surname = "Turkot";
+            turkot.Email = "777777@stud.prz.edu.pl";
+            turkot.Login = "777777";
+            turkot.Password = _passwordHasherStudent.HashPassword(turkot, "Hasło123");
+            turkot.IsDeleted = false;
+            students.Add(turkot);
             return students;
         }
 
@@ -646,22 +722,34 @@ namespace SystemSprawozdan.Backend.Data.Seeder
             teacher1.Surname = "Krzeszowski";
             teacher1.Email = "tkrzeszo@prz.edu.pl";
             teacher1.Login = "tkrzeszo";
-            teacher1.Password = _passwordHasherTeacher.HashPassword(teacher1, "HasłoMasło98765");
+            teacher1.Password = _passwordHasherTeacher.HashPassword(teacher1, "Hasło123");
             teacher1.Degree = "Doktor inżynier";
             teacher1.Position = "Profesor uczelni w grupie pracowników badawczo-dydaktycznych";
-            teacher1.IsDeleted = false;
+            teacher1.SubjectGroups = new List<SubjectGroup>()
+            {
+                _dbContext.SubjectGroup.FirstOrDefault(subject => subject.Id == 1),
+                _dbContext.SubjectGroup.FirstOrDefault(subject => subject.Id == 2)
+            };
             teachers.Add(teacher1);
+
 
             var teacher2 = new Teacher();
             //teacher2.Id = 2;
             teacher2.Name = "Piotr";
             teacher2.Surname = "Woźniak";
-            teacher2.Email = "p.wozniak@prz.edu.pl ";
+            teacher2.Email = "p.wozniak@prz.edu.pl";
             teacher2.Login = "pwozniak";
-            teacher2.Password = _passwordHasherTeacher.HashPassword(teacher2, "Masło420213769");
+            teacher2.Password = _passwordHasherTeacher.HashPassword(teacher2, "Hasło123");
             teacher2.Degree = "Magister inżynier";
             teacher2.Position = "Asystent";
-            teacher2.IsDeleted = false;
+            teacher2.SubjectGroups = new List<SubjectGroup>()
+            {
+                _dbContext.SubjectGroup.FirstOrDefault(subject => subject.Id == 3),
+                _dbContext.SubjectGroup.FirstOrDefault(subject => subject.Id == 4),
+                _dbContext.SubjectGroup.FirstOrDefault(subject => subject.Id == 5),
+                _dbContext.SubjectGroup.FirstOrDefault(subject => subject.Id == 6),
+                _dbContext.SubjectGroup.FirstOrDefault(subject => subject.Id == 7)
+            };
             teachers.Add(teacher2);
 
             return teachers;

@@ -27,12 +27,8 @@ namespace SystemSprawozdan.Backend.Services
 
         public void SendStudentReport(SendStudentReportDto sendStudentReportDto)
         {
-            //var loginUserId = int.Parse(_userContextService.User.FindFirst(claim => claim.Type == ClaimTypes.NameIdentifier).Value);
-            //
-            //var subjectSubgroup = _dbContext.SubjectSubgroup.FirstOrDefault(subjectSubgroup =>
-            //     subjectSubgroup.SubjectGroup.Id == subjectGroup.Id &&
-            //     subjectSubgroup.Students.Any(student => student.Id == loginUserId)
-            //);
+            var loginUserId = int.Parse(_userContextService.User.FindFirst(claim => claim.Type == ClaimTypes.NameIdentifier).Value);
+            
 
             var subjectGroup = _dbContext
                 .SubjectGroup.FirstOrDefault(subjectGroup =>
@@ -41,6 +37,10 @@ namespace SystemSprawozdan.Backend.Services
                     )
                 );
 
+            var subjectSubgroup = _dbContext.SubjectSubgroup.FirstOrDefault(subjectSubgroup =>
+                 subjectSubgroup.SubjectGroup.Id == subjectGroup.Id &&
+                 subjectSubgroup.Students.Any(student => student.Id == loginUserId)
+            );
             
             string? noteToSend;
             if (sendStudentReportDto.Note != null)
@@ -58,7 +58,7 @@ namespace SystemSprawozdan.Backend.Services
                 SentAt = DateTime.UtcNow,
                 Note = noteToSend,
                 ReportTopicId = sendStudentReportDto.ReportTopicId,
-                SubjectSubgroupId = sendStudentReportDto.SubjectSubgroupId
+                SubjectSubgroupId = subjectSubgroup.Id
                 
             };
             _dbContext.StudentReport.Add(newStudentReport);
@@ -83,6 +83,7 @@ namespace SystemSprawozdan.Backend.Services
         }
 
 
+
         public void EditStudentReport(int studentReportId, EditStudentReportDto editStudentReportDto)
         {
             var reportToEdit = _dbContext.StudentReport.FirstOrDefault(report => report.Id == studentReportId);
@@ -104,8 +105,6 @@ namespace SystemSprawozdan.Backend.Services
                     reportToEdit.Note = commentToInsert;
                 }
             }
-
-            
 
 
             var formFile = editStudentReportDto.OptionalFile;

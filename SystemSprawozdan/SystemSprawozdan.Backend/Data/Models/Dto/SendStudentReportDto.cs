@@ -4,7 +4,6 @@
     {
         public string? Note { get; set; }
         public int ReportTopicId { get; set; }
-        public int SubjectSubgroupId { get; set; }
         public IFormFile File { get; set; }
 
     }
