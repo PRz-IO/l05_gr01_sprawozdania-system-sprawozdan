@@ -11,8 +11,8 @@ namespace SystemSprawozdan.Backend.Services
 {
     public interface IStudentReportService
     {
-        void SendStudentReport(SendStudentReportDto sendStudentReportDto);
-        void EditStudentReport(int studentReportId, EditStudentReportDto editStudentReportDto);
+        void PostStudentReport(PostStudentReportDto postStudentReportDto);
+        void PutStudentReport(int studentReportId, PutStudentReportDto putStudentReportDto);
     }
 
     public class StudentReportService : IStudentReportService
@@ -25,7 +25,7 @@ namespace SystemSprawozdan.Backend.Services
             _userContextService = userContextService;
         }
 
-        public void SendStudentReport(SendStudentReportDto sendStudentReportDto)
+        public void PostStudentReport(PostStudentReportDto postStudentReportDto)
         {
             var loginUserId = int.Parse(_userContextService.User.FindFirst(claim => claim.Type == ClaimTypes.NameIdentifier).Value);
             
@@ -33,7 +33,7 @@ namespace SystemSprawozdan.Backend.Services
             var subjectGroup = _dbContext
                 .SubjectGroup.FirstOrDefault(subjectGroup =>
                     subjectGroup.reportTopics.Any(reportTopic =>
-                        reportTopic.Id == sendStudentReportDto.ReportTopicId
+                        reportTopic.Id == postStudentReportDto.ReportTopicId
                     )
                 );
 
@@ -43,9 +43,9 @@ namespace SystemSprawozdan.Backend.Services
             );
             
             string? noteToSend;
-            if (sendStudentReportDto.Note != null)
+            if (postStudentReportDto.Note != null)
             {
-                noteToSend = DateTime.Now.ToString() + ":\n" + sendStudentReportDto.Note;
+                noteToSend = DateTime.Now.ToString() + ":\n" + postStudentReportDto.Note;
             }
             else
             {
@@ -57,7 +57,7 @@ namespace SystemSprawozdan.Backend.Services
 
                 SentAt = DateTime.UtcNow,
                 Note = noteToSend,
-                ReportTopicId = sendStudentReportDto.ReportTopicId,
+                ReportTopicId = postStudentReportDto.ReportTopicId,
                 SubjectSubgroupId = subjectSubgroup.Id
                 
             };
@@ -65,7 +65,7 @@ namespace SystemSprawozdan.Backend.Services
             _dbContext.SaveChanges();
 
 
-            var formFile = sendStudentReportDto.File;
+            var formFile = postStudentReportDto.File;
             if (formFile.Length > 0)
             {
                 using var memoryStream = new MemoryStream();
@@ -84,30 +84,30 @@ namespace SystemSprawozdan.Backend.Services
 
 
 
-        public void EditStudentReport(int studentReportId, EditStudentReportDto editStudentReportDto)
+        public void PutStudentReport(int studentReportId, PutStudentReportDto putStudentReportDto)
         {
             var reportToEdit = _dbContext.StudentReport.FirstOrDefault(report => report.Id == studentReportId);
             string previousComment = reportToEdit.Note;
             string commentToInsert;
             var currentDateTime = DateTime.Now.ToString();
             
-            if(editStudentReportDto.ReportCommentFromStudent != null)
+            if(putStudentReportDto.ReportCommentFromStudent != null)
             {
                 if (previousComment != null)
                 {
-                    commentToInsert = previousComment + "\n\n" + currentDateTime + ":\n" + editStudentReportDto.ReportCommentFromStudent;
+                    commentToInsert = previousComment + "\n\n" + currentDateTime + ":\n" + putStudentReportDto.ReportCommentFromStudent;
                     reportToEdit.Note = commentToInsert;
 
                 }
                 else
                 {
-                    commentToInsert = currentDateTime + ":\n" + editStudentReportDto.ReportCommentFromStudent;
+                    commentToInsert = currentDateTime + ":\n" + putStudentReportDto.ReportCommentFromStudent;
                     reportToEdit.Note = commentToInsert;
                 }
             }
 
 
-            var formFile = editStudentReportDto.OptionalFile;
+            var formFile = putStudentReportDto.OptionalFile;
             if (formFile != null )
             {
                 if (formFile.Length > 0)
