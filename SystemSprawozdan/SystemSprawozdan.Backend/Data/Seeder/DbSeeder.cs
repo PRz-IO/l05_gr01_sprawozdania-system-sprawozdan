@@ -30,71 +30,76 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                     _dbContext.Admin.AddRange(admin);
                 }
 
+                //if (!_dbContext.Student.Any())
+                //{
+                //    _dbContext.Student.AddRange(GetStudents());
+                //    _dbContext.SaveChanges();
+                //}
+
                 if (!_dbContext.Major.Any())
                 {
                     _dbContext.Major.AddRange(GetMajors());
+                    _dbContext.SaveChanges();
                 }
-                
+
                 if (!_dbContext.Term.Any())
                 {
                     _dbContext.Term.AddRange(GetTerms());
+                    _dbContext.SaveChanges();
                 }
-                
+
                 if (!_dbContext.Subject.Any())
                 {
                     _dbContext.Subject.AddRange(GetSubjects());
+                    _dbContext.SaveChanges();
                 }
-                
+
                 if (!_dbContext.SubjectGroup.Any())
                 {
                     _dbContext.SubjectGroup.AddRange(GetSubjectGroups());
-                }
-                
-                if (!_dbContext.SubjectSubgroup.Any())
-                {
-                    _dbContext.SubjectSubgroup.AddRange(GetSubjectSubgroups());
-                }
-                
-                if (!_dbContext.Student.Any())
-                {
-                    _dbContext.Student.AddRange(GetStudents());
+                    _dbContext.SaveChanges();
                 }
 
                 if (!_dbContext.Teacher.Any())
                 {
                     _dbContext.Teacher.AddRange(GetTeachers());
+                    _dbContext.SaveChanges();
                 }
+
+                if (!_dbContext.SubjectSubgroup.Any())
+                {
+                    _dbContext.SubjectSubgroup.AddRange(GetSubjectSubgroups());
+                    _dbContext.SaveChanges();
+                }   
 
                 if (!_dbContext.ReportTopic.Any())
                 {
                     _dbContext.ReportTopic.AddRange(GetReportTopics());
+                    _dbContext.SaveChanges();
                 }
                 
                 if (!_dbContext.StudentReport.Any())
                 {
                     _dbContext.StudentReport.AddRange(GetStudentReports());
+                    _dbContext.SaveChanges();
                 }
-                
-                if (!_dbContext.StudentReportFile.Any())
-                {
-                    _dbContext.StudentReportFile.AddRange(GetStudentReportFiles());
-                }
-                
+
                 if (!_dbContext.ReportComment.Any())
                 {
                     _dbContext.ReportComment.AddRange(GetReportComments());
+                    _dbContext.SaveChanges();
                 }
 
-                _dbContext.SaveChanges();
-
             }
+            
         }
+
 
         private Admin GetAdmin()
         {
             var admin = new Admin()
             {
-                Id = 1,
+                //Id = 1,
                 Login = "admin"
             };
 
@@ -108,7 +113,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
             {
                 new Major()
                 {
-                    Id = 1,
+                    //Id = 1,
                     Name = "Informatyka",
                     StartedAt = DateOnly.Parse("01-10-2021"),
                     MajorCode = "EF-DI"
@@ -116,7 +121,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
 
                 new Major()
                 {
-                    Id = 2,
+                    //Id = 2,
                     Name = "Automatyka i robotyka",
                     StartedAt = DateOnly.Parse("01-10-2021"),
                     MajorCode = "EA-DI"
@@ -124,7 +129,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
 
                 new Major()
                 {
-                    Id = 3,
+                    //Id = 3,
                     Name = "Elektromobilność",
                     StartedAt = DateOnly.Parse("01-10-2020"),
                     MajorCode = "EM-DI"
@@ -140,63 +145,63 @@ namespace SystemSprawozdan.Backend.Data.Seeder
             {
                 new Term()
                 {
-                    Id = 1,
+                    //Id = 1,
                     TermNumber = 1,
                     StartedAt = DateOnly.Parse("01-10-2021")
                 },
 
                 new Term()
                 {
-                    Id = 2,
+                    //Id = 2,
                     TermNumber = 2,
                     StartedAt = DateOnly.Parse("25-03-2022")
                 },
 
                 new Term()
                 {
-                    Id = 3,
+                    //Id = 3,
                     TermNumber = 3,
                     StartedAt = DateOnly.Parse("01-10-2022")
                 },
 
                 new Term()
                 {
-                    Id = 4,
+                    //Id = 4,
                     TermNumber = 4,
                     StartedAt = DateOnly.Parse("27-03-2023")
                 },
 
                 new Term()
                 {
-                    Id = 5,
+                    //Id = 5,
                     TermNumber = 5,
                     StartedAt = DateOnly.Parse("01-10-2023")
                 },
 
                 new Term()
                 {
-                    Id = 6,
+                    //Id = 6,
                     TermNumber = 1,
                     StartedAt = DateOnly.Parse("1-10-2020")
                 },
 
                 new Term()
                 {
-                    Id = 7,
+                    //Id = 7,
                     TermNumber = 1,
                     StartedAt = DateOnly.Parse("22-03-2021")
                 },
 
                 new Term()
                 {
-                    Id = 8,
+                    //Id = 8,
                     TermNumber = 2,
                     StartedAt = DateOnly.Parse("01-10-2022")
                 },
 
                 new Term()
                 {
-                    Id = 9,
+                    //Id = 9,
                     TermNumber = 3,
                     StartedAt = DateOnly.Parse("24-03-2023")
                 },
@@ -211,7 +216,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
             {
                 new Subject()
                 {
-                    Id = 1,
+                    //Id = 1,
                     Name = "Gnębienie studentów",
                     Description = "Przedmiot powstał tylko i wyłącznie w celu gnębienia studentów. Polega na uprzykrzaniu życia studentom. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eros lorem, pulvinar eu elit porta, vestibulum ultricies risus. Vestibulum aliquam accumsan sapien, a aliquet tellus consectetur vitae. In blandit velit a nunc tempus pellentesque. Maecenas aliquet consectetur dui sed sodales. Suspendisse potenti. Vestibulum ante ipsum primis in faucibus orci luctus.",
                     MajorId = 1,
@@ -220,7 +225,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
 
                 new Subject()
                 {
-                    Id = 2,
+                    //Id = 2,
                     Name = "Gnębienie studentów",
                     Description = "Przedmiot powstał tylko i wyłącznie w celu gnębienia studentów. Polega na uprzykrzaniu życia studentom. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eros lorem, pulvinar eu elit porta, vestibulum ultricies risus. Vestibulum aliquam accumsan sapien, a aliquet tellus consectetur vitae. In blandit velit a nunc tempus pellentesque. Maecenas aliquet consectetur dui sed sodales. Suspendisse potenti. Vestibulum ante ipsum primis in faucibus orci luctus.",
                     MajorId = 2,
@@ -229,7 +234,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
 
                 new Subject()
                 {
-                    Id = 3,
+                    //Id = 3,
                     Name = "Bazy danych",
                     Description = "Bazy danych to bardzo przydatny przedmiot, tralalala, turururu, blablabla. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eros lorem, pulvinar eu elit porta, vestibulum ultricies risus. Vestibulum aliquam accumsan sapien, a aliquet tellus consectetur vitae. In blandit velit a nunc tempus pellentesque. Maecenas aliquet consectetur dui sed sodales. Suspendisse potenti. Vestibulum ante ipsum primis in faucibus orci luctus. LUBIE PIEROGI RUSKIE",
                     MajorId = 1,
@@ -238,7 +243,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
 
                 new Subject()
                 {
-                    Id = 4,
+                    //Id = 4,
                     Name = "Sieci komputerowe 1",
                     Description = "Sieci komputerowe 1 to przedmiot z którego egzamin, to zabójcze wydarzenie. Występują liczne ofiary śmiertelne po przeprowadzeniu takowego egzaminu. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eros lorem, pulvinar eu elit porta, vestibulum ultricies risus. Vestibulum aliquam accumsan sapien, a aliquet tellus consectetur vitae. In blandit velit a nunc tempus pellentesque. Maecenas aliquet consectetur dui sed sodales. Suspendisse potenti. Vestibulum ante ipsum primis in faucibus orci luctus. ",
                     MajorId = 1,
@@ -247,7 +252,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
 
                 new Subject()
                 {
-                    Id = 5,
+                    //Id = 5,
                     Name = "Sieci komputerowe 2",
                     Description = "Sieci komputerowe 2 to przedmiot który pokazuje wytrwałość. Nie wiem co ja już piszę XD! Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eros lorem, pulvinar eu elit porta, vestibulum ultricies risus. Vestibulum aliquam accumsan sapien, a aliquet tellus consectetur vitae. In blandit velit a nunc tempus pellentesque. Maecenas aliquet consectetur dui sed sodales. Suspendisse potenti. Vestibulum ante ipsum primis in faucibus orci luctus. ",
                     MajorId = 1,
@@ -264,7 +269,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
             {
                 new SubjectGroup()
                 {
-                    Id = 1,
+                    //Id = 1,
                     Name = "L05",
                     GroupType = "Laboratorium",
                     SubjectId = 1,
@@ -272,7 +277,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
 
                 new SubjectGroup()
                 {
-                    Id = 2,
+                    //Id = 2,
                     Name = "L06",
                     GroupType = "Laboratorium",
                     SubjectId = 1,
@@ -280,7 +285,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
 
                 new SubjectGroup()
                 {
-                    Id = 3,
+                    //Id = 3,
                     Name = "L05",
                     GroupType = "Projekt",
                     SubjectId = 3,
@@ -288,7 +293,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
 
                 new SubjectGroup()
                 {
-                    Id = 4,
+                    //Id = 4,
                     Name = "L06",
                     GroupType = "Projekt",
                     SubjectId = 3,
@@ -296,7 +301,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
 
                 new SubjectGroup()
                 {
-                    Id = 5,
+                    //Id = 5,
                     Name = "L06",
                     GroupType = "Laboratorium",
                     SubjectId = 3,
@@ -304,7 +309,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
 
                 new SubjectGroup()
                 {
-                    Id = 6,
+                    //Id = 6,
                     Name = "L05",
                     GroupType = "Laboratorium",
                     SubjectId = 3,
@@ -312,7 +317,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
 
                 new SubjectGroup()
                 {
-                    Id = 7,
+                    //Id = 7,
                     Name = "L05",
                     GroupType = "Projekt",
                     SubjectId = 3,
@@ -324,54 +329,187 @@ namespace SystemSprawozdan.Backend.Data.Seeder
 
         private List<SubjectSubgroup> GetSubjectSubgroups()
         {
+            var kusal = new Student()
+            {
+                Id = 169571,
+                Name = "Jakub",
+                Surname = "Kusal",
+                Email = "169571@stud.prz.edu.pl",
+                Login = "169571"
+            };
+            kusal.Password = _passwordHasherStudent.HashPassword(kusal, "Hasło123");
+
+            var kuszowski = new Student()
+            {
+                Id = 169572,
+                Name = "Mikołaj",
+                Surname = "Kuszowski",
+                Email = "169572@stud.prz.edu.pl",
+                Login = "169572"
+            };
+            kuszowski.Password = _passwordHasherStudent.HashPassword(kuszowski, "Hasło123");
+
+            var morawczynski = new Student()
+            {
+                Id = 169587,
+                Name = "Paweł",
+                Surname = "Morawczyński",
+                Email = "169587@stud.prz.edu.pl",
+                Login = "169587"
+            };
+            morawczynski.Password = _passwordHasherStudent.HashPassword(morawczynski, "Hasło123");
+
+            var latawiec = new Student()
+            { 
+                Id = 169576,
+                Name = "Grzegorz",
+                Surname = "Latawiec",
+                Email = "169576@stud.prz.edu.pl",
+                Login = "169576"
+            };
+            latawiec.Password = _passwordHasherStudent.HashPassword(latawiec, "Hasło123");
+
+            var zietek = new Student()
+            {
+                Id = 171685,
+                Name = "Mateusz",
+                Surname = "Ziętek",
+                Email = "171685@stud.prz.edu.pl",
+                Login = "171685"
+            };
+            zietek.Password = _passwordHasherStudent.HashPassword(zietek, "Hasło123");
+
+            var mazur = new Student()
+            {
+                Id = 169584,
+                Name = "Mazur",
+                Surname = "Dominika",
+                Email = "169584@stud.prz.edu.pl",
+                Login = "169584"
+            };
+            mazur.Password = _passwordHasherStudent.HashPassword(mazur, "Hasło123");
+
+            var kaczmarski = new Student()
+            {
+                Id = 213742,
+                Name = "Janusz",
+                Surname = "Kaczmarski",
+                Email = "213742@stud.prz.edu.pl",
+                Login = "213742"
+            };
+            kaczmarski.Password = _passwordHasherStudent.HashPassword(kaczmarski, "Hasło123");
+
+            var parowczak = new Student()
+            {
+                Id = 693141,
+                Name = "Sebastian",
+                Surname = "Parówczak",
+                Email = "693141@stud.prz.edu.pl",
+                Login = "693141"
+            };
+            parowczak.Password = _passwordHasherStudent.HashPassword(parowczak, "Hasło123");
+
+            var kowalski = new Student()
+            {
+                Id = 420691,
+                Name = "Bożydar",
+                Surname = "Kowalski",
+                Email = "420691@stud.prz.edu.pl",
+                Login = "420691"
+            };
+            kowalski.Password = _passwordHasherStudent.HashPassword(kowalski, "Hasło123");
+
+            var nowak = new Student()
+            {
+                Id = 666666,
+                Name = "Romuald",
+                Surname = "Nowak",
+                Email = "666666@stud.prz.edu.pl",
+                Login = "666666"
+            };
+            nowak.Password = _passwordHasherStudent.HashPassword(nowak, "Hasło123");
+
+
             var subjectSubgroups = new List<SubjectSubgroup>()
             {
                 new SubjectSubgroup()
                 {
-                    Id = 1,
+                    //Id = 1,
                     Name = "Kusal",
-                    SubjectGroupId = 1
+                    SubjectGroupId = 1,
+                    Students = new List<Student>()
+                    {
+                        kusal
+                    }
                 },
 
                 new SubjectSubgroup()
                 {
-                    Id = 2,
+                    //Id = 2,
                     Name = "Kuszowski-Morawczyński",
-                    SubjectGroupId = 1
+                    SubjectGroupId = 1,
+                    Students = new List<Student>()
+                    {
+                        kuszowski,
+                        morawczynski
+                    }
                 },
 
                 new SubjectSubgroup()
                 {
-                    Id = 3,
+                    //Id = 3,
                     Name = "Mazur",
-                    SubjectGroupId = 1
+                    SubjectGroupId = 1,
+                    Students = new List<Student>()
+                    {
+                        mazur
+                    }
                 },
                 new SubjectSubgroup()
                 {
-                    Id = 4,
+                    //Id = 4,
                     Name = "Ziętek-Latawiec",
-                    SubjectGroupId = 1
+                    SubjectGroupId = 1,
+                    Students = new List<Student>()
+                    {
+                        zietek,
+                        latawiec
+                    }
                 },
 
                 new SubjectSubgroup()
                 {
-                    Id = 5,
+                    //Id = 5,
                     Name = "Kowalski",
-                    SubjectGroupId = 2
+                    SubjectGroupId = 2,
+                    Students = new List<Student>()
+                    {
+                        kowalski
+                    }
                 },
 
                 new SubjectSubgroup()
                 {
-                    Id = 6,
+                    //Id = 6,
                     Name = "Kowalski-Nowak",
-                    SubjectGroupId = 4
+                    SubjectGroupId = 4,
+                    Students = new List<Student>()
+                    {
+                        kowalski,
+                        nowak
+                    }
                 },
 
                 new SubjectSubgroup()
                 {
-                    Id = 7,
+                    //Id = 7,
                     Name = "Kaczmarski-Parówczak",
-                    SubjectGroupId = 2
+                    SubjectGroupId = 2,
+                    Students = new List<Student>()
+                    {
+                        kaczmarski,
+                        parowczak
+                    }
                 }
             };
 
@@ -384,7 +522,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
             {
                 new ReportTopic()
                 {
-                    Id = 1,
+                    //Id = 1,
                     Name = "Wprowadzenie do Oracle",
                     //Deadline = DateTime.Parse("20-04-2023 08:30:00 PM"),
                     Deadline = DateTime.UtcNow,
@@ -393,7 +531,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
 
                 new ReportTopic()
                 {
-                    Id = 2,
+                    //Id = 2,
                     Name = "Wprowadzenie do Oracle",
                     //Deadline = DateTime.Parse("22-04-2023 08:30:00 PM"),
                     Deadline = DateTime.UtcNow,
@@ -402,7 +540,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
 
                 new ReportTopic()
                 {
-                    Id = 3,
+                    //Id = 3,
                     Name = "Zaawansowane zapytania Oracle",
                     //Deadline = DateTime.Parse("30-04-2023 11:00:00 PM"),
                     Deadline = DateTime.UtcNow,
@@ -411,7 +549,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
 
                 new ReportTopic()
                 {
-                    Id = 4,
+                    //Id = 4,
                     Name = "Zaawansowane zapytania Oracle",
                     //Deadline = DateTime.Parse("29-04-2023 10:00:00 PM"),
                     Deadline = DateTime.UtcNow,
@@ -420,7 +558,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
 
                 new ReportTopic()
                 {
-                    Id = 5,
+                    //Id = 5,
                     Name = "Zajęcia nr 1 z gnębienia studentów",
                     //Deadline = DateTime.Parse("19-05-2023 07:30:00 PM"),
                     Deadline = DateTime.UtcNow,
@@ -429,7 +567,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
 
                 new ReportTopic()
                 {
-                    Id = 6,
+                    //Id = 6,
                     Name = "Zajęcia nr 1 z gnębienia studentów",
                     //Deadline = DateTime.Parse("17-04-2023 10:00:00 PM"),
                     Deadline = DateTime.UtcNow,
@@ -438,7 +576,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
 
                 new ReportTopic()
                 {
-                    Id = 7,
+                    //Id = 7,
                     Name = "Zajęcia nr 2 z gnębienia studentów",
                     //Deadline = DateTime.Parse("26-04-2023 04:00:00 PM"),
                     Deadline = DateTime.UtcNow,
@@ -447,7 +585,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
 
                 new ReportTopic()
                 {
-                    Id = 8,
+                    //Id = 8,
                     Name = "Zajęcia nr 2 z gnębienia studentów",
                     //Deadline = DateTime.Parse("28-04-2023 05:30:00 PM"),
                     Deadline = DateTime.UtcNow,
@@ -465,7 +603,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
             {
                 new StudentReport()
                 {
-                    Id = 1,
+                    //Id = 1,
                     //SentAt = DateTime.Parse("21-04-2023 05:30:00 PM"),
                     SentAt = DateTime.UtcNow,
                     Note = "Sprawko z przedmiotu \"Bazy danych\" z labów 1 \"Wprowadzanie do Oracle\", nadesłane przez Kusal",
@@ -475,7 +613,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
 
                 new StudentReport()
                 {
-                    Id = 2,
+                    //Id = 2,
                     //SentAt = DateTime.Parse("23-04-2023 06:00:00 PM"),
                     SentAt = DateTime.UtcNow,
                     Note = "Sprawko z przedmiotu \"Bazy danych\" z labów 1 \"Wprowadzanie do Oracle\", nadesłane przez Kuszowski-Morawczyński",
@@ -485,7 +623,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
 
                 new StudentReport()
                 {
-                    Id = 3,
+                    //Id = 3,
                     //SentAt = DateTime.Parse("22-04-2023 09:00:00 PM"),
                     SentAt = DateTime.UtcNow,
                     Note = "Sprawko z przedmiotu \"Gnębienie studentów\" z labów 1 \"Gnębienie studentów cz. 1\", nadesłane przez Mazur",
@@ -495,7 +633,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
 
                 new StudentReport()
                 {
-                    Id = 4,
+                    //Id = 4,
                     //SentAt = DateTime.Parse("26-04-2023 05:30:00 PM"),
                     SentAt = DateTime.UtcNow,
                     Note = "Sprawko z przedmiotu \"Gnębienie studentów\" z labów 1 \"Gnębienie studentów cz. 1\", nadesłane przez Kaczmarski-Parówczak",
@@ -505,7 +643,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
 
                 new StudentReport()
                 {
-                    Id = 5,
+                    //Id = 5,
                     //SentAt = DateTime.Parse("02-05-2023 05:30:00 PM"),
                     SentAt = DateTime.UtcNow,
                     Note = "Sprawko z przedmiotu \"Gnębienie studentów\" z labów 2 \"Gnębienie studentów cz. 2\", nadesłane przez Kusal",
@@ -518,6 +656,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
             return studentReports;
         }
 
+        /*
         private List<StudentReportFile> GetStudentReportFiles()
         {
             var studentReports = new List<StudentReportFile>()
@@ -555,91 +694,21 @@ namespace SystemSprawozdan.Backend.Data.Seeder
 
             return studentReports;
         }
+        */
 
         private List<Student> GetStudents()
         {
             var students = new List<Student>();
 
-            var student1 = new Student();
-            student1.Id = 169571;
-            student1.Name = "Jakub";
-            student1.Surname = "Kusal";
-            student1.Email = "169571@stud.prz.edu.pl";
-            student1.Login = "169571";
-            student1.Password = _passwordHasherStudent.HashPassword(student1, "Hasło12345");
-            student1.IsDeleted = false;
-            students.Add(student1);
-
-            var student2 = new Student();
-            student2.Id = 169572;
-            student2.Name = "Mikołaj";
-            student2.Surname = "Kuszowski";
-            student2.Email = "169572@stud.prz.edu.pl";
-            student2.Login = "169572";
-            student2.Password = _passwordHasherStudent.HashPassword(student2,"Masło12345");
-            student2.IsDeleted = false;
-            students.Add(student2);
-
-            var student3 = new Student();
-            student3.Id = 169587;
-            student3.Name = "Paweł";
-            student3.Surname = "Morawczyński";
-            student3.Email = "169587@stud.prz.edu.pl";
-            student3.Login = "169587";
-            student3.Password = _passwordHasherStudent.HashPassword(student3, "Hasło321456");
-            student3.IsDeleted = false;
-            students.Add(student3);
-
-            var student4 = new Student();
-            student4.Id = 169576;
-            student4.Name = "Grzegorz";
-            student4.Surname = "Latawiec";
-            student4.Email = "169576@stud.prz.edu.pl";
-            student4.Login = "169576";
-            student4.Password = _passwordHasherStudent.HashPassword(student4, "Hasło12345678");
-            student4.IsDeleted = false;
-            students.Add(student4);
-
-            var student5 = new Student();
-            student5.Id = 171685;
-            student5.Name = "Mateusz";
-            student5.Surname = "Ziętek";
-            student5.Email = "171685@stud.prz.edu.pl";
-            student5.Login = "171685";
-            student5.Password = _passwordHasherStudent.HashPassword(student5, "Masło456789");
-            student5.IsDeleted = false;
-            students.Add(student5);
-
-            var student6 = new Student();
-            student6.Id = 169584;
-            student6.Name = "Mazur";
-            student6.Surname = "Dominika";
-            student6.Email = "169584@stud.prz.edu.pl";
-            student6.Login = "169584";
-            student6.Password = _passwordHasherStudent.HashPassword(student6, "Masło7891234");
-            student6.IsDeleted = false;
-            students.Add(student6);
-
-            var student7 = new Student();
-            student7.Id = 213742;
-            student7.Name = "Janusz";
-            student7.Surname = "Kaczmarski";
-            student7.Email = "213742@stud.prz.edu.pl";
-            student7.Login = "213742";
-            student7.Password = _passwordHasherStudent.HashPassword(student7, "Hasełko9876");
-            student7.IsDeleted = false;
-            students.Add(student7);
-
-            var student8 = new Student();
-            student8.Id = 693141;
-            student8.Name = "Sebastian";
-            student8.Surname = "Parówczak";
-            student8.Email = "693141@stud.prz.edu.pl";
-            student8.Login = "693141";
-            student8.Password = _passwordHasherStudent.HashPassword(student8, "qwertyuiop12345678");
-            student8.IsDeleted = false;
-            students.Add(student8);
-
+            var turkot = new Student();
+            turkot.Id = 777777;
+            turkot.Name = "Genowefa";
+            turkot.Surname = "Turkot";
+            turkot.Email = "777777@stud.prz.edu.pl";
+            turkot.Login = "777777";
+            turkot.Password = _passwordHasherStudent.HashPassword(turkot, "Hasło123");
+            turkot.IsDeleted = false;
+            students.Add(turkot);
             return students;
         }
 
@@ -648,27 +717,39 @@ namespace SystemSprawozdan.Backend.Data.Seeder
             var teachers = new List<Teacher>();
 
             var teacher1 = new Teacher();
-            teacher1.Id = 1;
+            //teacher1.Id = 1;
             teacher1.Name = "Tomasz";
             teacher1.Surname = "Krzeszowski";
             teacher1.Email = "tkrzeszo@prz.edu.pl";
             teacher1.Login = "tkrzeszo";
-            teacher1.Password = _passwordHasherTeacher.HashPassword(teacher1, "HasłoMasło98765");
+            teacher1.Password = _passwordHasherTeacher.HashPassword(teacher1, "Hasło123");
             teacher1.Degree = "Doktor inżynier";
             teacher1.Position = "Profesor uczelni w grupie pracowników badawczo-dydaktycznych";
-            teacher1.IsDeleted = false;
+            teacher1.SubjectGroups = new List<SubjectGroup>()
+            {
+                _dbContext.SubjectGroup.FirstOrDefault(subject => subject.Id == 1),
+                _dbContext.SubjectGroup.FirstOrDefault(subject => subject.Id == 2)
+            };
             teachers.Add(teacher1);
 
+
             var teacher2 = new Teacher();
-            teacher2.Id = 2;
+            //teacher2.Id = 2;
             teacher2.Name = "Piotr";
             teacher2.Surname = "Woźniak";
-            teacher2.Email = "p.wozniak@prz.edu.pl ";
+            teacher2.Email = "p.wozniak@prz.edu.pl";
             teacher2.Login = "pwozniak";
-            teacher2.Password = _passwordHasherTeacher.HashPassword(teacher2, "Masło420213769");
+            teacher2.Password = _passwordHasherTeacher.HashPassword(teacher2, "Hasło123");
             teacher2.Degree = "Magister inżynier";
             teacher2.Position = "Asystent";
-            teacher2.IsDeleted = false;
+            teacher2.SubjectGroups = new List<SubjectGroup>()
+            {
+                _dbContext.SubjectGroup.FirstOrDefault(subject => subject.Id == 3),
+                _dbContext.SubjectGroup.FirstOrDefault(subject => subject.Id == 4),
+                _dbContext.SubjectGroup.FirstOrDefault(subject => subject.Id == 5),
+                _dbContext.SubjectGroup.FirstOrDefault(subject => subject.Id == 6),
+                _dbContext.SubjectGroup.FirstOrDefault(subject => subject.Id == 7)
+            };
             teachers.Add(teacher2);
 
             return teachers;
@@ -681,7 +762,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
             {
                 new ReportComment()
                 {
-                    Id = 1,
+                    //Id = 1,
                     Content = "Komentarz wystawiony przez studenta",
                     StudentId = 169571,
                     StudentReportId = 1
@@ -689,7 +770,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
 
                 new ReportComment()
                 {
-                    Id = 2,
+                    //Id = 2,
                     Content = "Komentarz taktyczny wystawiony przez prowadzącego",
                     TeacherId = 1,
                     StudentReportId = 1
@@ -697,7 +778,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
 
                 new ReportComment()
                 {
-                    Id = 3,
+                    //Id = 3,
                     Content = "Komentarz NIEtaktyczny wystawiony przez studenta taktycznego",
                     StudentId = 169572,
                     StudentReportId = 2
