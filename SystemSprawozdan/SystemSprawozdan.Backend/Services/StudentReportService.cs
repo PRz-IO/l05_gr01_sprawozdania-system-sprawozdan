@@ -64,22 +64,22 @@ namespace SystemSprawozdan.Backend.Services
             _dbContext.StudentReport.Add(newStudentReport);
             _dbContext.SaveChanges();
 
-
-            var formFile = postStudentReportDto.File;
-            if (formFile != null)
+            foreach (FormFile file in postStudentReportDto.Files)
             {
-                if (formFile.Length > 0)
+                if (file != null)
                 {
-                    using var memoryStream = new MemoryStream();
-                    formFile.CopyToAsync(memoryStream);
-
-                    var studentReportFile = new StudentReportFile()
+                    if (file.Length > 0)
                     {
-                        StudentReportId = newStudentReport.Id,
-                        File = memoryStream.ToArray()
-                    };
+                        using var memoryStream = new MemoryStream();
+                        file.CopyToAsync(memoryStream);
+                        var studentReportFile = new StudentReportFile()
+                        {
+                            StudentReportId = newStudentReport.Id,
+                            File = memoryStream.ToArray()
+                        };
 
-                    _dbContext.StudentReportFile.Add(studentReportFile);
+                        _dbContext.StudentReportFile.Add(studentReportFile);
+                    }
                 }
             }
 
@@ -109,30 +109,30 @@ namespace SystemSprawozdan.Backend.Services
                     reportToEdit.Note = commentToInsert;
                 }
             }
+            _dbContext.SaveChanges();
 
 
-            var formFile = putStudentReportDto.OptionalFile;
-            if (formFile != null )
+            foreach (FormFile file in putStudentReportDto.OptionalFiles)
             {
-                if (formFile.Length > 0)
+                if (file != null)
                 {
-                    using var memoryStream = new MemoryStream();
-                    formFile.CopyToAsync(memoryStream);
-
-                    var studentReportFile = new StudentReportFile()
+                    if (file.Length > 0)
                     {
-                        StudentReportId = reportToEdit.Id,
-                        File = memoryStream.ToArray()
-                    };
+                        using var memoryStream = new MemoryStream();
+                        file.CopyToAsync(memoryStream);
+                        var studentReportFile = new StudentReportFile()
+                        {
+                            StudentReportId = reportToEdit.Id,
+                            File = memoryStream.ToArray()
+                        };
 
-                    _dbContext.StudentReportFile.Add(studentReportFile);
+                        _dbContext.StudentReportFile.Add(studentReportFile);
+                    }
                 }
             }
-            
-
             _dbContext.SaveChanges();
-        }
 
+        }
 
     }
 

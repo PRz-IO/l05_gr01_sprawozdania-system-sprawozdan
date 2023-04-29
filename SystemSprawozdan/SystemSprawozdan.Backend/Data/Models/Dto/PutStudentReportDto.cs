@@ -3,6 +3,6 @@
     public class PutStudentReportDto
     {
         public string? ReportCommentFromStudent { get; set; }
-        public IFormFile? OptionalFile { get; set; }
+        public List<IFormFile>? OptionalFiles { get; set; }
     }
 }
