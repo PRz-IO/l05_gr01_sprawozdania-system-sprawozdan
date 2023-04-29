@@ -12,8 +12,26 @@ namespace SystemSprawozdan.Backend.Controllers
     public class StudentReportController : ControllerBase
     {
         public readonly IStudentReportService _studentReportService;
-        //TODO: Jakub: Trzeba stworzyć POSTa, który umożliwi dodanie sprawozdania do odpowiedniego tematu sprawozdania, przez zalogowanego użytkownika (umieszczenie pliku oraz komentarza)
 
-        //TODO: Jakub: Trzeba stworzyć PUTa, który umożliwi edycję oddanego sprawozdania, czyli możliwość dodania kolejnego pliku
+        public StudentReportController(IStudentReportService studentReportService)
+        {
+            _studentReportService = studentReportService;
+        }
+
+
+        [HttpPost]
+        public ActionResult PostStudentReport([FromForm] PostStudentReportDto postStudentReportDto)
+        {
+            _studentReportService.PostStudentReport(postStudentReportDto);
+            return Ok();
+        }
+
+        [HttpPut("{studentReportId}")]
+        public ActionResult PutStudentReport([FromRoute] int studentReportId, [FromForm] PutStudentReportDto putStudentReportDto)
+        {
+            _studentReportService.PutStudentReport(studentReportId, putStudentReportDto);
+            return Ok();
+        }
+
     }
 }
