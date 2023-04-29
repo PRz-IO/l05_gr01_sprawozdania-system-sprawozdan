@@ -22,6 +22,10 @@ namespace SystemSprawozdan.Backend.Migrations
                 name: "FK_ReportComment_Teacher_TeacherId",
                 table: "ReportComment");
 
+            migrationBuilder.DropColumn(
+                name: "UserId",
+                table: "ReportComment");
+
             migrationBuilder.AlterColumn<int>(
                 name: "TeacherId",
                 table: "ReportComment",
