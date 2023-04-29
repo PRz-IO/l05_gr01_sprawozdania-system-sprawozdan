@@ -56,6 +56,7 @@ namespace SystemSprawozdan.Backend.Services
             {
 
                 SentAt = DateTime.UtcNow,
+                LastModified = DateTime.UtcNow,
                 Note = noteToSend,
                 ReportTopicId = postStudentReportDto.ReportTopicId,
                 SubjectSubgroupId = subjectSubgroup.Id
@@ -130,7 +131,10 @@ namespace SystemSprawozdan.Backend.Services
                     }
                 }
             }
+            reportToEdit.LastModified = DateTime.UtcNow;
             _dbContext.SaveChanges();
+
+
 
         }
 
