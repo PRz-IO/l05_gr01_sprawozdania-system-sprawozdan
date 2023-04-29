@@ -66,20 +66,28 @@ namespace SystemSprawozdan.Backend.Services
 
 
             var formFile = postStudentReportDto.File;
-            if (formFile.Length > 0)
+            if (formFile != null)
             {
-                using var memoryStream = new MemoryStream();
-                formFile.CopyToAsync(memoryStream);
-            
-                var studentReportFile = new StudentReportFile()
+                if (formFile.Length > 0)
                 {
-                    StudentReportId = newStudentReport.Id,
-                    File = memoryStream.ToArray()
-                };
-            
-                _dbContext.StudentReportFile.Add(studentReportFile);
+                    using var memoryStream = new MemoryStream();
+                    formFile.CopyToAsync(memoryStream);
+
+                    var studentReportFile = new StudentReportFile()
+                    {
+                        StudentReportId = newStudentReport.Id,
+                        File = memoryStream.ToArray()
+                    };
+
+                    _dbContext.StudentReportFile.Add(studentReportFile);
+                }
+            }
+            else
+            {
                 _dbContext.SaveChanges();
             }
+
+            
         }
 
 
