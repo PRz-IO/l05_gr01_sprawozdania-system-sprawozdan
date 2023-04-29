@@ -82,12 +82,8 @@ namespace SystemSprawozdan.Backend.Services
                     _dbContext.StudentReportFile.Add(studentReportFile);
                 }
             }
-            else
-            {
-                _dbContext.SaveChanges();
-            }
 
-            
+             _dbContext.SaveChanges();
         }
 
 
