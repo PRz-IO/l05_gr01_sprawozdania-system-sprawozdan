@@ -2,7 +2,7 @@
 {
     public class EditStudentReportDto
     {
-        
-        //TODO plik
+        public string? ReportCommentFromStudent { get; set; }
+        public IFormFile? OptionalFile { get; set; }
     }
 }
