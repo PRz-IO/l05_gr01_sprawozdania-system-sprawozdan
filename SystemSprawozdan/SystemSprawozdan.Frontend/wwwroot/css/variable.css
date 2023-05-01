@@ -5,7 +5,9 @@
 
     --font-color-header: #373737;
     --font-color-basic: #868484;
-    --font-size-large: 24px;
+    --font-size-small: 20px;
+    --font-size-medium: 24px;
+    --font-size-large: 30px;
     --font-weight-bold: 600;
 
     --panel-line-color: var(--font-color-basic);
