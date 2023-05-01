@@ -1,0 +1,42 @@
+﻿@typeparam TValue
+
+<div>
+	<MatTabGroup ActiveIndex="@ActiveIndex">
+		<div class="container" style="flex-direction: @FlexDirection">
+		@foreach(var tab in Data)
+		{
+			<MatRipple Style="width: 100%;" Color="@MatRippleColor.Primary">
+				<MatTab Label="@tab.Text" onclick="@(() => ChangeStatus(tab))"/>
+			</MatRipple>
+		}
+		</div>
+	</MatTabGroup>
+</div>
+
+@code {
+	[Parameter]
+	public TValue Value { get; set; } 
+
+	[Parameter]
+	public EventCallback<TValue> ValueChanged { get; set; }
+
+	[Parameter, EditorRequired]
+	public IEnumerable<TabBarData<TValue>> Data { get; set; }
+
+	[Parameter]
+	public string? FlexDirection { get; set; } = "row";
+
+	[Parameter]
+	public int ActiveIndex { get; set; } = 0;
+
+	[Parameter]
+	public EventCallback<int> ActiveIndexChanged { get; set; }
+
+
+	public void ChangeStatus(TabBarData<TValue> activeTab) {
+		ActiveIndex = Data.IndexOf(activeTab);
+		ActiveIndexChanged.InvokeAsync(ActiveIndex);
+		ValueChanged.InvokeAsync(activeTab.Value);
+	}
+
+}
