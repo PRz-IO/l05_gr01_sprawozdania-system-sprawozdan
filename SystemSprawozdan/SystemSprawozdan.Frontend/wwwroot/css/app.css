@@ -6,8 +6,8 @@ html, body {
     font-family: 'Roboto', sans-serif;
 }
 
-h1 :focus{
-    outline: none !important;
+h1:focus{
+    outline: none;
 }
 
 #blazor-error-ui {
