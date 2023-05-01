@@ -9,4 +9,6 @@
     --font-weight-bold: 600;
 
     --panel-line-color: var(--font-color-gray);
+
+    accent-color: var(--primary-color);
 }
