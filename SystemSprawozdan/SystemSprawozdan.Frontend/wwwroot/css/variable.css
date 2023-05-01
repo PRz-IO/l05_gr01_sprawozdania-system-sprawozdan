@@ -10,5 +10,5 @@
 
     --panel-line-color: var(--font-color-gray);
 
-    accent-color: var(--primary-color);
+    --panel-drop-shadow: -15px 15px 20px rgba(34, 34, 34, 0.1), -5px 5px 15px rgba(32, 32, 32, 0.25);
 }
