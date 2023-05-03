@@ -13,8 +13,8 @@ using SystemSprawozdan.Backend.Middleware;
 using SystemSprawozdan.Backend.Data.Seeder;
 using SystemSprawozdan.Backend.Authorization;
 using FluentValidation;
-using SystemSprawozdan.Shared.Dto;
 using SystemSprawozdan.Backend.Data.Models.Validators;
+using SystemSprawozdan.Shared.Dto;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration["ConnectionString"];

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -32,6 +32,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SystemSprawozdan.Frontend\SystemSprawozdan.Frontend.csproj" />
+    <ProjectReference Include="..\SystemSprawozdan.Shared\SystemSprawozdan.Shared.csproj" />
   </ItemGroup>
 
 </Project>
