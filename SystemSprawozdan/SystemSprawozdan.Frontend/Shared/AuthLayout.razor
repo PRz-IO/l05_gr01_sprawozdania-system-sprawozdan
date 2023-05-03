@@ -4,7 +4,7 @@
 <main>
 	<div class="auth-panel">
 		<TitleBar />
-		<SwitchBar TValue="string" ValueChanged="@NavigateTo" Data="@switchBarData" />
+		<SwitchBar TValue="string" ValueChanged="@NavigateTo" Data="@switchBarData"/>
 		<div class="form">
 			@Body
         </div>
@@ -31,8 +31,7 @@
         new()
         {
             Text="Zaloguj",
-            Value="/login",
-            IsActive = true
+            Value="/login"
         },
         new()
         {
