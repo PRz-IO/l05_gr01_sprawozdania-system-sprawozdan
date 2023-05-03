@@ -1,6 +1,6 @@
 ﻿@inherits LayoutComponentBase
 
-<MatThemeProvider Theme="@theme1">
+<MatThemeProvider Theme="@Theme">
 		<div class="page">
 			<div class="background">
 			</div>
@@ -19,14 +19,15 @@
 				</NotFound>
 			</Router>
 			</div>
-
 		</div>
 </MatThemeProvider>
 
 @code{
-	MatTheme theme1 = new MatTheme()
-		{
-			Primary = MatThemeColors.Blue._500.Value,
-			Secondary = MatThemeColors.Blue._400.Value
-		};
+	public MatTheme Theme = new MatTheme()
+	{
+		Primary = "var(--primary-color)",
+		Secondary = "var(--primary-color)",
+		Background = "var(--panel-background-color)",
+		Surface = "transparent"
+	};
 }

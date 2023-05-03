@@ -198,6 +198,9 @@ namespace SystemSprawozdan.Backend.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseSerialColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("Note")
                         .HasColumnType("text");
 
@@ -226,6 +229,10 @@ namespace SystemSprawozdan.Backend.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseSerialColumn(b.Property<int>("Id"));
+
+                    b.Property<byte[]>("File")
+                        .IsRequired()
+                        .HasColumnType("bytea");
 
                     b.Property<int>("StudentReportId")
                         .HasColumnType("integer");

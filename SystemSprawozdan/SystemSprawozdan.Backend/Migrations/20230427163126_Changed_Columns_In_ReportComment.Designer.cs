@@ -12,8 +12,8 @@ using SystemSprawozdan.Backend.Data;
 namespace SystemSprawozdan.Backend.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    [Migration("20230426091647_Added_Columns_To_ReportComment_Table")]
-    partial class Added_Columns_To_ReportComment_Table
+    [Migration("20230427163126_Changed_Columns_In_ReportComment")]
+    partial class Changed_Columns_In_ReportComment
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -229,6 +229,10 @@ namespace SystemSprawozdan.Backend.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseSerialColumn(b.Property<int>("Id"));
+
+                    b.Property<byte[]>("File")
+                        .IsRequired()
+                        .HasColumnType("bytea");
 
                     b.Property<int>("StudentReportId")
                         .HasColumnType("integer");

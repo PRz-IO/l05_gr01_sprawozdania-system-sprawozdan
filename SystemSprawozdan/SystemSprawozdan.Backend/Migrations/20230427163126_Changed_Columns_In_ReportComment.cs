@@ -5,7 +5,7 @@
 namespace SystemSprawozdan.Backend.Migrations
 {
     /// <inheritdoc />
-    public partial class Added_Columns_To_ReportComment_Table : Migration
+    public partial class Changed_Columns_In_ReportComment : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

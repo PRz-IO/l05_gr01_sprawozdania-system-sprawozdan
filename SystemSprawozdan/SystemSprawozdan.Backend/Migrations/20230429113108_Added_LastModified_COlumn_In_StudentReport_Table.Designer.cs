@@ -12,8 +12,8 @@ using SystemSprawozdan.Backend.Data;
 namespace SystemSprawozdan.Backend.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    [Migration("20230426073335_Temporarly_Removed_File_Column_From_StudentReportFile")]
-    partial class Temporarly_Removed_File_Column_From_StudentReportFile
+    [Migration("20230429113108_Added_LastModified_COlumn_In_StudentReport_Table")]
+    partial class Added_LastModified_COlumn_In_StudentReport_Table
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -112,16 +112,13 @@ namespace SystemSprawozdan.Backend.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("StudentId")
+                    b.Property<int?>("StudentId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("StudentReportId")
+                    b.Property<int>("StudentReportId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("TeacherId")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("UserId")
+                    b.Property<int?>("TeacherId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -204,6 +201,9 @@ namespace SystemSprawozdan.Backend.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseSerialColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("Note")
                         .HasColumnType("text");
 
@@ -232,6 +232,10 @@ namespace SystemSprawozdan.Backend.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseSerialColumn(b.Property<int>("Id"));
+
+                    b.Property<byte[]>("File")
+                        .IsRequired()
+                        .HasColumnType("bytea");
 
                     b.Property<int>("StudentReportId")
                         .HasColumnType("integer");
@@ -418,19 +422,17 @@ namespace SystemSprawozdan.Backend.Migrations
                 {
                     b.HasOne("SystemSprawozdan.Backend.Data.Models.DbModels.Student", "Student")
                         .WithMany("ReportComments")
-                        .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("StudentId");
 
                     b.HasOne("SystemSprawozdan.Backend.Data.Models.DbModels.StudentReport", "StudentReport")
                         .WithMany("ReportComments")
-                        .HasForeignKey("StudentReportId");
+                        .HasForeignKey("StudentReportId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("SystemSprawozdan.Backend.Data.Models.DbModels.Teacher", "Teacher")
                         .WithMany("ReportComments")
-                        .HasForeignKey("TeacherId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("TeacherId");
 
                     b.Navigation("Student");
 
