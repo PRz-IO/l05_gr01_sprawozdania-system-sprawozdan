@@ -3,11 +3,19 @@
 
 *:not(.mdc*){
     font-size: var(--font-size-small);
+    box-sizing: border-box;
 }
 
 html, body {
     color: var(--font-color-header);
     font-family: 'Roboto', sans-serif;
+    font-weight: var(--font-weight-medium);
+}
+
+i.material-icons{
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 h1:focus{

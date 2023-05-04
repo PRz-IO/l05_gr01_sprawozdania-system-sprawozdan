@@ -1,0 +1,109 @@
+﻿:defined{
+    --userpad-default-height: 5rem;
+}
+
+.user-pad {
+    overflow: hidden;
+    position: relative;
+
+    width: 250px;
+
+    color: var(--font-color-header);
+    border-radius: var(--panel-border-radius);
+    box-shadow: var(--panel-drop-shadow);
+    -moz-box-shadow: var(--panel-drop-shadow);
+    -webkit-box-shadow: var(--panel-drop-shadow);
+}
+
+.user-info {
+    position: absolute;
+    top: 0;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+
+    width: 100%;
+    height: var(--userpad-default-height);
+    padding: 1rem;
+
+    background-color: var(--panel-background-color);
+    border-radius: var(--panel-border-radius);
+    border-bottom: 3px solid var(--primary-color);
+    box-shadow: 0px 5px 10px -4px var(--primary-color);
+    -moz-box-shadow: 0px 5px 10px -4px var(--primary-color);
+    -webkit-box-shadow: 0px 5px 10px -4px var(--primary-color);
+
+    cursor: pointer;
+
+    user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
+
+.user-info__label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.user-info__name {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-info__dropdown-icon-wrapper {
+    height: 2rem;
+
+    transition: transform .2s ease-out;
+}
+
+.user-info__dropdown-icon-wrapper.drop-list {
+    transform: rotateZ(180deg);
+}
+
+.options {
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    height: calc(var(--userpad-default-height) + .5rem);
+    background-color: var(--background-color);
+    border-radius: 10px;
+    /*transition: height .2s ease-out;*/
+    transition: height .5s cubic-bezier(0.24, -0.56, 0.27, 1.79);
+}
+
+.options.drop-list {
+    height: calc(var(--userpad-default-height) + 3rem);
+}
+
+.options-list {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    
+    width: 100%;
+    margin: 0;
+    padding: 0.5rem 2rem;
+    list-style: none;
+}
+
+.option {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    
+    height: 2rem;
+    
+    cursor: pointer;
+    transition: color .2s ease-out;
+}
+
+.option:hover {
+    color: var(--primary-color);
+}

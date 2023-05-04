@@ -1,16 +1,17 @@
 ﻿:root {
     --primary-color: #4099E5;
     --background-color: #EAEAEA;
-    --panel-background-color: #FEFEFE;
 
     --font-color-header: #373737;
     --font-color-basic: #868484;
     --font-size-small: 20px;
     --font-size-medium: 24px;
     --font-size-large: 30px;
+    --font-weight-medium: 500;
     --font-weight-bold: 600;
 
+    --panel-background-color: #FEFEFE;
+    --panel-border-radius: 1rem;
     --panel-line-color: var(--font-color-basic);
-
-    --panel-drop-shadow: -15px 15px 20px rgba(34, 34, 34, 0.1), -5px 5px 15px rgba(32, 32, 32, 0.25);
+    --panel-drop-shadow: -5px 5px 20px 0px #22222255;
 }
