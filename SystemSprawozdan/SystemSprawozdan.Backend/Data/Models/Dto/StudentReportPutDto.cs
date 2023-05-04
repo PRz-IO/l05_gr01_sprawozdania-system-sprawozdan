@@ -1,8 +1,8 @@
 ﻿namespace SystemSprawozdan.Backend.Data.Models.Dto
 {
-    public class PutStudentReportDto
+    public class StudentReportPutDto
     {
         public string? ReportCommentFromStudent { get; set; }
-        public List<IFormFile>? OptionalFiles { get; set; }
+        public List<IFormFile>? Files { get; set; }
     }
 }

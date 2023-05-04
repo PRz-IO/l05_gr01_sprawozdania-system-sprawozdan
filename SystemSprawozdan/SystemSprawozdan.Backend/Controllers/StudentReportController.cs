@@ -20,14 +20,14 @@ namespace SystemSprawozdan.Backend.Controllers
 
 
         [HttpPost]
-        public ActionResult PostStudentReport([FromForm] PostStudentReportDto postStudentReportDto)
+        public ActionResult PostStudentReport([FromForm] StudentReportPostDto postStudentReportDto)
         {
             _studentReportService.PostStudentReport(postStudentReportDto);
             return Ok();
         }
 
         [HttpPut("{studentReportId}")]
-        public ActionResult PutStudentReport([FromRoute] int studentReportId, [FromForm] PutStudentReportDto putStudentReportDto)
+        public ActionResult PutStudentReport([FromRoute] int studentReportId, [FromForm] StudentReportPutDto putStudentReportDto)
         {
             _studentReportService.PutStudentReport(studentReportId, putStudentReportDto);
             return Ok();

@@ -11,8 +11,8 @@ namespace SystemSprawozdan.Backend.Services
 {
     public interface IStudentReportService
     {
-        void PostStudentReport(PostStudentReportDto postStudentReportDto);
-        void PutStudentReport(int studentReportId, PutStudentReportDto putStudentReportDto);
+        void PostStudentReport(StudentReportPostDto postStudentReportDto);
+        void PutStudentReport(int studentReportId, StudentReportPutDto putStudentReportDto);
     }
 
     public class StudentReportService : IStudentReportService
@@ -25,7 +25,7 @@ namespace SystemSprawozdan.Backend.Services
             _userContextService = userContextService;
         }
 
-        public void PostStudentReport(PostStudentReportDto postStudentReportDto)
+        public void PostStudentReport(StudentReportPostDto postStudentReportDto)
         {
             var loginUserId = int.Parse(_userContextService.User.FindFirst(claim => claim.Type == ClaimTypes.NameIdentifier).Value);
             
@@ -65,31 +65,36 @@ namespace SystemSprawozdan.Backend.Services
             _dbContext.StudentReport.Add(newStudentReport);
             _dbContext.SaveChanges();
 
-            foreach (FormFile file in postStudentReportDto.Files)
+            if (postStudentReportDto.Files is null) return;
             {
-                if (file != null)
+                foreach (FormFile file in postStudentReportDto.Files)
                 {
-                    if (file.Length > 0)
+                    if (file is not null)
                     {
-                        using var memoryStream = new MemoryStream();
-                        file.CopyToAsync(memoryStream);
-                        var studentReportFile = new StudentReportFile()
+                        if (file.Length > 0)
                         {
-                            StudentReportId = newStudentReport.Id,
-                            File = memoryStream.ToArray()
-                        };
+                            using var memoryStream = new MemoryStream();
+                            file.CopyToAsync(memoryStream);
+                            var studentReportFile = new StudentReportFile()
+                            {
+                                StudentReportId = newStudentReport.Id,
+                                File = memoryStream.ToArray()
+                            };
 
-                        _dbContext.StudentReportFile.Add(studentReportFile);
+                            _dbContext.StudentReportFile.Add(studentReportFile);
+                        }
                     }
                 }
             }
+            
+            
 
              _dbContext.SaveChanges();
         }
 
 
 
-        public void PutStudentReport(int studentReportId, PutStudentReportDto putStudentReportDto)
+        public void PutStudentReport(int studentReportId, StudentReportPutDto putStudentReportDto)
         {
             var reportToEdit = _dbContext.StudentReport.FirstOrDefault(report => report.Id == studentReportId);
             string previousComment = reportToEdit.Note;
@@ -112,6 +117,7 @@ namespace SystemSprawozdan.Backend.Services
             }
             _dbContext.SaveChanges();
 
+            if (putStudentReportDto.OptionalFiles is null) return;
 
             foreach (FormFile file in putStudentReportDto.OptionalFiles)
             {
