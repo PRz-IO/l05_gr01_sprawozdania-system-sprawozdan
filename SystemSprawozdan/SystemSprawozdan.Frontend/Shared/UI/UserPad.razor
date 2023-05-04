@@ -1,0 +1,37 @@
+﻿<div class="user-pad">
+	<div class="options @DropListClass()">
+		<ul class="options-list">
+			<li class="option">
+				<MatIcon Style="font-size: 1.8rem;" Icon="@MatIconNames.Meeting_room" />
+				<span>Wyloguj</span>
+			</li>
+		</ul>
+	</div>
+	<div class="user-info" onclick="@(() => ChangeStatus())" >
+		<div class="user-info__label">
+			<MatIcon Style="font-size: 3.4rem;" Icon="@MatIconNames.Person" />
+			<div class="user-info__name">
+				<span>@FirstName</span>
+				<span>@LastName</span>
+			</div>
+		</div>
+		<div class="user-info__dropdown-icon-wrapper @DropListClass()"><MatIcon Style="font-size: 2rem;" Icon="@MatIconNames.Arrow_drop_down" /></div>
+	</div>
+</div>
+
+@code {
+	public string FirstName { get; set; }
+	public string LastName { get; set; }
+
+	public bool IsUserPadActive = false;
+
+	public string DropListClass()
+	{
+		return IsUserPadActive ? "drop-list" : "";
+	}
+
+	public void ChangeStatus()
+	{
+		IsUserPadActive = !IsUserPadActive;
+	}
+}
