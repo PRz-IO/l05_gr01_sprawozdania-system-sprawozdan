@@ -117,9 +117,9 @@ namespace SystemSprawozdan.Backend.Services
             }
             _dbContext.SaveChanges();
 
-            if (putStudentReportDto.OptionalFiles is null) return;
+            if (putStudentReportDto.Files is null) return;
 
-            foreach (FormFile file in putStudentReportDto.OptionalFiles)
+            foreach (FormFile file in putStudentReportDto.Files)
             {
                 if (file != null)
                 {
