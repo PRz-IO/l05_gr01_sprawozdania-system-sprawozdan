@@ -7,6 +7,7 @@ namespace SystemSprawozdan.Frontend.Pages.Auth.Services
     public interface IAuthService
     {
         public void Login(LoginUserDto loginUser);
+        public void Register(RegisterStudentDto registerStudent);
     }
     public class AuthService : IAuthService
     {
@@ -22,6 +23,11 @@ namespace SystemSprawozdan.Frontend.Pages.Auth.Services
         {
             var token = await GetToken(loginUser);
            _session.SetItemAsStringAsync("token", token.ToString());
+        }
+
+        public async void Register(RegisterStudentDto registerStudent)
+        {
+            await _httpClient.PostAsJsonAsync("https://localhost:7184/api/Account/register", registerStudent);
         }
 
         private async Task<string> GetToken(LoginUserDto loginUser)

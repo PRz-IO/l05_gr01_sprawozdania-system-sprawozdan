@@ -4,8 +4,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.5.33516.290
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SystemSprawozdan.Backend", "SystemSprawozdan.Backend\SystemSprawozdan.Backend.csproj", "{61230369-1993-40D5-8F61-8B73FF3E1759}"
+	ProjectSection(ProjectDependencies) = postProject
+		{630B1A62-54F7-4D1C-B759-F3C902FA7DF5} = {630B1A62-54F7-4D1C-B759-F3C902FA7DF5}
+		{9D656C5C-AEF4-4B1D-BF62-FCAED63763CE} = {9D656C5C-AEF4-4B1D-BF62-FCAED63763CE}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SystemSprawozdan.Frontend", "SystemSprawozdan.Frontend\SystemSprawozdan.Frontend.csproj", "{9D656C5C-AEF4-4B1D-BF62-FCAED63763CE}"
+	ProjectSection(ProjectDependencies) = postProject
+		{630B1A62-54F7-4D1C-B759-F3C902FA7DF5} = {630B1A62-54F7-4D1C-B759-F3C902FA7DF5}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SystemSprawozdan.Shared", "SystemSprawozdan.Shared\SystemSprawozdan.Shared.csproj", "{630B1A62-54F7-4D1C-B759-F3C902FA7DF5}"
 EndProject

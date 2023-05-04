@@ -1,7 +1,29 @@
 ﻿@page "/register"
+@inject IAuthService authService
 
-
+<div class="form-block">
+    <MatTextField Style="width: 40%;" @bind-Value="@User.Name" Label="Imię" Outlined="true"></MatTextField>
+    <MatTextField Style="width: 40%;" @bind-Value="@User.Surname" Label="Nazwisko" Outlined="true"></MatTextField>
+    <MatTextField Style="width: 40%;" @bind-Value="@User.Email" Label="Email" Outlined="true"></MatTextField>
+    <MatTextField Style="width: 40%;" @bind-Value="@User.Login" Label="Login" Outlined="true"></MatTextField>
+    <MatTextField Style="width: 40%;" @bind-Value="@User.Password" Label="Haslo" Type="password" Outlined="true"></MatTextField>
+    <MatTextField Style="width: 40%;" @bind-Value="@User.ConfirmPassword" Label="Potwierdź hasło" Type="password" Outlined="true"></MatTextField>
+</div>
+<MatButton OnClick="() => TryRegister()" Style="height: 80px; font-size: var(--font-size-large);" Raised="true">Zaloguj</MatButton>
 
 @code {
+    public RegisterStudentDto User { get; set; } = new RegisterStudentDto()
+        {
+            Name = "",
+            Surname = "",
+            Email = "",
+            Login = "",
+            Password = "",
+            ConfirmPassword = ""
+        };
 
+    public void TryRegister()
+    {
+        authService.Register(User);
+    }
 }

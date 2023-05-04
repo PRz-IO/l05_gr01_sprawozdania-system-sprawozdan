@@ -4,7 +4,7 @@
 <main>
 	<div class="auth-panel">
 		<TitleBar />
-		<SwitchBar TValue="string" ValueChanged="@NavigateTo" Data="@switchBarData"/>
+		<TabBar TValue="string" ValueChanged="@NavigateTo" Data="@tabBar" ActiveIndex="1"/>
 		<div class="form">
 			@Body
         </div>
@@ -21,12 +21,12 @@
         this.navigationManager.NavigateTo(link);
     }
 
-    public IEnumerable<SwitchBarData<string>> switchBarData { get; set; } = new SwitchBarData<string>[]
+    public IEnumerable<TabBarData<string>> tabBar { get; set; } = new TabBarData<string>[]
     {
         new()
         {
-            Text="Zarejestruj konto",
-            Value="/register"
+            Text = "Zarejestruj konto",
+            Value = "/register"
         },
         new()
         {
