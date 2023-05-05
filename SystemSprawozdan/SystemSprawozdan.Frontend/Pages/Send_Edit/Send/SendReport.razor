@@ -1,0 +1,120 @@
+﻿@page "/send/{ReportTopicId}"
+@using System.Net;
+@using System.Net.Http;
+@using System.Net.Http.Headers;
+@using System.Text;
+@using Newtonsoft.Json;
+
+<PageTitle>Wyślij sprawozdanie</PageTitle>
+
+<h1>
+    Sprawozdania
+</h1>
+
+
+<form name="Main-form" method="post" enctype="multipart/form-data" action="api/StudentReport">
+    <InputFile OnChange="OnInputFileChange" multiple />
+
+    @if (fileNames.Count > 0)
+    {
+        <ul>
+            @foreach (var fileName in fileNames)
+            {
+                <li>
+                    Plik: @fileName
+                </li>
+            }
+        </ul>
+    }
+    
+    <div>
+        <textarea @bind="Note" @bind:event="oninput" />
+    </div>
+    <div>
+        Znaki: @Note.Length
+    </div>
+</form>
+
+
+<MatFileUpload OnChange="@MultipleFilesReady" AllowMultiple="true" Label="Drop files here or Browse"></MatFileUpload>
+
+@foreach (var f in multiplelist)
+{
+    <div>@f</div>
+}
+
+    
+        
+
+
+
+<button @onclick="sendReport">
+    Prześlij
+</button>
+
+
+@code {
+    [Parameter]
+    public string ReportTopicId { get; set; }
+
+    public string Note { get; set; } = string.Empty;
+
+
+
+    List<string> multiplelist = new List<string>();
+
+    void MultipleFilesReady(IMatFileUploadEntry[] files)
+    {
+        foreach (var file in files)
+        {
+            multiplelist.Add($"Name: {file.Name} - Size: {file.Size}");
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+    private int maxAllowedFiles = 100;
+    private long maxFileSize = 5368709120; // 5 Gigabytes
+    private List<string> fileNames = new();
+    MultipartFormDataContent multipartFormContent = new MultipartFormDataContent();
+
+    public async Task OnInputFileChange(InputFileChangeEventArgs e)
+    {
+      
+        foreach (var file in e.GetMultipleFiles(maxAllowedFiles))
+        {
+            var fileContent = new StreamContent(file.OpenReadStream(maxFileSize));
+            fileContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
+
+            fileNames.Add(file.Name);
+            multipartFormContent.Add(
+                content: fileContent,
+                name: "\"files\"",
+                fileName: file.Name);
+        }
+    }
+
+    public async void sendReport()
+    {
+        
+        multipartFormContent.Add(new StringContent(ReportTopicId.ToString()), name: "ReportTopicId");
+        multipartFormContent.Add(new StringContent(Note), name: "Note");
+        var url = "https://localhost:7184/api/StudentReport";
+        using var client = new HttpClient();
+        string token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjE2OTU3MSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IjEiLCJleHAiOjE2ODM0NDUwMTYsImlzcyI6Imh0dHA6Ly9TeXN0ZW1TcHJhd296ZGFuWERERC5wbCIsImF1ZCI6Imh0dHA6Ly9TeXN0ZW1TcHJhd296ZGFuWERERC5wbCJ9.KNY79QNzHqc6fG4eot_PTyrnzuReZUxMleIYaYYE0YA";
+        client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
+        var response = await client.PostAsync(url, multipartFormContent);
+        response.EnsureSuccessStatusCode();
+        var result = await response.Content.ReadAsStringAsync();
+        Console.WriteLine(result);
+
+    }
+}

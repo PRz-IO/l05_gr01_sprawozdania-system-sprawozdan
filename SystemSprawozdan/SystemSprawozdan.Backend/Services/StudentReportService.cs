@@ -11,7 +11,7 @@ namespace SystemSprawozdan.Backend.Services
 {
     public interface IStudentReportService
     {
-        void PostStudentReport(StudentReportPostDto postStudentReportDto);
+        void PostStudentReport(StudentReportPostDto postStudentReportDto);  
         void PutStudentReport(int studentReportId, StudentReportPutDto putStudentReportDto);
     }
 
@@ -28,12 +28,12 @@ namespace SystemSprawozdan.Backend.Services
         public void PostStudentReport(StudentReportPostDto postStudentReportDto)
         {
             var loginUserId = int.Parse(_userContextService.User.FindFirst(claim => claim.Type == ClaimTypes.NameIdentifier).Value);
-            
+            var reportTopicIdInteger = int.Parse(postStudentReportDto.ReportTopicId);
 
             var subjectGroup = _dbContext
                 .SubjectGroup.FirstOrDefault(subjectGroup =>
                     subjectGroup.reportTopics.Any(reportTopic =>
-                        reportTopic.Id == postStudentReportDto.ReportTopicId
+                        reportTopic.Id == reportTopicIdInteger
                     )
                 );
 
@@ -58,7 +58,7 @@ namespace SystemSprawozdan.Backend.Services
                 SentAt = DateTime.UtcNow,
                 LastModified = DateTime.UtcNow,
                 Note = noteToSend,
-                ReportTopicId = postStudentReportDto.ReportTopicId,
+                ReportTopicId = reportTopicIdInteger,
                 SubjectSubgroupId = subjectSubgroup.Id
                 
             };

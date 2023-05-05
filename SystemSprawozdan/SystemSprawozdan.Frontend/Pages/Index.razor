@@ -5,6 +5,8 @@
 <PageTitle>Index</PageTitle>
 
 <button @onclick=goLogin >Logowanie</button>
+<button @onclick=goSend >Send</button>
+
 
 <h1>Hello, world!</h1>
 
@@ -16,5 +18,10 @@ Welcome to your new app.
 	public void goLogin()
 	{
 		NavigationManager.NavigateTo("/Login");
+	}
+
+	private void goSend()
+	{
+		NavigationManager.NavigateTo("/send");
 	}
 }
