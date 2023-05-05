@@ -4,7 +4,7 @@
 <main>
 	<div class="auth-panel">
 		<TitleBar />
-		<TabBar TValue="string" ValueChanged="@NavigateTo" Data="@tabBar" @bind-ActiveIndex="@activeIndex"/>
+        <TabBar TValue="string" ValueChanged="@NavigateTo" Data="@tabBarData" ActiveIndex="index" />
 		<div class="form">
 			@Body
         </div>
@@ -15,14 +15,36 @@
 @code
 {
     public string value { get; set; } = "";
-    public int activeIndex { get; set; } = 1;
+    public int index { get; set; }
+
+    public int activeIndex()
+    {
+        var uri = this.navigationManager.Uri;
+        foreach (var data in tabBarData)
+        {
+            if (uri.Contains(data.Value))
+                return tabBarData.IndexOf(data);
+        }
+        return 1;
+    }
 
     public void NavigateTo(string link)
     {
+        index = tabBarData.FindIndex(el => el.Value.Equals(link));
+        this.StateHasChanged();
         this.navigationManager.NavigateTo(link);
     }
 
-    public IEnumerable<TabBarData<string>> tabBar { get; set; } = new TabBarData<string>[]
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            index = activeIndex();
+            this.StateHasChanged();
+        }
+    }
+
+    public IEnumerable<TabBarData<string>> tabBarData { get; set; } = new TabBarData<string>[]
     {
         new()
         {

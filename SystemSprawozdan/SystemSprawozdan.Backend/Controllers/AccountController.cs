@@ -39,6 +39,13 @@ namespace SystemSprawozdan.Backend.Controllers
             return Ok();
         }
 
+        [HttpPut("restorePassword")]
+        public ActionResult RestoreUserPasswordDto([FromBody] RestoreUserPasswordDto restoreUserPasswordDto)
+        {
+            _accountService.RestoreUserPassword(restoreUserPasswordDto);
+            return Ok();
+        }
+
         //TODO: Bartek: Trzeba zrobic GETa, który wyświetli podstawowe informacje o uzytkowniku
 
         //TODO: Bartek: Trzeba zrobić PUTa, którym będzie mozna zresetowac haslo

@@ -2,15 +2,32 @@
 @inject IAuthService authService
 @inject ISessionStorageService session
 
-<div class="form-block">
-    <MatTextField Style="width: 40%;" @bind-Value="@User.Login" Label="Login"></MatTextField>
-    <MatTextField Style="width: 40%;" @bind-Value="@User.Password" Label="Haslo" Type="password"></MatTextField>
-</div>
-<MatButton OnClick="() => TryLogin()" Style="height: 80px; font-size: var(--font-size-large);" Raised="true">Zaloguj</MatButton>
-
+    
+<EditForm Style="height: 100%; width: 100%; display: flex;flex: 1 1 0;flex-direction: column;justify-content: center;" Model="User" OnValidSubmit="Success">
+    <DataAnnotationsValidator />
+    <div class="form-block">
+        <div class="form-block-textfield">
+            <p>
+                <MatTextField Style="width: 100%;" @bind-Value="@User.Login" Label="Login"></MatTextField>
+                <ValidationMessage For="@(() => User.Login)" />
+            </p>
+            <p>
+                <MatTextField Style="width: 100%;" @bind-Value="@User.Password" Label="Haslo" Type="password"></MatTextField>
+                <ValidationMessage For="@(() => User.Password)" />
+            </p>
+        </div>
+    </div>
+    <MatButton Type="submit" OnClick="() => TryLogin()" Style="height: 80px; font-size: var(--font-size-large);" Raised="true">Zaloguj</MatButton>
+</EditForm>
 
 @code
 {
+    [Inject]
+    IJSRuntime JS { get; set; }
+
+    async Task Success() =>
+        await JS.InvokeAsync<object>("alert", "Successful login!");
+
     public LoginUserDto User { get; set; } = new LoginUserDto()
     {
         Login = "",
