@@ -1,29 +1,102 @@
 ﻿@page "/register"
 @inject IAuthService authService
+@using System.ComponentModel.DataAnnotations
+@using System.IO
+@using System.Net.Http.Headers
 
-<div class="form-block">
-    <MatTextField Style="width: 40%;" @bind-Value="@User.Name" Label="Imię" Outlined="true"></MatTextField>
-    <MatTextField Style="width: 40%;" @bind-Value="@User.Surname" Label="Nazwisko" Outlined="true"></MatTextField>
-    <MatTextField Style="width: 40%;" @bind-Value="@User.Email" Label="Email" Outlined="true"></MatTextField>
-    <MatTextField Style="width: 40%;" @bind-Value="@User.Login" Label="Login" Outlined="true"></MatTextField>
-    <MatTextField Style="width: 40%;" @bind-Value="@User.Password" Label="Haslo" Type="password" Outlined="true"></MatTextField>
-    <MatTextField Style="width: 40%;" @bind-Value="@User.ConfirmPassword" Label="Potwierdź hasło" Type="password" Outlined="true"></MatTextField>
-</div>
-<MatButton OnClick="() => TryRegister()" Style="height: 80px; font-size: var(--font-size-large);" Raised="true">Zaloguj</MatButton>
+<EditForm Style="height: 100%; width: 100%; display: flex;flex: 1 1 0;flex-direction: column;" Model="frontendRegister" OnValidSubmit="Success">
+    <ObjectGraphDataAnnotationsValidator />
+    <div class="form-block">
+        <div class="form-block-left">
+            <p>
+                <MatTextField Style="width: 100%;" @bind-Value="@frontendRegister.User.Email" Label="Email"></MatTextField>
+                <ValidationMessage For="@(() => frontendRegister.User.Email)" />
+            </p>
+            <p>
+                <MatTextField Style="width: 100%;" @bind-Value="@frontendRegister.User.Name" Label="Imię"></MatTextField>
+                <ValidationMessage For="@(() => frontendRegister.User.Name)" />
+            </p>
+            <p>
+                <MatTextField Style="width: 100%;" @bind-Value="@frontendRegister.User.Surname" Label="Nazwisko"></MatTextField>
+                <ValidationMessage For="@(() => frontendRegister.User.Surname)" />
+            </p>
+        </div>
+        <div class="form-block-right">
+            <p>
+                <MatTextField Style="width: 100%;" @bind-Value="@frontendRegister.User.Login" Label="Login"></MatTextField>
+                <ValidationMessage For="@(() => frontendRegister.User.Login)" />
+            </p>
+            <p>
+                <MatTextField Style="width: 100%;" @bind-Value="@frontendRegister.User.Password" Label="Haslo" Type="password"></MatTextField>
+                <ValidationMessage For="@(() => frontendRegister.User.Password)" />
+            </p>
+            <p>
+                <MatTextField Style="width: 100%;" @bind-Value="@frontendRegister.User.ConfirmPassword" Label="Potwierdź hasło" Type="password"></MatTextField>
+                <ValidationMessage For="@(() => frontendRegister.User.ConfirmPassword)" />
+            </p>
+            <p class="checkBox">
+                <MatCheckbox @bind-Value="@frontendRegister.checked1" Label="Zgoda na przetwarzanie danych osobowych"></MatCheckbox>
+                <ValidationMessage For="@(() => frontendRegister.checked1)" />
+            </p>
+        </div>
+    </div>
+<MatButton Type="submit" OnClick="() => TryRegister()" Style="height: 80px; font-size: var(--font-size-large);" Raised="true">Zarejestruj</MatButton>
+</EditForm>
 
 @code {
-    public RegisterStudentDto User { get; set; } = new RegisterStudentDto()
+
+    [Inject]
+    IJSRuntime JS { get; set; }
+
+    async Task Success() =>
+        await JS.InvokeAsync<object>("alert", "Successful login!");
+
+    public class FrontendRegister
+    {
+        [Required]
+        [ValidateComplexType]
+        public RegisterStudentDto User { get; set; }
+
+        [CustomValidation(typeof(FrontendRegister), nameof(rodoChecked))]
+        public bool checked1 { get; set; } = false;
+
+        public FrontendRegister()
         {
-            Name = "",
-            Surname = "",
-            Email = "",
-            Login = "",
-            Password = "",
-            ConfirmPassword = ""
-        };
+            User = new RegisterStudentDto()
+                {
+                    Name = "",
+                    Surname = "",
+                    Email = "",
+                    Login = "",
+                    Password = "",
+                    ConfirmPassword = ""
+                };
+        }
+
+        public static ValidationResult rodoChecked(bool checked1, ValidationContext vc)
+        {
+            return checked1 == true
+                ? ValidationResult.Success
+                : new ValidationResult("Farmazon", new[] { vc.MemberName });
+        }
+    }
+
+    public FrontendRegister frontendRegister { get; set; } = new FrontendRegister();
+
+
+
+    //[CustomValidation(typeof(bool), nameof(ValidateMFA))]
+    //public bool checked1 = false;
+
+    //public static ValidationResult ValidateMFA(bool checked1, ValidationContext vc)
+    //{
+    //    return checked1 == true
+    //        ? ValidationResult.Success
+    //        : new ValidationResult("Musisz to zaznaczyc", new[] { vc.MemberName });
+    //}
 
     public void TryRegister()
     {
-        authService.Register(User);
+        authService.Register(frontendRegister.User);
     }
 }

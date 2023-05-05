@@ -8,6 +8,7 @@ namespace SystemSprawozdan.Frontend.Pages.Auth.Services
     {
         public void Login(LoginUserDto loginUser);
         public void Register(RegisterStudentDto registerStudent);
+        public void RestorePassword();
     }
     public class AuthService : IAuthService
     {
@@ -28,6 +29,10 @@ namespace SystemSprawozdan.Frontend.Pages.Auth.Services
         public async void Register(RegisterStudentDto registerStudent)
         {
             await _httpClient.PostAsJsonAsync("https://localhost:7184/api/Account/register", registerStudent);
+        }
+
+        public async void RestorePassword()
+        {
         }
 
         private async Task<string> GetToken(LoginUserDto loginUser)

@@ -4,7 +4,7 @@
 <main>
 	<div class="auth-panel">
 		<TitleBar />
-		<TabBar TValue="string" ValueChanged="@NavigateTo" Data="@tabBar" ActiveIndex="1"/>
+		<TabBar TValue="string" ValueChanged="@NavigateTo" Data="@tabBar" @bind-ActiveIndex="@activeIndex"/>
 		<div class="form">
 			@Body
         </div>
@@ -15,6 +15,7 @@
 @code
 {
     public string value { get; set; } = "";
+    public int activeIndex { get; set; } = 1;
 
     public void NavigateTo(string link)
     {
