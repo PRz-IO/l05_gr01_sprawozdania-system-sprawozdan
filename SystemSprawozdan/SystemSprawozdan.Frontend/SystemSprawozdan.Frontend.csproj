@@ -31,4 +31,8 @@
     <ProjectReference Include="..\SystemSprawozdan.Shared\SystemSprawozdan.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Services\" />
+  </ItemGroup>
+
 </Project>

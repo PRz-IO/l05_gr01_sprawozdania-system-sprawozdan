@@ -2,10 +2,9 @@
 
 namespace SystemSprawozdan.Shared.Dto
 {
-    public class PostStudentReportDto
+    public class StudentReportPutDto
     {
-        public string? Note { get; set; }
-        public int ReportTopicId { get; set; }
+        public string? ReportCommentFromStudent { get; set; }
         public List<IFormFile>? Files { get; set; }
     }
 }
