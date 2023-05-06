@@ -1,18 +1,18 @@
 ﻿@page "/login"
 @inject IAuthService authService
 @inject ISessionStorageService session
-
+@inject IJSRuntime JS
     
 <EditForm Style="height: 100%; width: 100%; display: flex;flex: 1 1 0;flex-direction: column;justify-content: center;" Model="User" OnValidSubmit="Success">
     <DataAnnotationsValidator />
     <div class="form-block">
         <div class="form-block-textfield">
             <p>
-                <MatTextField Style="width: 100%;" @bind-Value="@User.Login" Label="Login"></MatTextField>
+                <MatTextField Style="width: 100%;" @bind-Value="@User.Login" Label="Login" Outlined="true"></MatTextField>
                 <ValidationMessage For="@(() => User.Login)" />
             </p>
             <p>
-                <MatTextField Style="width: 100%;" @bind-Value="@User.Password" Label="Haslo" Type="password"></MatTextField>
+                <MatTextField Style="width: 100%;" @bind-Value="@User.Password" Label="Haslo" Type="password" Outlined="true"></MatTextField>
                 <ValidationMessage For="@(() => User.Password)" />
             </p>
         </div>
@@ -22,9 +22,6 @@
 
 @code
 {
-    [Inject]
-    IJSRuntime JS { get; set; }
-
     async Task Success() =>
         await JS.InvokeAsync<object>("alert", "Successful login!");
 
