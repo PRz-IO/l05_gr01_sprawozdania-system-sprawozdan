@@ -8,7 +8,7 @@ namespace SystemSprawozdan.Frontend.Pages.Auth.Services
     {
         public void Login(LoginUserDto loginUser);
         public void Register(RegisterStudentDto registerStudent);
-        public void RestorePassword();
+        public void RestorePassword(RestoreUserPasswordDto restoreUserPassword);
     }
     public class AuthService : IAuthService
     {
@@ -18,12 +18,12 @@ namespace SystemSprawozdan.Frontend.Pages.Auth.Services
         {
             _httpClient = httpClient;
             _session = session;
-        }
+        }  
 
         public async void Login(LoginUserDto loginUser)
         {
             var token = await GetToken(loginUser);
-           _session.SetItemAsStringAsync("token", token.ToString());
+            _session.SetItemAsStringAsync("token", token.ToString());
         }
 
         public async void Register(RegisterStudentDto registerStudent)
@@ -31,8 +31,9 @@ namespace SystemSprawozdan.Frontend.Pages.Auth.Services
             await _httpClient.PostAsJsonAsync("https://localhost:7184/api/Account/register", registerStudent);
         }
 
-        public async void RestorePassword()
+        public async void RestorePassword(RestoreUserPasswordDto restoreUserPassword)
         {
+            await _httpClient.PutAsJsonAsync("https://localhost:7184/api/Account/restorePassword", restoreUserPassword);
         }
 
         private async Task<string> GetToken(LoginUserDto loginUser)

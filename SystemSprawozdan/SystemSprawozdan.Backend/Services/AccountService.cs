@@ -173,8 +173,10 @@ namespace SystemSprawozdan.Backend.Services
                 throw new NotFoundException("User not found");
             }
 
-            var newPassword = RandomString(8);
+            //var newPassword = RandomString(8);
+            var newPassword = "Reset123!";
             user.Password = _passwordHasherStudent.HashPassword(user, newPassword);
+            _dbContext.SaveChanges();
 
             EmailDto emailDto = new EmailDto()
             {

@@ -3,52 +3,47 @@
 @using System.ComponentModel.DataAnnotations
 @using System.IO
 @using System.Net.Http.Headers
-@inject IJSRuntime JS
 
-<EditForm Style="height: 100%; width: 100%; display: flex;flex: 1 1 0;flex-direction: column;" Model="frontendRegister" OnValidSubmit="Success">
+<EditForm Style="height: 100%; width: 100%; display: flex;flex: 1 1 0;flex-direction: column;" Model="frontendRegister" OnValidSubmit="TryRegister">
     <ObjectGraphDataAnnotationsValidator />
     <div class="form-block">
         <div class="form-block-left">
             <p>
                 <MatTextField Style="width: 100%;" @bind-Value="@frontendRegister.User.Email" Label="Email" Outlined="true"></MatTextField>
-                <ValidationMessage For="@(() => frontendRegister.User.Email)" />
+                <ValidationMessage For="@(() => frontendRegister.User.Email)" style="font-size:12px;" />
             </p>
             <p>
                 <MatTextField Style="width: 100%;" @bind-Value="@frontendRegister.User.Name" Label="Imię" Outlined="true"></MatTextField>
-                <ValidationMessage For="@(() => frontendRegister.User.Name)" />
+                <ValidationMessage For="@(() => frontendRegister.User.Name)" style="font-size:12px;" />
             </p>
             <p>
                 <MatTextField Style="width: 100%;" @bind-Value="@frontendRegister.User.Surname" Label="Nazwisko" Outlined="true"></MatTextField>
-                <ValidationMessage For="@(() => frontendRegister.User.Surname)" />
+                <ValidationMessage For="@(() => frontendRegister.User.Surname)" style="font-size:12px;" />
             </p>
         </div>
         <div class="form-block-right">
             <p>
-                <MatTextField Style="width: 100%;" @bind-Value="@frontendRegister.User.Login" Label="Login" Outlined="true"></MatTextField>
-                <ValidationMessage For="@(() => frontendRegister.User.Login)" />
+                <MatTextField Style="width: 100%;" @bind-Value="@frontendRegister.User.Login" Label="Login (nr albumu)" Outlined="true"></MatTextField>
+                <ValidationMessage For="@(() => frontendRegister.User.Login)" style="font-size:12px;" />
             </p>
             <p>
                 <MatTextField Style="width: 100%;" @bind-Value="@frontendRegister.User.Password" Label="Haslo" Type="password" Outlined="true"></MatTextField>
-                <ValidationMessage For="@(() => frontendRegister.User.Password)" />
+                <ValidationMessage For="@(() => frontendRegister.User.Password)" style="font-size:12px;" />
             </p>
             <p>
                 <MatTextField Style="width: 100%;" @bind-Value="@frontendRegister.User.ConfirmPassword" Label="Potwierdź hasło" Type="password" Outlined="true"></MatTextField>
-                <ValidationMessage For="@(() => frontendRegister.User.ConfirmPassword)" />
+                <ValidationMessage For="@(() => frontendRegister.User.ConfirmPassword)" style="font-size:12px;" />
             </p>
             <p class="checkBox">
                 <MatCheckbox @bind-Value="@frontendRegister.checked1" Label="Zgoda na przetwarzanie danych osobowych"></MatCheckbox>
-                <ValidationMessage For="@(() => frontendRegister.checked1)" />
+                <ValidationMessage For="@(() => frontendRegister.checked1)" style="font-size:12px;" />
             </p>
         </div>
     </div>
-    <MatButton Type="submit" OnClick="() => TryRegister()" Style="height: 80px; font-size: var(--font-size-large);" Raised="true">Zarejestruj</MatButton>
+    <MatButton Type="submit" Style="height: 80px; font-size: var(--font-size-large);" Raised="true">Zarejestruj</MatButton>
 </EditForm>
 
 @code {
-
-    async Task Success() =>
-        await JS.InvokeAsync<object>("alert", "Successful login!");
-
     public class FrontendRegister
     {
         [Required]
@@ -75,7 +70,7 @@
         {
             return checked1 == true
                 ? ValidationResult.Success
-                : new ValidationResult("Farmazon", new[] { vc.MemberName });
+                : new ValidationResult("Zaznacz zgodę", new[] { vc.MemberName });
         }
     }
 

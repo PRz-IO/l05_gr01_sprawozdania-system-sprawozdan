@@ -1,30 +1,27 @@
 ﻿@page "/login"
 @inject IAuthService authService
 @inject ISessionStorageService session
-@inject IJSRuntime JS
+@inject HttpClient _httpClient
     
-<EditForm Style="height: 100%; width: 100%; display: flex;flex: 1 1 0;flex-direction: column;justify-content: center;" Model="User" OnValidSubmit="Success">
+<EditForm Style="height: 100%; width: 100%; display: flex;flex: 1 1 0;flex-direction: column;justify-content: center;" Model="User" OnValidSubmit="TryLogin">
     <DataAnnotationsValidator />
     <div class="form-block">
         <div class="form-block-textfield">
             <p>
                 <MatTextField Style="width: 100%;" @bind-Value="@User.Login" Label="Login" Outlined="true"></MatTextField>
-                <ValidationMessage For="@(() => User.Login)" />
+                <ValidationMessage For="@(() => User.Login)" style="font-size:12px;" />
             </p>
             <p>
                 <MatTextField Style="width: 100%;" @bind-Value="@User.Password" Label="Haslo" Type="password" Outlined="true"></MatTextField>
-                <ValidationMessage For="@(() => User.Password)" />
+                <ValidationMessage For="@(() => User.Password)" style="font-size:12px;" />
             </p>
         </div>
     </div>
-    <MatButton Type="submit" OnClick="() => TryLogin()" Style="height: 80px; font-size: var(--font-size-large);" Raised="true">Zaloguj</MatButton>
+    <MatButton Type="submit" Style="height: 80px; font-size: var(--font-size-large);" Raised="true">Zaloguj</MatButton>
 </EditForm>
 
 @code
 {
-    async Task Success() =>
-        await JS.InvokeAsync<object>("alert", "Successful login!");
-
     public LoginUserDto User { get; set; } = new LoginUserDto()
     {
         Login = "",
@@ -35,4 +32,5 @@
     {
         authService.Login(User);
     }
+    
 }
