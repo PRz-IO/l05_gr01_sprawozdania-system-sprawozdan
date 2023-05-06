@@ -19,6 +19,11 @@ namespace SystemSprawozdan.Backend.Middleware
             {
                 context.Response.StatusCode = 403;
             }
+            catch (NotFoundException notFoundException)
+            {
+                context.Response.StatusCode = 404;
+                await context.Response.WriteAsync(notFoundException.Message);
+            }
             catch (Exception ex) 
             {
                 context.Response.StatusCode = 500;

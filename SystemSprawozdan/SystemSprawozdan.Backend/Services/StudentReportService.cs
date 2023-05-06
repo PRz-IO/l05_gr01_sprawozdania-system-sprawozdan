@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System.Security.Claims;
 using SystemSprawozdan.Backend.Data;
 using SystemSprawozdan.Backend.Data.Models.DbModels;
-using SystemSprawozdan.Backend.Data.Models.Dto;
+using SystemSprawozdan.Shared.Dto;
 using SystemSprawozdan.Backend.Exceptions;
 
 namespace SystemSprawozdan.Backend.Services

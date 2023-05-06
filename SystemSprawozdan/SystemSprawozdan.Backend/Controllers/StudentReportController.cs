@@ -1,9 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using SystemSprawozdan.Backend.Data;
-using SystemSprawozdan.Backend.Data.Models.DbModels;
-using SystemSprawozdan.Backend.Data.Models.Dto;
+﻿using Microsoft.AspNetCore.Mvc;
 using SystemSprawozdan.Backend.Services;
+using SystemSprawozdan.Shared.Dto;
 
 namespace SystemSprawozdan.Backend.Controllers
 {

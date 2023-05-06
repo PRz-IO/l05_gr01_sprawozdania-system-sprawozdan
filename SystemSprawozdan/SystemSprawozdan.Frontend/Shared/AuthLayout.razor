@@ -1,13 +1,65 @@
-﻿@page "/Login"
-@inherits LayoutComponentBase
+﻿@inherits LayoutComponentBase
+@inject NavigationManager navigationManager
 
 <main>
 	<div class="auth-panel">
-		<div class="auth-panel-menu">
-		</div>
+		<TitleBar />
+        <TabBar TValue="string" ValueChanged="@NavigateTo" Data="@tabBarData" ActiveIndex="index" />
+		<div class="form">
+			@Body
+        </div>
 	</div>
 </main>
 
-@code {
-    int values = 2;
+
+@code
+{
+    public string value { get; set; } = "";
+    public int index { get; set; }
+
+    public int activeIndex()
+    {
+        var uri = this.navigationManager.Uri;
+        foreach (var data in tabBarData)
+        {
+            if (uri.Contains(data.Value))
+                return tabBarData.IndexOf(data);
+        }
+        return 1;
+    }
+
+    public void NavigateTo(string link)
+    {
+        index = tabBarData.FindIndex(el => el.Value.Equals(link));
+        this.StateHasChanged();
+        this.navigationManager.NavigateTo(link);
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            index = activeIndex();
+            this.StateHasChanged();
+        }
+    }
+
+    public IEnumerable<TabBarData<string>> tabBarData { get; set; } = new TabBarData<string>[]
+    {
+        new()
+        {
+            Text = "Zarejestruj konto",
+            Value = "/register"
+        },
+        new()
+        {
+            Text="Zaloguj",
+            Value="/login"
+        },
+        new()
+        {
+            Text="Odzyskaj hasło",
+            Value="/restore-password"
+        },
+    };
 }

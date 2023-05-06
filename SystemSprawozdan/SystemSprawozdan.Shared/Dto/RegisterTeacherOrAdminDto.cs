@@ -1,6 +1,6 @@
-﻿using SystemSprawozdan.Backend.Data.Enums;
+﻿using SystemSprawozdan.Shared.Enums;
 
-namespace SystemSprawozdan.Backend.Data.Models.Dto
+namespace SystemSprawozdan.Shared.Dto
 {
     public class RegisterTeacherOrAdminDto
     {
