@@ -1,7 +1,5 @@
 ﻿@page "/login"
 @inject IAuthService authService
-@inject ISessionStorageService session
-@inject HttpClient _httpClient
     
 <EditForm Style="height: 100%; width: 100%; display: flex;flex: 1 1 0;flex-direction: column;justify-content: center;" Model="User" OnValidSubmit="TryLogin">
     <DataAnnotationsValidator />
