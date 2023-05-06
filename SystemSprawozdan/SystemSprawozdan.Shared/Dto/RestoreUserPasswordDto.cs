@@ -9,9 +9,9 @@ namespace SystemSprawozdan.Shared.Dto
 {
     public class RestoreUserPasswordDto
     {
-        [Required]
+        [Required(ErrorMessage = "Pole wymagane")]
         public string Login { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Pole wymagane")]
         public string Email { get; set; }
     }
 }
