@@ -1,7 +1,6 @@
 ﻿using Blazored.SessionStorage;
 using System.Net.Http.Json;
 using SystemSprawozdan.Shared.Dto;
-using static System.Net.WebRequestMethods;
 
 namespace SystemSprawozdan.Frontend.Pages.Auth.Services
 {

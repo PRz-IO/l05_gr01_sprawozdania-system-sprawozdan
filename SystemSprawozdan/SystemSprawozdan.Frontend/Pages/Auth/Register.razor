@@ -3,9 +3,8 @@
 @using System.ComponentModel.DataAnnotations
 @using System.IO
 @using System.Net.Http.Headers
-@inject IJSRuntime JS
 
-<EditForm Style="height: 100%; width: 100%; display: flex;flex: 1 1 0;flex-direction: column;" Model="frontendRegister" OnValidSubmit="Success">
+<EditForm Style="height: 100%; width: 100%; display: flex;flex: 1 1 0;flex-direction: column;" Model="frontendRegister" OnValidSubmit="TryRegister">
     <ObjectGraphDataAnnotationsValidator />
     <div class="form-block">
         <div class="form-block-left">
@@ -41,14 +40,10 @@
             </p>
         </div>
     </div>
-    <MatButton Type="submit" OnClick="() => TryRegister()" Style="height: 80px; font-size: var(--font-size-large);" Raised="true">Zarejestruj</MatButton>
+    <MatButton Type="submit" Style="height: 80px; font-size: var(--font-size-large);" Raised="true">Zarejestruj</MatButton>
 </EditForm>
 
 @code {
-
-    async Task Success() =>
-        await JS.InvokeAsync<object>("alert", "Successful login!");
-
     public class FrontendRegister
     {
         [Required]

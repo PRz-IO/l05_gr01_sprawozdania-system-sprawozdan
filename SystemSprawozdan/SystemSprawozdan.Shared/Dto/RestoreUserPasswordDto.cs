@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace SystemSprawozdan.Shared.Dto
 {
@@ -12,6 +7,7 @@ namespace SystemSprawozdan.Shared.Dto
         [Required(ErrorMessage = "Pole wymagane")]
         public string Login { get; set; }
         [Required(ErrorMessage = "Pole wymagane")]
+        [EmailAddress(ErrorMessage = "Niepoprawny adres Email")]
         public string Email { get; set; }
     }
 }
