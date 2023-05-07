@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using SystemSprawozdan.Backend.Data.Models.Dto;
+using SystemSprawozdan.Shared.Dto;
 
 namespace SystemSprawozdan.Backend.Data.Models.Validators
 {
@@ -8,8 +8,6 @@ namespace SystemSprawozdan.Backend.Data.Models.Validators
         public RegisterStudentDtoValidator(ApiDbContext apiDbContext)
         {
             RuleFor(user => user.Email)
-                .NotEmpty()
-                .EmailAddress()
                 .Custom((email, context) =>
                 {
                     var emailInUse = apiDbContext.Student.Any(user => user.Email == email)
@@ -21,7 +19,6 @@ namespace SystemSprawozdan.Backend.Data.Models.Validators
                 });
 
             RuleFor(user => user.Login)
-                .NotEmpty()
                 .Custom((login, context) =>
                 {
                     var loginInUse = apiDbContext.Student.Any(user => user.IsDeleted == false && user.Login == login)
@@ -32,10 +29,6 @@ namespace SystemSprawozdan.Backend.Data.Models.Validators
                         context.AddFailure("Login", "That login is taken");
                     }
                 });
-
-            RuleFor(user => user.Password)
-                .MinimumLength(8)
-                .Equal(user => user.ConfirmPassword);
         }
     }
 }

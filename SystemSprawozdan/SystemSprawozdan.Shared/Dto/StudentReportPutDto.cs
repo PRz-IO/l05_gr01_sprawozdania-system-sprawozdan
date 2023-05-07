@@ -1,4 +1,6 @@
-﻿namespace SystemSprawozdan.Backend.Data.Models.Dto
+﻿using Microsoft.AspNetCore.Http;
+
+namespace SystemSprawozdan.Shared.Dto
 {
     public class StudentReportPutDto
     {

@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using Microsoft.AspNetCore.Identity;
 using SystemSprawozdan.Backend.Data.Models.DbModels;
-using SystemSprawozdan.Backend.Data.Models.Dto;
 
 namespace SystemSprawozdan.Backend.Data.Seeder
 {
@@ -103,7 +102,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                 Login = "admin"
             };
 
-            admin.Password = _passwordHasher.HashPassword(admin, "admin");
+            admin.Password = _passwordHasher.HashPassword(admin, "admin123");
             return admin;
         }
 

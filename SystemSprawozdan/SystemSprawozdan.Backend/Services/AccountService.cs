@@ -8,9 +8,9 @@ using System.Security.Claims;
 using System.Text;
 using SystemSprawozdan.Backend.Authorization;
 using SystemSprawozdan.Backend.Data;
-using SystemSprawozdan.Backend.Data.Enums;
+using SystemSprawozdan.Shared.Dto;
+using SystemSprawozdan.Shared.Enums;
 using SystemSprawozdan.Backend.Data.Models.DbModels;
-using SystemSprawozdan.Backend.Data.Models.Dto;
 using SystemSprawozdan.Backend.Data.Models.Others;
 using SystemSprawozdan.Backend.Exceptions;
 
@@ -21,6 +21,7 @@ namespace SystemSprawozdan.Backend.Services
         string LoginUser(LoginUserDto loginUserDto);
         void RegisterStudent(RegisterStudentDto registerStudentDto);
         void RegisterTeacherOrAdmin(RegisterTeacherOrAdminDto registerTeacherOrAdminDto);
+        void RestoreUserPassword(RestoreUserPasswordDto restoreUserPasswordDto);
     }
 
     public class AccountService : IAccountService
@@ -33,6 +34,7 @@ namespace SystemSprawozdan.Backend.Services
         private readonly IAuthorizationService _authorizationService;
         private readonly IUserContextService _userContextService;
         public readonly IMapper _mapper;
+        private readonly IEmailService _emailService;
 
         public AccountService(ApiDbContext dbContext, 
             IPasswordHasher<Student> passwordHasherStudent, 
@@ -41,7 +43,8 @@ namespace SystemSprawozdan.Backend.Services
             AuthenticationSettings authenticationSettings,
             IAuthorizationService authorizationService,
             IUserContextService userContextService, 
-            IMapper mapper)
+            IMapper mapper,
+            IEmailService emailService)
         {
             _dbContext = dbContext;
             _passwordHasherStudent = passwordHasherStudent;
@@ -51,6 +54,7 @@ namespace SystemSprawozdan.Backend.Services
             _authorizationService = authorizationService;
             _userContextService = userContextService;
             _mapper = mapper;
+            _emailService = emailService;
         }
 
         public string LoginUser(LoginUserDto loginUserDto)
@@ -158,6 +162,37 @@ namespace SystemSprawozdan.Backend.Services
             else
                 throw new BadRequestException("Wrong role of created user!");
 
+        }
+
+        public void RestoreUserPassword(RestoreUserPasswordDto restoreUserPasswordDto)
+        {
+            var user = _dbContext.Student.FirstOrDefault(user => user.Email == restoreUserPasswordDto.Email && user.Login == restoreUserPasswordDto.Login);
+
+            if (user == null) 
+            { 
+                throw new NotFoundException("User not found");
+            }
+
+            //var newPassword = RandomString(8);
+            var newPassword = "Reset123!";
+            user.Password = _passwordHasherStudent.HashPassword(user, newPassword);
+            _dbContext.SaveChanges();
+
+            EmailDto emailDto = new EmailDto()
+            {
+                To = user.Email,
+                Subject = "System sprawozdan - zmiana hasla",
+                Body = "Nowe haslo dla uzytkownika: " + user.Login + "\n<i>Haslo: </i><b>" + newPassword + "</b>"
+            };
+        }
+
+        private static Random random = new Random();
+
+        public static string RandomString(int length)
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            return new string(Enumerable.Repeat(chars, length)
+                .Select(s => s[random.Next(s.Length)]).ToArray());
         }
 
         private string _GenerateJwt(User user)

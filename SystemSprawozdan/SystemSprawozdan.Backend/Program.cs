@@ -13,8 +13,8 @@ using SystemSprawozdan.Backend.Middleware;
 using SystemSprawozdan.Backend.Data.Seeder;
 using SystemSprawozdan.Backend.Authorization;
 using FluentValidation;
-using SystemSprawozdan.Backend.Data.Models.Dto;
 using SystemSprawozdan.Backend.Data.Models.Validators;
+using SystemSprawozdan.Shared.Dto;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration["ConnectionString"];
@@ -64,7 +64,6 @@ builder.Services.AddScoped<IAuthorizationHandler, UserResourceOperationRequireme
 builder.Services.AddScoped<IPasswordHasher<Student>, PasswordHasher<Student>>();
 builder.Services.AddScoped<IPasswordHasher<Teacher>, PasswordHasher<Teacher>>();
 builder.Services.AddScoped<IPasswordHasher<Admin>, PasswordHasher<Admin>>();
-builder.Services.AddScoped<IValidator<LoginUserDto>, LoginUserDtoValidator>();
 builder.Services.AddScoped<IValidator<RegisterStudentDto>, RegisterStudentDtoValidator>();
 builder.Services.AddScoped<IValidator<RegisterTeacherOrAdminDto>, RegisterTeacherOrAdminDtoValidator>();
 
@@ -74,6 +73,7 @@ builder.Services.AddScoped<IStudentReportService, StudentReportService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ISubjectGroupService, SubjectGroupService>();
 builder.Services.AddScoped<ISubjectSubgroupService, SubjectSubgroupService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 
 var app = builder.Build();
