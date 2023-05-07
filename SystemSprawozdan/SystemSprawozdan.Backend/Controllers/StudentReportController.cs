@@ -15,7 +15,13 @@ namespace SystemSprawozdan.Backend.Controllers
             _studentReportService = studentReportService;
         }
 
-
+        //Todo: do usuniecia
+        [HttpGet]
+        public ActionResult GetStudentReport()
+        {
+            var r = _studentReportService.GetStudentReport();
+            return Ok(r);
+        }
         [HttpPost]
         public ActionResult PostStudentReport([FromForm] StudentReportPostDto postStudentReportDto)
         {

@@ -5,8 +5,11 @@ using SystemSprawozdan.Shared.Dto;
 
 namespace SystemSprawozdan.Backend.Services
 {
+    
     public interface IStudentReportService
     {
+        //TODO: do usuniecia
+        List<StudentReportGetDto> GetStudentReport();
         void PostStudentReport(StudentReportPostDto postStudentReportDto);
         void PutStudentReport(int studentReportId, StudentReportPutDto putStudentReportDto);
     }
@@ -19,6 +22,26 @@ namespace SystemSprawozdan.Backend.Services
         {
             _dbContext = dbContext;
             _userContextService = userContextService;
+        }
+        //TODO: do usuniecia
+        public List<StudentReportGetDto> GetStudentReport()
+        {
+            var loginUserId = int.Parse(_userContextService.User.FindFirst(claim => claim.Type == ClaimTypes.NameIdentifier).Value);
+
+            var r = _dbContext.StudentReport.Where(s => true).ToList();
+
+            var result = new List<StudentReportGetDto>(); 
+            foreach (var studentReport in r)
+            {
+                result.Add(new StudentReportGetDto()
+                {
+                    Id = studentReport.Id,
+                    SentAt = studentReport.SentAt,
+                    SubgroupId = studentReport.SubjectSubgroupId
+                });
+            }
+                
+            return result;
         }
 
         public void PostStudentReport(StudentReportPostDto postStudentReportDto)
