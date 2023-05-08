@@ -38,52 +38,56 @@ namespace SystemSprawozdan.Frontend.Services
 
     public interface IAppHttpClient
     {
-        public Task<TResponse?> Get<TResponse>(string url, List<HttpParameter>? parameters = null);
-        public Task<TResponse?> Post<TResponse, TBody>(string url, TBody body, List<HttpParameter>? parameters = null);
-        public Task<TResponse?> Put<TResponse, TBody>(string url, TBody body, List<HttpParameter>? parameters = null);
+        public Task<TResponse> Get<TResponse>(string url, List<HttpParameter>? parameters = null);
+        public Task<string> Post<TBody>(string url, TBody body, List<HttpParameter>? parameters = null);
+        public Task<string> Put<TBody>(string url, TBody body, List<HttpParameter>? parameters = null);
+        public T? SerializeStringToObject<T>(string json);
         public void SetTokenValue(string token);
     }
 
     public class AppHttpClient : IAppHttpClient
     {
-        private readonly HttpClient _httpClient;
         private readonly IJSRuntime _js;
-        private readonly NavigationManager _navigator;
+        private readonly HttpClient _httpClient;
         private readonly JsonSerializerOptions _serializer = new (){ PropertyNameCaseInsensitive = true };
 
-        public AppHttpClient(HttpClient httpClient, IJSRuntime js, NavigationManager navigator)
+        public AppHttpClient(HttpClient httpClient, IJSRuntime js, NavigationManager navigator, HttpInterceptorService interceptor)
         {
-            _navigator = navigator;
+            interceptor.RegisterEvent();
             _js = js;
             _httpClient = httpClient;
             _httpClient.BaseAddress = new Uri("https://localhost:7184/api/");
         }
         
-        public async Task<TResponse?> Get<TResponse>(string url, List<HttpParameter>? parameters)
+        public async Task<TResponse> Get<TResponse>(string url, List<HttpParameter>? parameters)
         {
             await SetAuthorizationHeader();
+            
             url = AddParamsToUrl(url, parameters);
             var response = await _httpClient.GetAsync(url);
+            var content = await response.Content.ReadAsStringAsync();
             
-            return await SerializeContent<TResponse>(response);
+            return SerializeStringToObject<TResponse>(content);
         }
 
-        public async Task<TResponse?> Post<TResponse, TBody>(string url, TBody body, List<HttpParameter>? parameters)
+        public async Task<string> Post<TBody>(string url, TBody body, List<HttpParameter>? parameters)
         {
             await SetAuthorizationHeader();
+            
             url = AddParamsToUrl(url, parameters);
             using var response = await _httpClient.PostAsJsonAsync(url, body);
             
-            return await SerializeContent<TResponse>(response);
+            return await response.Content.ReadAsStringAsync();
         }
 
-        public async Task<TResponse?> Put<TResponse, TBody>(string url, TBody body, List<HttpParameter>? parameters)
+        public async Task<string> Put<TBody>(string url, TBody body, List<HttpParameter>? parameters)
         {
             await SetAuthorizationHeader();
+            
             url = AddParamsToUrl(url, parameters);
             using var response = await _httpClient.PostAsJsonAsync(url, body);
             
-            return await SerializeContent<TResponse>(response);
+            return await response.Content.ReadAsStringAsync();
         }
         
         public async void SetTokenValue(string token)
@@ -91,28 +95,10 @@ namespace SystemSprawozdan.Frontend.Services
             await _js.InvokeVoidAsync("localStorage.setItem", "token", token);
         }
 
-        private async Task<T?> SerializeContent<T>(HttpResponseMessage response)
+        public T SerializeStringToObject<T>(string json)
         {
-            await HttpResponseHandler(response);
-            
-            var stringContent = await response.Content.ReadAsStringAsync();
-            var content = JsonSerializer.Deserialize<T>(stringContent, _serializer );
-                
-            return content;
-        }
-
-        private async Task HttpResponseHandler(HttpResponseMessage response)
-        {
-            switch (response.StatusCode)
-            {
-                case HttpStatusCode.Unauthorized:
-                    _navigator.NavigateTo("/login");
-                    await _js.InvokeVoidAsync("localStorage.clear");
-                    break;
-                case HttpStatusCode.InternalServerError:
-                    Console.WriteLine(await response.Content.ReadAsStringAsync());
-                    break;
-            }
+            var jsonObject = JsonSerializer.Deserialize<T>(json, _serializer);
+            return jsonObject;
         }
 
         private async Task SetAuthorizationHeader()

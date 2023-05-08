@@ -18,7 +18,6 @@
     </div>
     <MatButton Type="submit" Style="height: 80px; font-size: var(--font-size-large);" Raised="true">Zaloguj</MatButton>
 </EditForm>
-<MatButton OnClick="@(() => Get())"></MatButton>
 
 @code
 {
@@ -32,23 +31,4 @@
     {
         authService.Login(User);
     }
-    //TODO: do usuniecia
-    public async void Get()
-    {
-        try
-        {
-            var result = await client.Get<List<StudentReportGetDto>>("studentReport");
-            foreach (var r in result)
-            {
-                Console.WriteLine(r.SubgroupId);
-                Console.WriteLine("Dupa");
-            }
-
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e.Message);
-        }
-    }
-    
 }

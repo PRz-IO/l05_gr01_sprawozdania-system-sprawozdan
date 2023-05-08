@@ -1,4 +1,5 @@
-﻿using SystemSprawozdan.Shared.Dto;
+﻿using SystemSprawozdan.Frontend.Pages.Auth;
+using SystemSprawozdan.Shared.Dto;
 
 namespace SystemSprawozdan.Frontend.Services
 {
@@ -18,18 +19,18 @@ namespace SystemSprawozdan.Frontend.Services
 
         public async void Login(LoginUserDto loginUser)
         {
-            var response = await _httpClient.Post<string, LoginUserDto>("Account/login", loginUser);
+            var response = await _httpClient.Post("Account/login", loginUser);
             _httpClient.SetTokenValue(response);
         }
 
         public async void Register(RegisterStudentDto registerStudent)
         {
-            await _httpClient.Post<int?, RegisterStudentDto>("Account/register", registerStudent);
+            await _httpClient.Post("Account/register", registerStudent);
         }
 
         public async void RestorePassword(RestoreUserPasswordDto restoreUserPassword)
         {
-            await _httpClient.Put<int?, RestoreUserPasswordDto>("Account/restorePassword", restoreUserPassword);
+            await _httpClient.Put("Account/restorePassword", restoreUserPassword);
         }
 
     }
