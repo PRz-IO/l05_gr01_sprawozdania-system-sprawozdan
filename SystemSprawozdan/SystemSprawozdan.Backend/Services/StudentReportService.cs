@@ -5,6 +5,7 @@ using SystemSprawozdan.Shared.Dto;
 
 namespace SystemSprawozdan.Backend.Services
 {
+    
     public interface IStudentReportService
     {
         void PostStudentReport(StudentReportPostDto postStudentReportDto);
@@ -20,7 +21,7 @@ namespace SystemSprawozdan.Backend.Services
             _dbContext = dbContext;
             _userContextService = userContextService;
         }
-
+        
         public void PostStudentReport(StudentReportPostDto postStudentReportDto)
         {
             var loginUserId = int.Parse(_userContextService.User.FindFirst(claim => claim.Type == ClaimTypes.NameIdentifier).Value);
@@ -82,10 +83,7 @@ namespace SystemSprawozdan.Backend.Services
                     }
                 }
             }
-            
-            
-
-             _dbContext.SaveChanges();
+            _dbContext.SaveChanges();
         }
 
 
@@ -135,9 +133,6 @@ namespace SystemSprawozdan.Backend.Services
             }
             reportToEdit.LastModified = DateTime.UtcNow;
             _dbContext.SaveChanges();
-
-
-
         }
 
     }
