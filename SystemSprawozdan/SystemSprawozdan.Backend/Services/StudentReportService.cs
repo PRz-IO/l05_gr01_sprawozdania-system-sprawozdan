@@ -1,4 +1,6 @@
-﻿using System.Security.Claims;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using SystemSprawozdan.Backend.Data;
 using SystemSprawozdan.Backend.Data.Models.DbModels;
 using SystemSprawozdan.Shared.Dto;
@@ -10,18 +12,21 @@ namespace SystemSprawozdan.Backend.Services
     {
         void PostStudentReport(StudentReportPostDto postStudentReportDto);
         void PutStudentReport(int studentReportId, StudentReportPutDto putStudentReportDto);
+        IEnumerable<ReportTopicDto> GetAllReports();
     }
 
     public class StudentReportService : IStudentReportService
     {
         private readonly ApiDbContext _dbContext;
         private readonly IUserContextService _userContextService;
-        public StudentReportService(ApiDbContext dbContext, IUserContextService userContextService)
+        public readonly IMapper _mapper;
+        public StudentReportService(ApiDbContext dbContext, IUserContextService userContextService, IMapper mapper)
         {
             _dbContext = dbContext;
             _userContextService = userContextService;
+            _mapper = mapper;
         }
-        
+
         public void PostStudentReport(StudentReportPostDto postStudentReportDto)
         {
             var loginUserId = int.Parse(_userContextService.User.FindFirst(claim => claim.Type == ClaimTypes.NameIdentifier).Value);
@@ -133,6 +138,19 @@ namespace SystemSprawozdan.Backend.Services
             }
             reportToEdit.LastModified = DateTime.UtcNow;
             _dbContext.SaveChanges();
+        }
+
+        public IEnumerable<ReportTopicDto> GetAllReports()
+        {
+            var reportsAllInformation = _dbContext.ReportTopic
+                            .Include(reportTopic => reportTopic.SubjectGroup)
+                            .Include(reportTopic => reportTopic.SubjectGroup.Subject)
+                            .Include(reportTopic => reportTopic.SubjectGroup.Subject.Major)
+                            .ToList();
+
+            var reportsDto = _mapper.Map<List<ReportTopicDto>>(reportsAllInformation);
+
+            return reportsDto;
         }
 
     }

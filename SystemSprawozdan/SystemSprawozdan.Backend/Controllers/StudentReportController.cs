@@ -14,7 +14,7 @@ namespace SystemSprawozdan.Backend.Controllers
         {
             _studentReportService = studentReportService;
         }
-        
+
         [HttpPost]
         public ActionResult PostStudentReport([FromForm] StudentReportPostDto postStudentReportDto)
         {
@@ -29,6 +29,12 @@ namespace SystemSprawozdan.Backend.Controllers
             return Ok();
         }
 
-
+        //TODO: KUSZO: Trzeba stworzyc GETa, ktory wyswietla wszystkie tematy sprawozdan, ktore sa przypisane do danego prowadzacego, ktory jest zalogowany
+        [HttpGet]
+        public ActionResult<IEnumerable<ReportTopicDto>> GetAllReports()
+        {
+            var result = _studentReportService.GetAllReports();
+            return Ok(result);
+        }
     }
 }
