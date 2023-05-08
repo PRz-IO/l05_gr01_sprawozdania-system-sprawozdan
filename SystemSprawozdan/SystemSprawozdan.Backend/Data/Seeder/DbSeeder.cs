@@ -428,6 +428,16 @@ namespace SystemSprawozdan.Backend.Data.Seeder
             };
             nowak.Password = _passwordHasherStudent.HashPassword(nowak, "Hasło123");
 
+            var pedrak = new Student()
+            {
+                Id = 169602,
+                Name = "Aleksander",
+                Surname = "Pędrak",
+                Email = "169602@stud.prz.edu.pl",
+                Login = "169602"
+            };
+            pedrak.Password = _passwordHasherStudent.HashPassword(pedrak, "Hasło123");
+
 
             var subjectSubgroups = new List<SubjectSubgroup>()
             {
@@ -436,6 +446,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                     //Id = 1,
                     Name = "Kusal",
                     SubjectGroupId = 1,
+                    IsIndividual = true,
                     Students = new List<Student>()
                     {
                         kusal
@@ -447,6 +458,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                     //Id = 2,
                     Name = "Kuszowski-Morawczyński",
                     SubjectGroupId = 1,
+                    IsIndividual = false,
                     Students = new List<Student>()
                     {
                         kuszowski,
@@ -459,6 +471,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                     //Id = 3,
                     Name = "Mazur",
                     SubjectGroupId = 1,
+                    IsIndividual = true,
                     Students = new List<Student>()
                     {
                         mazur
@@ -469,6 +482,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                     //Id = 4,
                     Name = "Ziętek-Latawiec",
                     SubjectGroupId = 1,
+                    IsIndividual = false,
                     Students = new List<Student>()
                     {
                         zietek,
@@ -481,6 +495,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                     //Id = 5,
                     Name = "Kowalski",
                     SubjectGroupId = 2,
+                    IsIndividual = true,
                     Students = new List<Student>()
                     {
                         kowalski
@@ -492,6 +507,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                     //Id = 6,
                     Name = "Kowalski-Nowak",
                     SubjectGroupId = 4,
+                    IsIndividual = false,
                     Students = new List<Student>()
                     {
                         kowalski,
@@ -504,12 +520,39 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                     //Id = 7,
                     Name = "Kaczmarski-Parówczak",
                     SubjectGroupId = 2,
+                    IsIndividual = false,
                     Students = new List<Student>()
                     {
                         kaczmarski,
                         parowczak
                     }
+                },
+                
+                new SubjectSubgroup()
+                {
+                    //Id = 8
+                    Name = "Kusal-Pędrak",
+                    SubjectGroupId = 1,
+                    IsIndividual = false,
+                    Students = new List<Student>()
+                    {
+                        kusal,
+                        pedrak
+                    }
+                },
+                
+                new SubjectSubgroup()
+                {
+                    //Id = 9
+                    Name = "Kusal",
+                    SubjectGroupId = 2,
+                    IsIndividual = true,
+                    Students = new List<Student>()
+                    {
+                        kusal
+                    }
                 }
+                
             };
 
             return subjectSubgroups;
