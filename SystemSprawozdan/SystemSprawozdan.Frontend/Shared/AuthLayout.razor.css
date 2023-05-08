@@ -7,8 +7,8 @@
 }
 
 .auth-panel {
-	width: 900px;
-	height: 650px;
+	width: 68vw;
+	height: 80vh;
 	display: flex;
 	flex-direction: column;
 	background-color: var(--panel-background-color);
@@ -22,6 +22,6 @@
 	height: 100%;
 	display: flex;
 	flex-direction: column;
-	justify-content: space-between;
+	justify-content: center;
 	height: 100%;
 }

@@ -1,85 +1,68 @@
 ﻿@page "/send/{ReportTopicId}"
-@using System.Net;
-@using System.Net.Http;
 @using System.Net.Http.Headers;
-@using System.Text;
-@using Newtonsoft.Json;
 
 <PageTitle>Wyślij sprawozdanie</PageTitle>
 
-<h1>
-    Sprawozdania
-</h1>
-
-
-<form name="Main-form" method="post" enctype="multipart/form-data" action="api/StudentReport">
-    <InputFile OnChange="OnInputFileChange" multiple />
-
-    @if (fileNames.Count > 0)
-    {
-        <ul>
-            @foreach (var fileName in fileNames)
-            {
-                <li>
-                    Plik: @fileName
-                </li>
-            }
-        </ul>
-    }
-    
-    <div>
-        <textarea @bind="Note" @bind:event="oninput" />
-    </div>
-    <div>
-        Znaki: @Note.Length
-    </div>
-</form>
-
-
-<MatFileUpload OnChange="@MultipleFilesReady" AllowMultiple="true" Label="Drop files here or Browse"></MatFileUpload>
-
-@foreach (var f in multiplelist)
-{
-    <div>@f</div>
-}
-
-    
+<p class="report-topic">@ReportTopic</p>
+<div class="main-container">
+    <div class="left-column">
+        <InputFile OnChange="OnInputFileChange" multiple id="input-files-label" style="display: none"/>
+        <label for="input-files-label">
+            Przekaż pliki
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
+              <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+              <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+              
+            </svg>
+        </label>
         
+            @if (fileNames.Count > 0)
+            {
+                <ul class="files-list">
+                    @foreach (var fileName in fileNames)
+                    {
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark" viewBox="0 0 16 16">
+                              <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2z"/>
+                            </svg> @fileName
+                        </li>
+                    }
+                </ul>
+            }
+
+    </div>
+    <div class="right-column">
+        <p class="deadline">Termin oddania: @Deadline</p>
+        <MatTextField TValue="string" @bind-Value="Note" Label="Komentarz dla prowadzącego:" Outlined="true" TextArea="true" Style="height: 50%; margin-bottom: 20px;"/>
+        <div class="radio-buttons__and-description">
+            <p class="radio-button-description">Sposób oddania:</p>
+                    <div class="radio-buttons" style="margin-bottom: 20px">
+                        <MatRadioGroup @bind-Value="@IsIndividual" TValue="string" Style="display: flex">
+                            <MatRadioButton Value="@("true")" TValue="string">Indywidualnie</MatRadioButton>
+                            <MatRadioButton Value="@("false")" TValue="string">Grupowo</MatRadioButton>
+                        </MatRadioGroup>
+                    </div>
+        </div>
+        
+            
+            <MatButton OnClick="@(() => sendReport())" Label="Prześlij" Unelevated="true" Class="send-button" Style="height: 12%"></MatButton>
+    </div>
+
+</div>
+    
 
 
 
-<button @onclick="sendReport">
-    Prześlij
-</button>
 
 
 @code {
     [Parameter]
     public string ReportTopicId { get; set; }
-
+    public string IsIndividual { get; set; } = "true";
     public string Note { get; set; } = string.Empty;
-
-
-
-    List<string> multiplelist = new List<string>();
-
-    void MultipleFilesReady(IMatFileUploadEntry[] files)
-    {
-        foreach (var file in files)
-        {
-            multiplelist.Add($"Name: {file.Name} - Size: {file.Size}");
-        }
-    }
-
-
-
-
-
-
-
-
-
-
+    public string Deadline { get; set; } = "TO DO";
+    public string ReportTopic { get; set; } = "Przykładowy temat sprawozdania, bla bla - Laboratorium TO DO";
+    
 
     private int maxAllowedFiles = 100;
     private long maxFileSize = 5368709120; // 5 Gigabytes
@@ -104,17 +87,15 @@
 
     public async void sendReport()
     {
-        
         multipartFormContent.Add(new StringContent(ReportTopicId.ToString()), name: "ReportTopicId");
         multipartFormContent.Add(new StringContent(Note), name: "Note");
+        multipartFormContent.Add(new StringContent(IsIndividual), name: "IsIndividual");
         var url = "https://localhost:7184/api/StudentReport";
         using var client = new HttpClient();
-        string token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjE2OTU3MSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IjEiLCJleHAiOjE2ODM0NDUwMTYsImlzcyI6Imh0dHA6Ly9TeXN0ZW1TcHJhd296ZGFuWERERC5wbCIsImF1ZCI6Imh0dHA6Ly9TeXN0ZW1TcHJhd296ZGFuWERERC5wbCJ9.KNY79QNzHqc6fG4eot_PTyrnzuReZUxMleIYaYYE0YA";
+        string token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjE2OTU3MSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IjEiLCJleHAiOjE2ODM2MjA3NDQsImlzcyI6Imh0dHA6Ly9TeXN0ZW1TcHJhd296ZGFuWERERC5wbCIsImF1ZCI6Imh0dHA6Ly9TeXN0ZW1TcHJhd296ZGFuWERERC5wbCJ9.YTSBC2CtC5-b24aJGmbUe520Jp2EzVcQMxOsq0TP87U";
         client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
         var response = await client.PostAsync(url, multipartFormContent);
         response.EnsureSuccessStatusCode();
         var result = await response.Content.ReadAsStringAsync();
-        Console.WriteLine(result);
-
     }
 }

@@ -1,13 +1,17 @@
-﻿using System.Security.Claims;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using System.Security.Claims;
 using SystemSprawozdan.Backend.Data;
 using SystemSprawozdan.Backend.Data.Models.DbModels;
 using SystemSprawozdan.Shared.Dto;
+using SystemSprawozdan.Backend.Exceptions;
 
 namespace SystemSprawozdan.Backend.Services
 {
     public interface IStudentReportService
     {
-        void PostStudentReport(StudentReportPostDto postStudentReportDto);  
+        void PostStudentReport(StudentReportPostDto postStudentReportDto);
         void PutStudentReport(int studentReportId, StudentReportPutDto putStudentReportDto);
     }
 
@@ -23,8 +27,9 @@ namespace SystemSprawozdan.Backend.Services
 
         public void PostStudentReport(StudentReportPostDto postStudentReportDto)
         {
-            var loginUserId = int.Parse(_userContextService.User.FindFirst(claim => claim.Type == ClaimTypes.NameIdentifier).Value);
+            var loginUserId = _userContextService.GetUserId;
             var reportTopicIdInteger = int.Parse(postStudentReportDto.ReportTopicId);
+            var isIndividualBoolean = bool.Parse(postStudentReportDto.IsIndividual);
 
             var subjectGroup = _dbContext
                 .SubjectGroup.FirstOrDefault(subjectGroup =>
@@ -33,11 +38,23 @@ namespace SystemSprawozdan.Backend.Services
                     )
                 );
 
-            var subjectSubgroup = _dbContext.SubjectSubgroup.FirstOrDefault(subjectSubgroup =>
-                 subjectSubgroup.SubjectGroup.Id == subjectGroup.Id &&
-                 subjectSubgroup.Students.Any(student => student.Id == loginUserId)
-            );
+            var subjectSubgroup = new SubjectSubgroup();
+            if (isIndividualBoolean == true) 
+            {
+                subjectSubgroup = _dbContext.SubjectSubgroup.FirstOrDefault(subGroup =>
+                    subGroup.SubjectGroup.Id == subjectGroup.Id &&
+                    subGroup.Students.Any(student => student.Id == loginUserId) && subGroup.IsIndividual == true
+                );
+            }
             
+            else 
+            {
+                subjectSubgroup = _dbContext.SubjectSubgroup.FirstOrDefault(subGroup =>
+                    subGroup.SubjectGroup.Id == subjectGroup.Id &&
+                    subGroup.Students.Any(student => student.Id == loginUserId) && subGroup.IsIndividual == false
+                );
+            }
+
             string? noteToSend;
             if (postStudentReportDto.Note != null)
             {

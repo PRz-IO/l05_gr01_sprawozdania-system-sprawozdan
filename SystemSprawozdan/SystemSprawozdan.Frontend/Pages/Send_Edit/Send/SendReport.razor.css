@@ -1,0 +1,58 @@
+﻿.main-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-content: flex-start;
+    
+}
+.report-topic{
+    display: flex;
+    justify-content: center;
+    margin-bottom: 24px;
+    font-size: 20px;
+}
+
+label{
+    border: dashed #4099e5 4px;
+    border-radius: 46px;
+    width: 400px;
+    height: 400px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 25px;
+    flex-direction: column;
+    transition: background-color 400ms;
+    
+}
+label:hover{
+    /*border: dotted #004a8d 3px;*/
+    background-color: rgba(50, 145, 234, 0.61);
+}
+.bi-download{
+    width: 50px;
+    height: 50px;
+}
+.right-column{
+    display: flex;
+    flex-direction: column;
+    width: 500px;
+    justify-content: space-between;
+}
+.deadline{
+    font-size: 25px;
+}
+
+.radio-buttons{
+    display: flex;
+}
+
+.radio-button-description{
+    margin-bottom: 0;
+}
+
+.files-list{
+    margin-bottom: 0;
+    margin-top: 20px;
+}
