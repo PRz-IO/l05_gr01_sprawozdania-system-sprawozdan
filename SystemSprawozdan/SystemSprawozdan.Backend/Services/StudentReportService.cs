@@ -1,4 +1,6 @@
-﻿using System.Security.Claims;
+﻿using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using SystemSprawozdan.Backend.Authorization;
 using SystemSprawozdan.Backend.Data;
 using SystemSprawozdan.Backend.Data.Models.DbModels;
 using SystemSprawozdan.Shared.Dto;
@@ -15,16 +17,22 @@ namespace SystemSprawozdan.Backend.Services
     {
         private readonly ApiDbContext _dbContext;
         private readonly IUserContextService _userContextService;
-        public StudentReportService(ApiDbContext dbContext, IUserContextService userContextService)
+        private readonly IAuthorizationService _authorizationService;
+
+        public StudentReportService(ApiDbContext dbContext, IUserContextService userContextService, )
         {
             _dbContext = dbContext;
             _userContextService = userContextService;
+
         }
 
         public void PostStudentReport(StudentReportPostDto postStudentReportDto)
         {
             var loginUserId = int.Parse(_userContextService.User.FindFirst(claim => claim.Type == ClaimTypes.NameIdentifier).Value);
-            
+
+            //var authorizationResult = _authorizationService.AuthorizeAsync(
+            //    _userContextService.User,
+            //    new UserResourceOperationRequirement(UserResourceOperation.Delete)).Result;
 
             var subjectGroup = _dbContext
                 .SubjectGroup.FirstOrDefault(subjectGroup =>
