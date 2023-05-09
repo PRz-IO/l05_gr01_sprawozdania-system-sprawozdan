@@ -14,8 +14,7 @@ namespace SystemSprawozdan.Backend.Controllers
         {
             _studentReportService = studentReportService;
         }
-
-
+        
         [HttpPost]
         public ActionResult PostStudentReport([FromForm] StudentReportPostDto postStudentReportDto)
         {

@@ -9,6 +9,7 @@ using SystemSprawozdan.Backend.Exceptions;
 
 namespace SystemSprawozdan.Backend.Services
 {
+    
     public interface IStudentReportService
     {
         void PostStudentReport(StudentReportPostDto postStudentReportDto);
@@ -24,7 +25,7 @@ namespace SystemSprawozdan.Backend.Services
             _dbContext = dbContext;
             _userContextService = userContextService;
         }
-
+        
         public void PostStudentReport(StudentReportPostDto postStudentReportDto)
         {
             var loginUserId = _userContextService.GetUserId;
@@ -99,10 +100,7 @@ namespace SystemSprawozdan.Backend.Services
                     }
                 }
             }
-            
-            
-
-             _dbContext.SaveChanges();
+            _dbContext.SaveChanges();
         }
 
 
@@ -152,9 +150,6 @@ namespace SystemSprawozdan.Backend.Services
             }
             reportToEdit.LastModified = DateTime.UtcNow;
             _dbContext.SaveChanges();
-
-
-
         }
 
     }
