@@ -1,9 +1,14 @@
 ﻿@page "/send/{ReportTopicId}"
 @using System.Net.Http.Headers;
+@using System.Net
+@using Newtonsoft.Json
+@inject HttpClient Http
+@inject IAppHttpClient AppHttpClient
+@inject IAuthService AuthService
 
 <PageTitle>Wyślij sprawozdanie</PageTitle>
 
-<p class="report-topic">@ReportTopic</p>
+<p class="report-topic">@TopicName</p>
 <div class="main-container">
     <div class="left-column">
         <InputFile OnChange="OnInputFileChange" multiple id="input-files-label" style="display: none"/>
@@ -56,14 +61,16 @@
 
 
 @code {
+
     [Parameter]
     public string ReportTopicId { get; set; }
     public string IsIndividual { get; set; } = "true";
     public string Note { get; set; } = string.Empty;
-    public string Deadline { get; set; } = "TO DO";
-    public string ReportTopic { get; set; } = "Przykładowy temat sprawozdania, bla bla - Laboratorium TO DO";
+    public string Token { get; set; }
+    public Uri endpointUri { get; set; }
+    public string Deadline { get; set; }
+    public string TopicName { get; set; }
     
-
     private int maxAllowedFiles = 100;
     private long maxFileSize = 5368709120; // 5 Gigabytes
     private List<string> fileNames = new();
@@ -71,7 +78,6 @@
 
     public async Task OnInputFileChange(InputFileChangeEventArgs e)
     {
-      
         foreach (var file in e.GetMultipleFiles(maxAllowedFiles))
         {
             var fileContent = new StreamContent(file.OpenReadStream(maxFileSize));
@@ -91,11 +97,35 @@
         multipartFormContent.Add(new StringContent(Note), name: "Note");
         multipartFormContent.Add(new StringContent(IsIndividual), name: "IsIndividual");
         var url = "https://localhost:7184/api/StudentReport";
+        
         using var client = new HttpClient();
-        string token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjE2OTU3MSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IjEiLCJleHAiOjE2ODM2MjA3NDQsImlzcyI6Imh0dHA6Ly9TeXN0ZW1TcHJhd296ZGFuWERERC5wbCIsImF1ZCI6Imh0dHA6Ly9TeXN0ZW1TcHJhd296ZGFuWERERC5wbCJ9.YTSBC2CtC5-b24aJGmbUe520Jp2EzVcQMxOsq0TP87U";
-        client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
+        client.DefaultRequestHeaders.Add("Authorization", "Bearer " + Token);
         var response = await client.PostAsync(url, multipartFormContent);
         response.EnsureSuccessStatusCode();
         var result = await response.Content.ReadAsStringAsync();
     }
+    
+
+    protected override async Task OnInitializedAsync()
+    {
+        var loginData = new LoginUserDto()
+        {
+            Login = "169571",
+            Password = "Hasło123"
+        };
+
+        Token = await AppHttpClient.Post("Account/login", loginData);
+        endpointUri =  new Uri($"https://localhost:7184/api/ReportTopic/{ReportTopicId}");
+        using (var client = new HttpClient())
+        {
+            HttpResponseMessage response = await client.GetAsync(endpointUri);
+            string responseBody = await response.Content.ReadAsStringAsync();
+            ReportTopicGetDto deserializedReportTopicDto = JsonConvert.DeserializeObject<ReportTopicGetDto>(responseBody);
+            var dateTime = deserializedReportTopicDto.Deadline;
+            Deadline = dateTime.ToString("g");
+            TopicName = deserializedReportTopicDto.Name;
+        }
+        
+    }
+        
 }
