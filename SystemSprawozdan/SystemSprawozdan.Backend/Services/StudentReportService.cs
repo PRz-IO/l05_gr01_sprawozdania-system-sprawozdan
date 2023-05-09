@@ -149,9 +149,7 @@ namespace SystemSprawozdan.Backend.Services
                             .ToList();
 
             var reportsDto = _mapper.Map<List<ReportTopicDto>>(reportsAllInformation);
-            //test
-            //test
-            //test
+            
             return reportsDto;
         }
 
