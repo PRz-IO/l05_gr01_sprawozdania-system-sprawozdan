@@ -8,7 +8,8 @@
 .report-topic{
     display: flex;
     justify-content: center;
-    margin-bottom: 24px;
+    padding-bottom: 24px;
+    margin-top: -38px;
     font-size: 20px;
 }
 
