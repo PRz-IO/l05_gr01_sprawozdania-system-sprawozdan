@@ -1,5 +1,4 @@
-﻿using SystemSprawozdan.Frontend.Pages.Auth;
-using SystemSprawozdan.Shared.Dto;
+﻿using SystemSprawozdan.Shared.Dto;
 
 namespace SystemSprawozdan.Frontend.Services
 {
@@ -15,7 +14,7 @@ namespace SystemSprawozdan.Frontend.Services
         public AuthService(IAppHttpClient httpClient)
         {
             _httpClient = httpClient;
-        }  
+        }
 
         public async void Login(LoginUserDto loginUser)
         {

@@ -12,10 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Shared\AuthLayout.razor.css" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="Shared\UI\TabBar.razor" />
   </ItemGroup>
 
