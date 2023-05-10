@@ -20,8 +20,10 @@
               
             </svg>
         </label>*@
-        
-        <InputFile multiple OnChange="OnInputFileChange" placeholder="Bagno taktyczne"></InputFile>
+        <div class="wrapper">
+            <span class="file-upload-text">Umieść pliki</span>    
+            <InputFile multiple OnChange="OnInputFileChange" placeholder="Bagno taktyczne"></InputFile>
+        </div>
 
 
         @if (fileNames.Count > 0)
