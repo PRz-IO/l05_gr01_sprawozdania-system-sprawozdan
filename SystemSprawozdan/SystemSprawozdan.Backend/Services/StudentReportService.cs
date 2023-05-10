@@ -163,7 +163,7 @@ namespace SystemSprawozdan.Backend.Services
                         .Include(reportTopic => reportTopic.SubjectGroup)
                             .ThenInclude(subjectGroup => subjectGroup.Subject)
                                 .ThenInclude(subject => subject.Major)  
-                        .Where(reportTopic => reportTopic.SubjectGroup.Teachers.Any(teacher => teacher.Id == teacherId));
+                        .Where(reportTopic => reportTopic.SubjectGroup.TeacherId == teacherId);
 
             if (toCheck != null)
             {
