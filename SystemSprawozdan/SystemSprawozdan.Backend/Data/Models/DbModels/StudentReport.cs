@@ -8,6 +8,7 @@
         public string? Note { get; set; }
         public int ReportTopicId { get; set; }
         public int SubjectSubgroupId { get; set; }
+        public bool ToCheck { get; set; } = true;
 
         public SubjectSubgroup SubjectSubgroup { get; set; }
         public ReportTopic ReportTopic { get; set; }
