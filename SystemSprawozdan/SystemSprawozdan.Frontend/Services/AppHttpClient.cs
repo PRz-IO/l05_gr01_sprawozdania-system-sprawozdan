@@ -1,9 +1,5 @@
-﻿using System.Net;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Net.Http.Json;
-using System.Net.Http.Headers;
-using Microsoft.JSInterop;
-using Microsoft.AspNetCore.Components;
 
 namespace SystemSprawozdan.Frontend.Services
 {
@@ -38,31 +34,26 @@ namespace SystemSprawozdan.Frontend.Services
 
     public interface IAppHttpClient
     {
-        public Task<TResponse> Get<TResponse>(string url, List<HttpParameter>? parameters = null);
+        public Task<TResponse?> Get<TResponse>(string url, List<HttpParameter>? parameters = null);
         public Task<string> Post<TBody>(string url, TBody body, List<HttpParameter>? parameters = null);
         public Task<string> Put<TBody>(string url, TBody body, List<HttpParameter>? parameters = null);
         public T? SerializeStringToObject<T>(string json);
-        public void SetTokenValue(string token);
     }
 
     public class AppHttpClient : IAppHttpClient
     {
-        private readonly IJSRuntime _js;
         private readonly HttpClient _httpClient;
         private readonly JsonSerializerOptions _serializer = new (){ PropertyNameCaseInsensitive = true };
 
-        public AppHttpClient(HttpClient httpClient, IJSRuntime js, NavigationManager navigator, HttpInterceptorService interceptor)
+        public AppHttpClient(HttpClient httpClient, HttpInterceptorService interceptor)
         {
             interceptor.RegisterEvent();
-            _js = js;
             _httpClient = httpClient;
             _httpClient.BaseAddress = new Uri("https://localhost:7184/api/");
         }
         
-        public async Task<TResponse> Get<TResponse>(string url, List<HttpParameter>? parameters)
+        public async Task<TResponse?> Get<TResponse>(string url, List<HttpParameter>? parameters)
         {
-            await SetAuthorizationHeader();
-            
             url = AddParamsToUrl(url, parameters);
             var response = await _httpClient.GetAsync(url);
             var content = await response.Content.ReadAsStringAsync();
@@ -72,8 +63,6 @@ namespace SystemSprawozdan.Frontend.Services
 
         public async Task<string> Post<TBody>(string url, TBody body, List<HttpParameter>? parameters)
         {
-            await SetAuthorizationHeader();
-            
             url = AddParamsToUrl(url, parameters);
             using var response = await _httpClient.PostAsJsonAsync(url, body);
             
@@ -82,37 +71,16 @@ namespace SystemSprawozdan.Frontend.Services
 
         public async Task<string> Put<TBody>(string url, TBody body, List<HttpParameter>? parameters)
         {
-            await SetAuthorizationHeader();
-            
             url = AddParamsToUrl(url, parameters);
             using var response = await _httpClient.PostAsJsonAsync(url, body);
             
             return await response.Content.ReadAsStringAsync();
         }
-        
-        public async void SetTokenValue(string token)
-        {
-            await _js.InvokeVoidAsync("localStorage.setItem", "token", token);
-        }
 
-        public T SerializeStringToObject<T>(string json)
+        public T? SerializeStringToObject<T>(string json)
         {
             var jsonObject = JsonSerializer.Deserialize<T>(json, _serializer);
             return jsonObject;
-        }
-
-        private async Task SetAuthorizationHeader()
-        {
-           try
-           { 
-               var token = await _js.InvokeAsync<string>("localStorage.getItem", "token");
-               var auth = new AuthenticationHeaderValue("Bearer", token.Trim('"'));
-               _httpClient.DefaultRequestHeaders.Authorization = auth;
-           }
-           catch (Exception e)
-           {
-               _httpClient.DefaultRequestHeaders.Authorization =  null;
-           }
         }
 
         private static string AddParamsToUrl(string url, List<HttpParameter>? parameters)

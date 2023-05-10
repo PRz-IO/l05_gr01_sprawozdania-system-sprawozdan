@@ -1,25 +1,29 @@
-﻿using SystemSprawozdan.Shared.Dto;
+﻿using Microsoft.JSInterop;
+using SystemSprawozdan.Shared.Dto;
 
 namespace SystemSprawozdan.Frontend.Services
 {
     public interface IAuthService
     {
-        public void Login(LoginUserDto loginUser);
+        public Task Login(LoginUserDto loginUser);
         public void Register(RegisterStudentDto registerStudent);
         public void RestorePassword(RestoreUserPasswordDto restoreUserPassword);
     }
     public class AuthService : IAuthService
     {
         private readonly IAppHttpClient _httpClient;
-        public AuthService(IAppHttpClient httpClient)
+        private readonly IJSRuntime _js;
+
+        public AuthService(IJSRuntime js , IAppHttpClient httpClient)
         {
             _httpClient = httpClient;
+            _js = js;
         }
 
-        public async void Login(LoginUserDto loginUser)
+        public async Task Login(LoginUserDto loginUser)
         {
-            var response = await _httpClient.Post("Account/login", loginUser);
-            _httpClient.SetTokenValue(response);
+            var token = await _httpClient.Post("Account/login", loginUser);
+            await _js.InvokeVoidAsync("localStorage.setItem", "token", token);
         }
 
         public async void Register(RegisterStudentDto registerStudent)
