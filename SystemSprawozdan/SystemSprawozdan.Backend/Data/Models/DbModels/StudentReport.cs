@@ -1,4 +1,6 @@
-﻿namespace SystemSprawozdan.Backend.Data.Models.DbModels
+﻿using SystemSprawozdan.Shared.Enums;
+
+namespace SystemSprawozdan.Backend.Data.Models.DbModels
 {
     public class StudentReport
     {
@@ -8,6 +10,8 @@
         public string? Note { get; set; }
         public int ReportTopicId { get; set; }
         public int SubjectSubgroupId { get; set; }
+        public bool ToCheck { get; set; } = true;
+        public MarkEnum? Mark { get; set; }
 
         public SubjectSubgroup SubjectSubgroup { get; set; }
         public ReportTopic ReportTopic { get; set; }

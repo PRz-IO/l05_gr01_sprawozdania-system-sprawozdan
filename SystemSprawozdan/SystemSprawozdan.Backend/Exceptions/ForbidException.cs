@@ -2,5 +2,8 @@
 {
     public class ForbidException : Exception
     {
+        public ForbidException(string message = "Access is forbidden!") : base(message)
+        {
+        }
     }
 }

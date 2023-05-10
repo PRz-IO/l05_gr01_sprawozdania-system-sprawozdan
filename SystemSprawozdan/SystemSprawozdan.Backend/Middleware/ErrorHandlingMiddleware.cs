@@ -18,6 +18,7 @@ namespace SystemSprawozdan.Backend.Middleware
             catch (ForbidException forbidException)
             {
                 context.Response.StatusCode = 403;
+                await context.Response.WriteAsync(forbidException.Message);
             }
             catch (NotFoundException notFoundException)
             {
