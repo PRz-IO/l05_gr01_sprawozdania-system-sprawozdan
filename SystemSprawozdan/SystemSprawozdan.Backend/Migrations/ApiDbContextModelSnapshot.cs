@@ -201,6 +201,9 @@ namespace SystemSprawozdan.Backend.Migrations
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<int?>("Mark")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Note")
                         .HasColumnType("text");
 
