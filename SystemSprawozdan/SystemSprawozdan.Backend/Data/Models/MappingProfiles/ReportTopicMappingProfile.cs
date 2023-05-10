@@ -8,10 +8,12 @@ namespace SystemSprawozdan.Backend.Data.Models.MappingProfiles
     {
         public ReportTopicMappingProfile()
         {
-            CreateMap<ReportTopic, ReportTopicDto>();
-            CreateMap<SubjectGroup, ReportTopicDto>();
-            CreateMap<Subject, ReportTopicDto>();
-            CreateMap<Major, ReportTopicDto>();
+            CreateMap<ReportTopic, ReportTopicDto>()
+                .ForMember(dest => dest.ReportTopicName, opt => opt.MapFrom(src => src.Name))
+                .ForMember(dest => dest.ReportTopicDeadline, opt => opt.MapFrom(src => src.Deadline))
+                .ForMember(dest => dest.SubjectGroupName, opt => opt.MapFrom(src => src.SubjectGroup.Name))
+                .ForMember(dest => dest.SubjectName, opt => opt.MapFrom(src => src.SubjectGroup.Subject.Name))
+                .ForMember(dest => dest.MajorName, opt => opt.MapFrom(src => src.SubjectGroup.Subject.Major.Name));
         }
     }
 }
