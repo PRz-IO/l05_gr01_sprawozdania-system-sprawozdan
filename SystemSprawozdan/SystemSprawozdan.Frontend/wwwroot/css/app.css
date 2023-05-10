@@ -12,14 +12,19 @@ html, body {
     font-weight: var(--font-weight-medium);
 }
 
+.panel{
+    display: flex;
+    flex-direction: column;
+    background-color: var(--panel-background-color);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: var(--panel-drop-shadow);
+}
+
 i.material-icons{
     -webkit-user-select: none;
     -ms-user-select: none;
     user-select: none;
-}
-
-h1:focus{
-    outline: none;
 }
 
 #blazor-error-ui {

@@ -6,15 +6,9 @@
 	align-items: center;
 }
 
-.auth-panel {
+.auth {
 	width: 900px;
 	height: 650px;
-	display: flex;
-	flex-direction: column;
-	background-color: var(--panel-background-color);
-	border-radius: 20px;
-	overflow: hidden;
-	box-shadow: var(--panel-drop-shadow);
 }
 
 .form {
@@ -24,3 +18,4 @@
 	flex-direction: column;
 	justify-content: space-between;
 }
+

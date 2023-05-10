@@ -1,14 +1,19 @@
 ﻿@inherits LayoutComponentBase
 @inject NavigationManager NavigationManager
-@attribute [AllowAnonymous]
 
-<main>
-	<div class="auth panel">
-		<TitleBar />
-        <TabBar TValue="string" ValueChanged="@NavigateTo" Data="@TabBarData" ActiveIndex="index" />
-        @Body
-	</div>
-</main>
+<div class="left-side">
+    <UserPad/>
+    
+    <div class="navigation panel">
+        <TitleBar/>
+        <TabBar TValue="string" ValueChanged="@NavigateTo" Data="@TabBarData" ActiveIndex="index" FlexDirection="column"/>
+    </div>
+</div>
+
+<div class="right-side panel">
+    <TitleBar/>
+    @Body
+</div>
 
 @code
 {
@@ -16,7 +21,7 @@
 
     public int activeIndex()
     {
-        var uri = this.NavigationManager.Uri;
+        var uri = NavigationManager.Uri;
         foreach (var data in TabBarData)
         {
             if (uri.Contains(data.Value))
@@ -45,18 +50,18 @@
     {
         new()
         {
-            Text = "Zarejestruj konto",
+            Text = "Sprawozdania",
             Value = "/register"
         },
         new()
         {
-            Text="Zaloguj",
-            Value="/login"
+            Text = "Zespoły",
+            Value = "/login"
         },
         new()
         {
-            Text="Odzyskaj hasło",
-            Value="/restore-password"
+            Text = "Twoje dane",
+            Value = "/restore-password"
         },
     };
 }
