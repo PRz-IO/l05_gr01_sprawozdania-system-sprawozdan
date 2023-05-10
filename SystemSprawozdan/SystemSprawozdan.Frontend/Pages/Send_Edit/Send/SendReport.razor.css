@@ -5,13 +5,6 @@
     align-content: flex-start;
     
 }
-.report-topic{
-    display: flex;
-    justify-content: center;
-    padding-bottom: 24px;
-    margin-top: -38px;
-    font-size: 20px;
-}
 
 label{
     border: dashed #4099e5 4px;
@@ -28,7 +21,6 @@ label{
     
 }
 label:hover{
-    /*border: dotted #004a8d 3px;*/
     background-color: rgba(50, 145, 234, 0.61);
 }
 .bi-download{
@@ -40,9 +32,6 @@ label:hover{
     flex-direction: column;
     width: 500px;
     justify-content: space-between;
-}
-.deadline{
-    font-size: 25px;
 }
 
 .radio-buttons{

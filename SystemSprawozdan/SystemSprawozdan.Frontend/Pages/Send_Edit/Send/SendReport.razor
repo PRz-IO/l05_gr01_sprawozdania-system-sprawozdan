@@ -8,7 +8,7 @@
 
 <PageTitle>Wyślij sprawozdanie</PageTitle>
 
-<p class="report-topic">@TopicName</p>
+<p style="display: flex; justify-content: center; padding-bottom: 24px; margin-top: -38px; font-size: 26px;">@TopicName</p>
 <div class="main-container">
     <div class="left-column">
         <InputFile OnChange="OnInputFileChange" multiple id="input-files-label" style="display: none"/>
@@ -37,7 +37,7 @@
 
     </div>
     <div class="right-column">
-        <p class="deadline">Termin oddania: @Deadline</p>
+        <p style="font-size: 20px">Termin oddania: @Deadline</p>
         <MatTextField TValue="string" @bind-Value="Note" Label="Komentarz dla prowadzącego:" Outlined="true" TextArea="true" Style="height: 50%; margin-bottom: 20px;"/>
         <div class="radio-buttons__and-description">
             <p class="radio-button-description">Sposób oddania:</p>
