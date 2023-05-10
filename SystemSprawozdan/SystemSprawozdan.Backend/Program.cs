@@ -16,6 +16,7 @@ using FluentValidation;
 using SystemSprawozdan.Backend.Data.Models.Validators;
 using SystemSprawozdan.Shared.Dto;
 
+
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration["ConnectionString"];
 #region AuthenticationSettings
@@ -75,7 +76,8 @@ builder.Services.AddScoped<ISubjectGroupService, SubjectGroupService>();
 builder.Services.AddScoped<ISubjectSubgroupService, SubjectSubgroupService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 
-
+builder.Services.AddScoped<ISubjectGroupService, SubjectGroupService>();
+builder.Services.AddScoped<ISubjectService, SubjectService>();
 var app = builder.Build();
 
 var scope = app.Services.CreateScope();
