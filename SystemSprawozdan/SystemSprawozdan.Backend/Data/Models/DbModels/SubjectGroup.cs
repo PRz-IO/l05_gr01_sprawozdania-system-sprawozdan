@@ -6,10 +6,11 @@ namespace SystemSprawozdan.Backend.Data.Models.DbModels
         public string Name { get; set; }
         public string GroupType { get; set; }
         public int SubjectId { get; set; }
+        public int TeacherId { get; set; }
 
         public Subject Subject { get; set; }
+        public Teacher Teacher{ get; set; }
         public ICollection<SubjectSubgroup> subjectSubgroups { get; set; }
         public ICollection<ReportTopic> reportTopics { get; set; }
-        public Teacher Teacher{ get; set; }
     }
 }
