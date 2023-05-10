@@ -8,14 +8,13 @@ namespace SystemSprawozdan.Backend.Controllers
     [ApiController]
     public class StudentReportController : ControllerBase
     {
-        public readonly IStudentReportService _studentReportService;
+        private readonly IStudentReportService _studentReportService;
 
         public StudentReportController(IStudentReportService studentReportService)
         {
             _studentReportService = studentReportService;
         }
-
-
+        
         [HttpPost]
         public ActionResult PostStudentReport([FromForm] StudentReportPostDto postStudentReportDto)
         {

@@ -770,7 +770,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
             teacher1.SubjectGroups = new List<SubjectGroup>()
             {
                 _dbContext.SubjectGroup.FirstOrDefault(subject => subject.Id == 1),
-                _dbContext.SubjectGroup.FirstOrDefault(subject => subject.Id == 2)
+                _dbContext.SubjectGroup.FirstOrDefault(subject => subject.Id == 2)  
             };
             teachers.Add(teacher1);
 
