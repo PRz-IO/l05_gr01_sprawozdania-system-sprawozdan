@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SystemSprawozdan.Backend.Services;
 using SystemSprawozdan.Shared.Dto;
 
@@ -6,6 +7,7 @@ namespace SystemSprawozdan.Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class StudentReportController : ControllerBase
     {
         public readonly IStudentReportService _studentReportService;
@@ -31,9 +33,9 @@ namespace SystemSprawozdan.Backend.Controllers
 
         //TODO: KUSZO: Trzeba stworzyc GETa, ktory wyswietla wszystkie tematy sprawozdan, ktore sa przypisane do danego prowadzacego, ktory jest zalogowany
         [HttpGet]
-        public ActionResult<IEnumerable<ReportTopicDto>> GetAllReports()
+        public ActionResult<IEnumerable<ReportTopicDto>> GetReports([FromQuery] bool? toCheck)
         {
-            var result = _studentReportService.GetAllReports();
+            var result = _studentReportService.GetReports(toCheck);
             return Ok(result);
         }
     }

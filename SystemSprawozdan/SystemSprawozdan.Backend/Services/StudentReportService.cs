@@ -1,18 +1,20 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using SystemSprawozdan.Backend.Authorization;
 using SystemSprawozdan.Backend.Data;
 using SystemSprawozdan.Backend.Data.Models.DbModels;
+using SystemSprawozdan.Backend.Exceptions;
 using SystemSprawozdan.Shared.Dto;
 
 namespace SystemSprawozdan.Backend.Services
 {
-    
     public interface IStudentReportService
     {
         void PostStudentReport(StudentReportPostDto postStudentReportDto);
         void PutStudentReport(int studentReportId, StudentReportPutDto putStudentReportDto);
-        IEnumerable<ReportTopicDto> GetAllReports();
+        IEnumerable<ReportTopicDto> GetReports(bool? toCheck);
     }
 
     public class StudentReportService : IStudentReportService
@@ -20,11 +22,14 @@ namespace SystemSprawozdan.Backend.Services
         private readonly ApiDbContext _dbContext;
         private readonly IUserContextService _userContextService;
         public readonly IMapper _mapper;
-        public StudentReportService(ApiDbContext dbContext, IUserContextService userContextService, IMapper mapper)
+        private readonly IAuthorizationService _authorizationService;
+
+        public StudentReportService(ApiDbContext dbContext, IUserContextService userContextService, IMapper mapper, IAuthorizationService authorizationService)
         {
             _dbContext = dbContext;
             _userContextService = userContextService;
             _mapper = mapper;
+            _authorizationService = authorizationService;
         }
 
         public void PostStudentReport(StudentReportPostDto postStudentReportDto)
@@ -140,21 +145,39 @@ namespace SystemSprawozdan.Backend.Services
             _dbContext.SaveChanges();
         }
 
-        public IEnumerable<ReportTopicDto> GetAllReports()
+        public IEnumerable<ReportTopicDto> GetReports(bool? toCheck)
         {
-            var reportsAllInformation = _dbContext.ReportTopic
-                            .Include(reportTopic => reportTopic.SubjectGroup)
-                            .Include(reportTopic => reportTopic.SubjectGroup.Subject)
-                            .Include(reportTopic => reportTopic.SubjectGroup.Subject.Major)
-                            .ToList();
+            var authorizationResult = _authorizationService.AuthorizeAsync(
+                _userContextService.User,
+                null,
+                new TeacherResourceOperationRequirement(TeacherResourceOperation.Read)).Result;
 
-            var reportsDto = _mapper.Map<List<ReportTopicDto>>(reportsAllInformation);
+            if(!authorizationResult.Succeeded)
+            {
+                throw new ForbidException();
+            }
+
+            var teacherId = _userContextService.GetUserId;
+            
+            var reportsFromDb = _dbContext.ReportTopic
+                        .Include(reportTopic => reportTopic.SubjectGroup)
+                            .ThenInclude(subjectGroup => subjectGroup.Subject)
+                                .ThenInclude(subject => subject.Major)  
+                        .Where(reportTopic => reportTopic.SubjectGroup.Teachers.Any(teacher => teacher.Id == teacherId));
+
+            if (toCheck != null)
+            {
+                reportsFromDb = reportsFromDb.Where(reportTopic =>
+                    reportTopic.StudentReports.Any(studentReport => studentReport.ToCheck == toCheck));
+            }
+            
+            var reportsFromDbList = reportsFromDb.OrderBy(reportTopic => reportTopic.Deadline).ToList();
+            
+            var reportsDto = _mapper.Map<List<ReportTopicDto>>(reportsFromDbList);
             
             return reportsDto;
         }
-
     }
-
 }
 
             
