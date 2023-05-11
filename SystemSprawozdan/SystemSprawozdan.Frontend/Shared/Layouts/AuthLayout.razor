@@ -1,49 +1,47 @@
 ﻿@inherits LayoutComponentBase
-@inject NavigationManager navigationManager
+@inject NavigationManager NavigationManager
+@attribute [AllowAnonymous]
 
 <main>
-	<div class="auth-panel">
+	<div class="auth panel">
 		<TitleBar />
-        <div class="form">
-			@Body
-        </div>
+        <TabBar TValue="string" ValueChanged="@NavigateTo" Data="@TabBarData" ActiveIndex="index" />
+        @Body
 	</div>
 </main>
 
-
 @code
 {
-    public string value { get; set; } = "";
     public int index { get; set; }
 
     public int activeIndex()
     {
-        var uri = this.navigationManager.Uri;
-        foreach (var data in tabBarData)
+        var uri = this.NavigationManager.Uri;
+        foreach (var data in TabBarData)
         {
             if (uri.Contains(data.Value))
-                return tabBarData.IndexOf(data);
+                return TabBarData.IndexOf(data);
         }
         return 1;
     }
 
     public void NavigateTo(string link)
     {
-        index = tabBarData.FindIndex(el => el.Value.Equals(link));
-        this.StateHasChanged();
-        this.navigationManager.NavigateTo(link);
+        index = TabBarData.FindIndex(el => el.Value.Equals(link));
+        StateHasChanged();
+        NavigationManager.NavigateTo(link);
     }
-
+    
     protected override void OnAfterRender(bool firstRender)
     {
         if (firstRender)
         {
             index = activeIndex();
-            this.StateHasChanged();
+            StateHasChanged();
         }
     }
 
-    public IEnumerable<TabBarData<string>> tabBarData { get; set; } = new TabBarData<string>[]
+    public IEnumerable<TabBarData<string>> TabBarData { get; set; } = new TabBarData<string>[]
     {
         new()
         {

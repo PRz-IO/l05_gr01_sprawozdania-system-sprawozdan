@@ -1,0 +1,21 @@
+﻿main{
+	width: 100%;
+	height: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.auth {
+	width: 900px;
+	height: 650px;
+}
+
+.form {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SystemSprawozdan.Backend.Data;
@@ -11,9 +12,11 @@ using SystemSprawozdan.Backend.Data;
 namespace SystemSprawozdan.Backend.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    partial class ApiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230510215237_Changed_Teacher-SubjectGroup_Relation")]
+    partial class Changed_TeacherSubjectGroup_Relation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -186,9 +189,6 @@ namespace SystemSprawozdan.Backend.Migrations
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int?>("Mark")
-                        .HasColumnType("integer");
-
                     b.Property<string>("Note")
                         .HasColumnType("text");
 
@@ -200,9 +200,6 @@ namespace SystemSprawozdan.Backend.Migrations
 
                     b.Property<int>("SubjectSubgroupId")
                         .HasColumnType("integer");
-
-                    b.Property<bool>("ToCheck")
-                        .HasColumnType("boolean");
 
                     b.HasKey("Id");
 
@@ -303,9 +300,6 @@ namespace SystemSprawozdan.Backend.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseSerialColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("IsIndividual")
-                        .HasColumnType("boolean");
 
                     b.Property<string>("Name")
                         .IsRequired()

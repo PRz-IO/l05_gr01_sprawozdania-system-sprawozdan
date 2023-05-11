@@ -1,0 +1,39 @@
+﻿@inherits LayoutComponentBase
+
+<MatThemeProvider Theme="@Theme">
+	<div class="page">
+		<div class="background"></div>
+		<div class="container">
+			<CascadingAuthenticationState>
+				<Router AppAssembly="@typeof(App).Assembly">
+					<Found Context="routeData">
+						<AuthorizeView>
+							<Authorized>
+								<AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(UserLayout)"/>
+							</Authorized>
+							<NotAuthorized>
+								<RouteView RouteData="@routeData" DefaultLayout="@typeof(AuthLayout)"/>
+							</NotAuthorized>
+						</AuthorizeView>
+					</Found>
+					<NotFound>
+						<PageTitle>Not found</PageTitle>
+						<p role="alert">Sorry, there's nothing at this address.</p>
+					</NotFound>
+				</Router>
+			</CascadingAuthenticationState>
+		</div>
+	</div>
+</MatThemeProvider>
+
+@code{
+
+	public readonly MatTheme Theme = new MatTheme()
+	{
+		Primary = "var(--primary-color)",
+		Secondary = "var(--primary-color)",
+		Background = "var(--panel-background-color)",
+		Surface = "transparent"
+	};
+}
+
