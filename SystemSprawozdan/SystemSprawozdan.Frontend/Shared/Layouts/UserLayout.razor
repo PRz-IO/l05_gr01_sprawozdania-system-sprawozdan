@@ -5,7 +5,7 @@
     <UserPad/>
     
     <div class="navigation panel">
-        <TitleBar/>
+        <TitleBar FontSize="18px"/>
         <TabBar TValue="string" ValueChanged="@NavigateTo" Data="@TabBarData" ActiveIndex="index" FlexDirection="column"/>
     </div>
 </div>
@@ -51,17 +51,17 @@
         new()
         {
             Text = "Sprawozdania",
-            Value = "/register"
+            Value = "/reports"
         },
         new()
         {
             Text = "Zespoły",
-            Value = "/login"
+            Value = "/teams"
         },
         new()
         {
             Text = "Twoje dane",
-            Value = "/restore-password"
+            Value = "/personal-data"
         },
     };
 }
