@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SystemSprawozdan.Backend.Services;
 
@@ -6,6 +7,7 @@ namespace SystemSprawozdan.Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class SubjectGroupController : ControllerBase
     {
         public readonly ISubjectGroupService _subjectGorupServices;

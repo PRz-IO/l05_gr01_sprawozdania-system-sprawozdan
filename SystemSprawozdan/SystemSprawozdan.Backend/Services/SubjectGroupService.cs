@@ -10,6 +10,8 @@ using SystemSprawozdan.Backend.Data.Models.DbModels;
 using SystemSprawozdan.Backend.Data.Models.Dto;
 using MimeKit.Cryptography;
 using Microsoft.AspNetCore.Mvc;
+using SystemSprawozdan.Backend.Authorization;
+using SystemSprawozdan.Backend.Exceptions;
 
 namespace SystemSprawozdan.Backend.Services
 {
@@ -81,24 +83,66 @@ namespace SystemSprawozdan.Backend.Services
 
         public List<SubjectGroupGetDto> GetUserGroupDoesntBelong(int subjectId)
         {
-            var loginUserId = _userContextService.GetUserId;
+            // var userSubgroups = _dbContext.SubjectSubgroup
+            //     .Where(userSubgroup => userSubgroup.Students
+            //        .Any(user => user.Id == loginUserId)
+            //     );
+            //
+            //
+            // var subjectGroups = _dbContext.SubjectGroup.Include(subjectSubgroup => subjectSubgroup.subjectSubgroups)
+            //     .Where(subjectGroup => subjectGroup.SubjectId == subjectId)
+            //     .Where(subjectGroup => userSubgroups
+            //         .Any(userSubgroup => userSubgroup.SubjectGroupId == subjectGroup.Id)
+            //        
+            //     ).ToList();
+            //
+            // List<SubjectGroupGetDto> subjectGroupsDto = new();
+            //
+            // foreach (var subjectGroup in subjectGroups)
+            // {
+            //     var teachers = _dbContext.Teacher
+            //         .Where(teacher => teacher.SubjectGroups
+            //             .Any(teacherSubjectGroup => teacherSubjectGroup.Id == subjectGroup.Id)
+            //         ).ToList();
+            //
+            //     List<GetTeacherDto> getTeachersDto = new();
+            //     foreach (var teacher in teachers)
+            //     {
+            //         getTeachersDto.Add(new GetTeacherDto()
+            //         {
+            //             Name = teacher.Name,
+            //             Surname = teacher.Surname,
+            //             Degree = teacher.Degree,
+            //         });
+            //     }
+            //     List<GetSubgroupsDto> getSubgroupsDto =new();
+            //
+            //     foreach(var subGroup in subjectGroup.subjectSubgroups.ToList()) 
+            //     {
+            //         getSubgroupsDto.Add(new GetSubgroupsDto()
+            //         {
+            //             Id = subGroup.Id,
+            //             Name = subGroup.Name,
+            //         });
+            //     }
+            //
+            //     subjectGroupsDto.Add(new SubjectGroupGetDto()
+            //     {
+            //         Id = subjectGroup.Id,
+            //         SubjectId = subjectGroup.SubjectId,
+            //         Name = subjectGroup.Name,
+            //         Teachers = getTeachersDto,
+            //         GroupType = subjectGroup.GroupType,
+            //         Subgroups = getSubgroupsDto,
+            //     });
+            // }
+            
+            var authorizationResult = _authorizationService.AuthorizeAsync(
+                _userContextService.User,
+                null,
+                new UserResourceOperationRequirement(UserResourceOperation.Read)).Result;
 
-            var userSubgroups = _dbContext.SubjectSubgroup
-                .Where(userSubgroup => userSubgroup.Students
-                   .Any(user => user.Id == loginUserId)
-                );
-
-
-            var subjectGroups = _dbContext.SubjectGroup.Include(subjectSubgroup => subjectSubgroup.subjectSubgroups)
-                .Where(subjectGroup => subjectGroup.SubjectId == subjectId)
-                .Where(subjectGroup => userSubgroups
-                    .Any(userSubgroup => userSubgroup.SubjectGroupId == subjectGroup.Id)
-                   
-                ).ToList();
-
-            List<SubjectGroupGetDto> subjectGroupsDto = new();
-
-            foreach (var subjectGroup in subjectGroups)
+            if(!authorizationResult.Succeeded)
             {
                 throw new ForbidException();
             }

@@ -52,28 +52,28 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                     _dbContext.Subject.AddRange(GetSubjects());
                     _dbContext.SaveChanges();
                 }
-
+                
+                if (!_dbContext.Teacher.Any())
+                {
+                    _dbContext.Teacher.AddRange(GetTeachers());
+                    _dbContext.SaveChanges();
+                }
+                
                 if (!_dbContext.SubjectGroup.Any())
                 {
                     _dbContext.SubjectGroup.AddRange(GetSubjectGroups());
                     _dbContext.SaveChanges();
                 }
-
-                if (!_dbContext.Teacher.Any())
+                
+                if (!_dbContext.ReportTopic.Any())
                 {
-                    _dbContext.Teacher.AddRange(GetTeachers());
+                    _dbContext.ReportTopic.AddRange(GetReportTopics());
                     _dbContext.SaveChanges();
                 }
 
                 if (!_dbContext.SubjectSubgroup.Any())
                 {
                     _dbContext.SubjectSubgroup.AddRange(GetSubjectSubgroups());
-                    _dbContext.SaveChanges();
-                }   
-
-                if (!_dbContext.ReportTopic.Any())
-                {
-                    _dbContext.ReportTopic.AddRange(GetReportTopics());
                     _dbContext.SaveChanges();
                 }
                 
@@ -82,7 +82,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                     _dbContext.StudentReport.AddRange(GetStudentReports());
                     _dbContext.SaveChanges();
                 }
-
+                
                 if (!_dbContext.ReportComment.Any())
                 {
                     _dbContext.ReportComment.AddRange(GetReportComments());
@@ -272,6 +272,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                     Name = "L05",
                     GroupType = "Laboratorium",
                     SubjectId = 1,
+                    TeacherId = 1
                 },
 
                 new SubjectGroup()
@@ -280,6 +281,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                     Name = "L06",
                     GroupType = "Laboratorium",
                     SubjectId = 1,
+                    TeacherId = 1
                 },
 
                 new SubjectGroup()
@@ -288,14 +290,16 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                     Name = "L05",
                     GroupType = "Projekt",
                     SubjectId = 3,
+                    TeacherId = 2
                 },
 
                 new SubjectGroup()
-                {
+                { 
                     //Id = 4,
                     Name = "L06",
                     GroupType = "Projekt",
                     SubjectId = 3,
+                    TeacherId = 2
                 },
 
                 new SubjectGroup()
@@ -304,6 +308,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                     Name = "L06",
                     GroupType = "Laboratorium",
                     SubjectId = 3,
+                    TeacherId = 2
                 },
 
                 new SubjectGroup()
@@ -312,6 +317,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                     Name = "L05",
                     GroupType = "Laboratorium",
                     SubjectId = 3,
+                    TeacherId = 2
                 },
 
                 new SubjectGroup()
@@ -320,6 +326,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                     Name = "L05",
                     GroupType = "Projekt",
                     SubjectId = 3,
+                    TeacherId = 2
                 },
             };
 
@@ -724,11 +731,6 @@ namespace SystemSprawozdan.Backend.Data.Seeder
             teacher1.Password = _passwordHasherTeacher.HashPassword(teacher1, "Hasło123");
             teacher1.Degree = "Doktor inżynier";
             teacher1.Position = "Profesor uczelni w grupie pracowników badawczo-dydaktycznych";
-            teacher1.SubjectGroups = new List<SubjectGroup>()
-            {
-                _dbContext.SubjectGroup.FirstOrDefault(subject => subject.Id == 1),
-                _dbContext.SubjectGroup.FirstOrDefault(subject => subject.Id == 2)
-            };
             teachers.Add(teacher1);
 
 
@@ -741,14 +743,6 @@ namespace SystemSprawozdan.Backend.Data.Seeder
             teacher2.Password = _passwordHasherTeacher.HashPassword(teacher2, "Hasło123");
             teacher2.Degree = "Magister inżynier";
             teacher2.Position = "Asystent";
-            teacher2.SubjectGroups = new List<SubjectGroup>()
-            {
-                _dbContext.SubjectGroup.FirstOrDefault(subject => subject.Id == 3),
-                _dbContext.SubjectGroup.FirstOrDefault(subject => subject.Id == 4),
-                _dbContext.SubjectGroup.FirstOrDefault(subject => subject.Id == 5),
-                _dbContext.SubjectGroup.FirstOrDefault(subject => subject.Id == 6),
-                _dbContext.SubjectGroup.FirstOrDefault(subject => subject.Id == 7)
-            };
             teachers.Add(teacher2);
 
             return teachers;
