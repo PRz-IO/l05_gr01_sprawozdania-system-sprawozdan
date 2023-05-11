@@ -2,7 +2,7 @@
 @using System.Net.Http.Headers;
 @using Newtonsoft.Json
 @inject IAppHttpClient AppHttpClient
-
+@inject HttpClient Http
 <head>
     <PageTitle>Wyślij sprawozdanie</PageTitle>
     <style>
@@ -44,10 +44,10 @@
             <InputFile multiple OnChange="OnInputFileChange" placeholder="Bagno taktyczne"></InputFile>
         </div>
         
-        @if (_fileNames.Count > 0)
+        @if (_fileNamesToDisplayOnPage.Count > 0)
         {
             <ul class="files-list">
-                @foreach (var fileName in _fileNames)
+                @foreach (var fileName in _fileNamesToDisplayOnPage)
                 {
                     <li>
                         <img src="Icons/Send_edit/Send/file-icon.svg" alt="File icon."/>
@@ -90,21 +90,26 @@
     public Uri endpointUri { get; set; }
     public string Deadline { get; set; }
     public string TopicName { get; set; }
-    
+
+
     private readonly int _maxAllowedFiles = 100;
     private readonly long _maxFileSize = 5368709120; // 5 Gigabytes
-    private List<string> _fileNames = new();
-    MultipartFormDataContent multipartFormContent = new MultipartFormDataContent();
+    private List<string> _fileNamesToDisplayOnPage = new();
+    private List<IBrowserFile> _files = new();
+    MultipartFormDataContent studentReportMultipartFormContent = new();
+    MultipartFormDataContent filesMultipartFormDataContent = new();
 
     public async Task OnInputFileChange(InputFileChangeEventArgs e)
     {
         foreach (var file in e.GetMultipleFiles(_maxAllowedFiles))
         {
+            _files.Add(file);
             var fileContent = new StreamContent(file.OpenReadStream(_maxFileSize));
             fileContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
 
-            _fileNames.Add(file.Name);
-            multipartFormContent.Add(
+            _fileNamesToDisplayOnPage.Add(file.Name);
+
+            filesMultipartFormDataContent.Add(
                 content: fileContent,
                 name: "\"files\"",
                 fileName: file.Name);
@@ -113,18 +118,26 @@
 
     public async void sendReport()
     {
-        multipartFormContent.Add(new StringContent(ReportTopicId.ToString()), name: "ReportTopicId");
-        multipartFormContent.Add(new StringContent(Note), name: "Note");
-        multipartFormContent.Add(new StringContent(IsIndividual), name: "IsIndividual");
-        var url = "https://localhost:7184/api/StudentReport";
-        
+        studentReportMultipartFormContent.Add(new StringContent(ReportTopicId.ToString()), name: "ReportTopicId");
+        studentReportMultipartFormContent.Add(new StringContent(Note), name: "Note");
+        studentReportMultipartFormContent.Add(new StringContent(IsIndividual), name: "IsIndividual");
+        var studentReportUrl = "https://localhost:7184/api/StudentReport";
+
         using var client = new HttpClient();
         client.DefaultRequestHeaders.Add("Authorization", "Bearer " + Token);
-        var response = await client.PostAsync(url, multipartFormContent);
+        var response = await client.PostAsync(studentReportUrl, studentReportMultipartFormContent);
         response.EnsureSuccessStatusCode();
+
+        if (_files is null)
+        {
+            return;
+        }
+        var sendFilesUrl = "https://localhost:7184/api/StudentReport/files";
+        var filesResponse = await client.PostAsync(sendFilesUrl, filesMultipartFormDataContent);
+        //filesResponse.EnsureSuccessStatusCode();
     }
     
-
+    
     protected override async Task OnInitializedAsync()
     {
         var loginData = new LoginUserDto()

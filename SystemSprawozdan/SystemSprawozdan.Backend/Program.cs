@@ -13,6 +13,7 @@ using SystemSprawozdan.Backend.Middleware;
 using SystemSprawozdan.Backend.Data.Seeder;
 using SystemSprawozdan.Backend.Authorization;
 using FluentValidation;
+using Microsoft.AspNetCore.Http.Features;
 using SystemSprawozdan.Backend.Data.Models.Validators;
 using SystemSprawozdan.Shared.Dto;
 
@@ -59,6 +60,10 @@ builder.Services.AddScoped<ErrorHandlingMiddleware>();
 builder.Services.AddScoped<IUserContextService, UserContextService>();
 builder.Services.AddControllers().AddFluentValidation();
 builder.Services.AddHttpContextAccessor();
+builder.Services.Configure<FormOptions>(x =>
+{
+    x.MultipartBodyLengthLimit = 1024 * 1024 * 500; // 500 Mb
+});
 
 builder.Services.AddScoped<IAuthorizationHandler, UserResourceOperationRequirementHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, TeacherResourceOperationRequirementHandler>();
