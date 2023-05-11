@@ -1,45 +1,63 @@
 ﻿@page "/send/{ReportTopicId}"
 @using System.Net.Http.Headers;
-@using System.Net
 @using Newtonsoft.Json
-@inject HttpClient Http
 @inject IAppHttpClient AppHttpClient
-@inject IAuthService AuthService
 
-<PageTitle>Wyślij sprawozdanie</PageTitle>
+<head>
+    <PageTitle>Wyślij sprawozdanie</PageTitle>
+    <style>
+        input{
+        cursor: pointer;
+        transition: background-color 400ms;
+        border: dashed var(--primary-color) 4px;
+        border-radius: 46px;
+        width: 400px;
+        height: 400px;
+        background-image: url("Icons/Send_edit/Send/download-icon.svg");
+        background-size: 25%;
+        background-position: center;
+        background-repeat: no-repeat;
+        }
+        
+        input:hover{
+        background-color: rgba(64,153,229,0.49);
+        }
+        
+        input::file-selector-button{
+        opacity: 0;
+        }
+        
+        input[type="file"]{
+        width: 100%;
+        padding-left: 20px;
+        padding-top: 20px;
+        color: transparent;
+        }
+    </style>
+</head>
 
 <p style="display: flex; justify-content: center; padding-bottom: 24px; margin-top: -38px; font-size: 26px;">@TopicName</p>
 <div class="main-container">
     <div class="left-column">
-        @*<InputFile OnChange="OnInputFileChange" multiple id="input-files-label" style="display: none"/>
-        <label for="input-files-label">
-            Przekaż pliki
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
-              <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
-              <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
-              
-            </svg>
-        </label>*@
         <div class="wrapper">
             <span class="file-upload-text">Umieść pliki</span>    
             <InputFile multiple OnChange="OnInputFileChange" placeholder="Bagno taktyczne"></InputFile>
         </div>
-
-
-        @if (fileNames.Count > 0)
-            {
-                <ul class="files-list">
-                    @foreach (var fileName in fileNames)
-                    {
-                        <li>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark" viewBox="0 0 16 16">
-                              <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2z"/>
-                            </svg> @fileName
-                        </li>
-                    }
-                </ul>
-            }
+        
+        @if (_fileNames.Count > 0)
+        {
+            <ul class="files-list">
+                @foreach (var fileName in _fileNames)
+                {
+                    <li>
+                        <img src="Icons/Send_edit/Send/file-icon.svg" alt="File icon."/>
+                        @fileName
+                    </li>
+                }
+            </ul>
+        }
     </div>
+    
     <div class="right-column">
         <p style="font-size: 20px">Termin oddania: @Deadline</p>
         <MatTextField TValue="string" @bind-Value="Note" Label="Komentarz dla prowadzącego:" Outlined="true" TextArea="true" Style="height: 50%; margin-bottom: 20px;"/>
@@ -59,36 +77,6 @@
 
 </div>
     
-<style>
-    input{
-    cursor: pointer;
-    transition: background-color 400ms;
-    border: dashed var(--primary-color) 4px;
-    border-radius: 46px;
-    width: 400px;
-    height: 400px;
-    background-image: url("Icons/Send_edit/Send/download-icon.svg");
-    background-size: 25%;
-    background-position: center;
-    background-repeat: no-repeat;
-    }
-    
-    input:hover{
-    background-color: rgba(64,153,229,0.49);
-    }
-    
-    input::file-selector-button{
-    opacity: 0;
-    }
-    
-    input[type="file"]{
-    width: 100%;
-    padding-left: 20px;
-    padding-top: 20px;
-    color: transparent;
-    }
-</style>
-
 
 
 
@@ -103,19 +91,19 @@
     public string Deadline { get; set; }
     public string TopicName { get; set; }
     
-    private int maxAllowedFiles = 100;
-    private long maxFileSize = 5368709120; // 5 Gigabytes
-    private List<string> fileNames = new();
+    private readonly int _maxAllowedFiles = 100;
+    private readonly long _maxFileSize = 5368709120; // 5 Gigabytes
+    private List<string> _fileNames = new();
     MultipartFormDataContent multipartFormContent = new MultipartFormDataContent();
 
     public async Task OnInputFileChange(InputFileChangeEventArgs e)
     {
-        foreach (var file in e.GetMultipleFiles(maxAllowedFiles))
+        foreach (var file in e.GetMultipleFiles(_maxAllowedFiles))
         {
-            var fileContent = new StreamContent(file.OpenReadStream(maxFileSize));
+            var fileContent = new StreamContent(file.OpenReadStream(_maxFileSize));
             fileContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
 
-            fileNames.Add(file.Name);
+            _fileNames.Add(file.Name);
             multipartFormContent.Add(
                 content: fileContent,
                 name: "\"files\"",
@@ -134,7 +122,6 @@
         client.DefaultRequestHeaders.Add("Authorization", "Bearer " + Token);
         var response = await client.PostAsync(url, multipartFormContent);
         response.EnsureSuccessStatusCode();
-        var result = await response.Content.ReadAsStringAsync();
     }
     
 
@@ -158,10 +145,5 @@
             TopicName = deserializedReportTopicDto.Name;
         }
     }
-
-    ElementReference fileDropContainer;
-    private string HoverClass;
-    void OnDragEnter(DragEventArgs e) => HoverClass = "hover";
-    void OnDragLeave(DragEventArgs e) => HoverClass = string.Empty;
 
 }
