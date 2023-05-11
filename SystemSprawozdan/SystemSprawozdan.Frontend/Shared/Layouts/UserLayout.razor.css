@@ -1,0 +1,19 @@
+﻿:defined{
+    --height: 90vh;
+}
+
+.left-side{
+    height: var(--height);
+    display: flex;
+    flex-direction: column;
+    gap: 4vh;
+}
+
+.navigation{
+    height: 100%;
+}
+
+.right-side{
+    height: var(--height);
+    width: 70%;
+}

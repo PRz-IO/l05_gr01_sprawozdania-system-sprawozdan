@@ -1,0 +1,67 @@
+﻿@inherits LayoutComponentBase
+@inject NavigationManager NavigationManager
+
+<div class="left-side">
+    <UserPad/>
+    
+    <div class="navigation panel">
+        <TitleBar/>
+        <TabBar TValue="string" ValueChanged="@NavigateTo" Data="@TabBarData" ActiveIndex="index" FlexDirection="column"/>
+    </div>
+</div>
+
+<div class="right-side panel">
+    <TitleBar/>
+    @Body
+</div>
+
+@code
+{
+    public int index { get; set; }
+
+    public int activeIndex()
+    {
+        var uri = NavigationManager.Uri;
+        foreach (var data in TabBarData)
+        {
+            if (uri.Contains(data.Value))
+                return TabBarData.IndexOf(data);
+        }
+        return 1;
+    }
+
+    public void NavigateTo(string link)
+    {
+        index = TabBarData.FindIndex(el => el.Value.Equals(link));
+        StateHasChanged();
+        NavigationManager.NavigateTo(link);
+    }
+    
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            index = activeIndex();
+            StateHasChanged();
+        }
+    }
+
+    public IEnumerable<TabBarData<string>> TabBarData { get; set; } = new TabBarData<string>[]
+    {
+        new()
+        {
+            Text = "Sprawozdania",
+            Value = "/register"
+        },
+        new()
+        {
+            Text = "Zespoły",
+            Value = "/login"
+        },
+        new()
+        {
+            Text = "Twoje dane",
+            Value = "/restore-password"
+        },
+    };
+}
