@@ -17,20 +17,11 @@ namespace SystemSprawozdan.Backend.Controllers
             _subjectGorupServices =  subjectGroupService;
         }
 
-        //TODO: Mateusz: Trzeba zrobić GETa, który wyświetla wszystkie grupy, do których nie należy dany użytkownik
-        [HttpGet("{subjectId}/isNotUser")]
-        public ActionResult GetUserGroupDoesntBelong([FromRoute] int subjectId)
+        //TODO: Mateusz: Trzeba zrobić GETa, który wyświetla wszystkie grupy, do których nalezy i nie należy dany użytkownik
+        [HttpGet("{subjectId}")]
+        public ActionResult GetSubjectGroup([FromRoute] int subjectId, [FromQuery] bool isUser)
         {
-
-            var  subjectGroup = _subjectGorupServices.GetUserGroupDoesntBelong(subjectId);
-            return Ok(subjectGroup);
-        }
-
-        //TODO: Mateusz: Trzeba zrobić GETa, który wyświetla wszystkie grupy, do których należy dany użytkownik
-        [HttpGet("{subjectId}/isUser")]
-        public ActionResult GetUserGroupBelong([FromRoute] int subjectId)
-        {
-            var subjectGroup = _subjectGorupServices.GetUserGroupBelong(subjectId);
+            var subjectGroup = _subjectGorupServices.GetSubjectGroup(subjectId, isUser);
             return Ok(subjectGroup);
         }
     }
