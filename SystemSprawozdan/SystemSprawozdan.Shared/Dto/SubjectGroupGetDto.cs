@@ -2,11 +2,11 @@
 {
     public class SubjectGroupGetDto
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string GroupType { get; set; }
-        public List<GetTeacherDto> Teachers { get; set; }
-        public int SubjectId { get; set; }
-        public List<GetSubgroupsDto> Subgroups { get; set; }    
+        public int SubjectGroupId { get; set; }
+        public string SubjectName { get; set; }
+        public string MajorName { get; set; }
+        public string SubjectGroupGroupType { get; set; }
+        public string SubjectGroupName { get; set; }
+        public string TeacherName { get; set; }
     }
 }

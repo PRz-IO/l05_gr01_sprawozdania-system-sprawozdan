@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Linq;
+using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using SystemSprawozdan.Backend.Controllers;
 using SystemSprawozdan.Backend.Data;
 using SystemSprawozdan.Backend.Data.Models.DbModels;
@@ -21,10 +23,14 @@ namespace SystemSprawozdan.Backend.Services
     {
         private readonly ApiDbContext _dbContext;
         private readonly IUserContextService _userContextService;
-        public SubjectGroupService(ApiDbContext dbContext, IUserContextService userContextService)
+        private readonly IMapper _mapper;
+        private readonly IAuthorizationService _authorizationService;
+        public SubjectGroupService(ApiDbContext dbContext, IUserContextService userContextService, IMapper mapper, IAuthorizationService authorizationService)
         {
             _dbContext = dbContext;
             _userContextService = userContextService;
+            _mapper = mapper;
+            _authorizationService = authorizationService;
         }
         public List<SubjectGroupGetDto> GetUserGroupBelong(int subjectId)
         {
@@ -38,35 +44,37 @@ namespace SystemSprawozdan.Backend.Services
                     )
                 ).ToList();
 
-            List<SubjectGroupGetDto> subjectGroupsDto = new(); 
+            // List<SubjectGroupGetDto> subjectGroupsDto = new(); 
+            //
+            // foreach(var subjectGroup in subjectGroups) 
+            // {
+            //     var teachers = _dbContext.Teacher
+            //         .Where(teacher => teacher.SubjectGroups
+            //             .Any(teacherSubjectGroup => teacherSubjectGroup.Id == subjectGroup.Id)
+            //         ).ToList();
+            //
+            //     List<GetTeacherDto> getTeachersDto = new();
+            //     foreach (var teacher in teachers)
+            //     {
+            //         getTeachersDto.Add(new GetTeacherDto()
+            //         {
+            //             Name = teacher.Name,
+            //             Surname = teacher.Surname,
+            //             Degree = teacher.Degree,
+            //         });
+            //     }
+            //
+            //     subjectGroupsDto.Add(new SubjectGroupGetDto()
+            //     {
+            //         Id = subjectGroup.Id,
+            //         SubjectId = subjectGroup.SubjectId,
+            //         Name = subjectGroup.Name,
+            //         Teachers = getTeachersDto,
+            //         GroupType = subjectGroup.GroupType,
+            //     });
+            // }
 
-            foreach(var subjectGroup in subjectGroups) 
-            {
-                var teachers = _dbContext.Teacher
-                    .Where(teacher => teacher.SubjectGroups
-                        .Any(teacherSubjectGroup => teacherSubjectGroup.Id == subjectGroup.Id)
-                    ).ToList();
-
-                List<GetTeacherDto> getTeachersDto = new();
-                foreach (var teacher in teachers)
-                {
-                    getTeachersDto.Add(new GetTeacherDto()
-                    {
-                        Name = teacher.Name,
-                        Surname = teacher.Surname,
-                        Degree = teacher.Degree,
-                    });
-                }
-
-                subjectGroupsDto.Add(new SubjectGroupGetDto()
-                {
-                    Id = subjectGroup.Id,
-                    SubjectId = subjectGroup.SubjectId,
-                    Name = subjectGroup.Name,
-                    Teachers = getTeachersDto,
-                    GroupType = subjectGroup.GroupType,
-                });
-            }
+            var subjectGroupsDto = _mapper.Map<List<SubjectGroupGetDto>>(subjectGroups);
 
             return subjectGroupsDto;
         }
@@ -92,43 +100,21 @@ namespace SystemSprawozdan.Backend.Services
 
             foreach (var subjectGroup in subjectGroups)
             {
-                var teachers = _dbContext.Teacher
-                    .Where(teacher => teacher.SubjectGroups
-                        .Any(teacherSubjectGroup => teacherSubjectGroup.Id == subjectGroup.Id)
-                    ).ToList();
-
-                List<GetTeacherDto> getTeachersDto = new();
-                foreach (var teacher in teachers)
-                {
-                    getTeachersDto.Add(new GetTeacherDto()
-                    {
-                        Name = teacher.Name,
-                        Surname = teacher.Surname,
-                        Degree = teacher.Degree,
-                    });
-                }
-                List<GetSubgroupsDto> getSubgroupsDto =new();
-
-                foreach(var subGroup in subjectGroup.subjectSubgroups.ToList()) 
-                {
-                    getSubgroupsDto.Add(new GetSubgroupsDto()
-                    {
-                        Id = subGroup.Id,
-                        Name = subGroup.Name,
-                    });
-                }
-
-                subjectGroupsDto.Add(new SubjectGroupGetDto()
-                {
-                    Id = subjectGroup.Id,
-                    SubjectId = subjectGroup.SubjectId,
-                    Name = subjectGroup.Name,
-                    Teachers = getTeachersDto,
-                    GroupType = subjectGroup.GroupType,
-                    Subgroups = getSubgroupsDto,
-                });
+                throw new ForbidException();
             }
+            
+            var loginUserId = _userContextService.GetUserId;
 
+            var subjectGroupsFromDb = _dbContext.SubjectGroup
+                .Include(subjectGroup => subjectGroup.Subject)
+                    .ThenInclude(subject => subject.Major)
+                .Include(subjectGroup => subjectGroup.Teacher)
+                .Where(subjectGroup => subjectGroup.SubjectId == subjectId)
+                .Where(subjectGroup => !subjectGroup.subjectSubgroups.Any(subjectSubgroups => subjectSubgroups.Students.Any(student => student.Id == loginUserId)))
+                .ToList();
+            
+            var subjectGroupsDto = _mapper.Map<List<SubjectGroupGetDto>>(subjectGroupsFromDb);
+            
             return subjectGroupsDto;
 
         }
