@@ -6,20 +6,19 @@
 <head>
     <PageTitle>Wyślij sprawozdanie</PageTitle>
     <style>
-        input{
+        .file-input{
         cursor: pointer;
         transition: background-color 400ms;
         border: dashed var(--primary-color) 4px;
         border-radius: 46px;
-        width: 400px;
-        height: 400px;
         background-image: url("Icons/Send_edit/Send/download-icon.svg");
         background-size: 25%;
         background-position: center;
         background-repeat: no-repeat;
+        
         }
         
-        input:hover{
+        .file-input:hover{
         background-color: rgba(64,153,229,0.49);
         }
         
@@ -29,21 +28,35 @@
         
         input[type="file"]{
         width: 100%;
-        padding-left: 20px;
-        padding-top: 20px;
+        height: 80%;
         color: transparent;
+        }
+        
+        .report-topic-name{
+            display: flex;
+            justify-content: center;
+            margin-bottom: 4vh;
+            font-size: 26px;
+            margin-top: 4vh;
+        }
+        
+        .main-container{
+            display: flex;
+            flex-direction: row;
+            justify-content: space-evenly;
+            align-content: flex-start;
+            height: 100%;
+            padding-bottom: 6vh;
         }
     </style>
 </head>
 
-<p style="display: flex; justify-content: center; padding-bottom: 24px; margin-top: -38px; font-size: 26px;">@TopicName</p>
+<span class="report-topic-name">@TopicName</span>
 <div class="main-container">
     <div class="left-column">
-        <div class="wrapper">
-            <span class="file-upload-text">Umieść pliki</span>    
-            <InputFile multiple OnChange="OnInputFileChange" placeholder="Bagno taktyczne"></InputFile>
-        </div>
-        
+        <span class="file-upload-text">Umieść pliki</span>    
+        <InputFile class="file-input"multiple OnChange="OnInputFileChange"></InputFile>
+
         @if (_fileNamesToDisplayOnPage.Count > 0)
         {
             <ul class="files-list">
@@ -134,7 +147,7 @@
         }
         var sendFilesUrl = "https://localhost:7184/api/StudentReport/files";
         var filesResponse = await client.PostAsync(sendFilesUrl, filesMultipartFormDataContent);
-        //filesResponse.EnsureSuccessStatusCode();
+        filesResponse.EnsureSuccessStatusCode();
     }
     
     

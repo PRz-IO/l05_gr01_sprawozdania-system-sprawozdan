@@ -3,17 +3,22 @@
     flex-direction: row;
     justify-content: space-evenly;
     align-content: flex-start;
+    height: 100%;
+    padding-bottom: 6vh;
     
 }
 
-.wrapper{
-    position: relative;
+.report-topic-name{
+    display: flex;
+    justify-content: center;
+    padding-bottom: 24px;
+    font-size: 26px;
 }
 
 .file-upload-text{
     position: absolute;
-    margin-left: 34%;
-    margin-top: 64%;
+    left: 42.2%;
+    top: 60%;
     font-size: 24px;
 }
 
