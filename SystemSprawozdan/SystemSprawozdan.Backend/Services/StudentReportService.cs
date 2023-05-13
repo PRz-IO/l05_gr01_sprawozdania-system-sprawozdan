@@ -1,19 +1,11 @@
-﻿using System.Net;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using SystemSprawozdan.Backend.Authorization;
 using SystemSprawozdan.Backend.Data;
 using SystemSprawozdan.Backend.Data.Models.DbModels;
 using SystemSprawozdan.Backend.Exceptions;
 using SystemSprawozdan.Shared.Dto;
-using SystemSprawozdan.Backend.Exceptions;
-using SystemSprawozdan.Shared;
 
 namespace SystemSprawozdan.Backend.Services
 {
@@ -22,9 +14,8 @@ namespace SystemSprawozdan.Backend.Services
         void PostStudentReport(StudentReportPostDto postStudentReportDto);
         void PutStudentReport(int studentReportId, StudentReportPutDto putStudentReportDto);
         Task<List<StudentReportFile>> UploadFile(int? studentReportId, List<IFormFile> files);
-        IEnumerable<ReportTopicDto> GetReports(bool? toCheck);
-        List<StudentIndividualReportGetDto> GetIndividualReportsByTopicId(int reportTopicId, bool? isMarked);
-        List<StudentCollaborateReportGetDto> GetCollaborateReportsByTopicId(int reportTopicId, bool? isMarked);
+        IEnumerable<ReportTopicGetDto> GetReports(bool? toCheck);
+        List<StudentReportGetDto> GetStudentReportsByTopicId(int reportTopicId, bool? isIndividual, bool? isMarked);
     }
 
     public class StudentReportService : IStudentReportService
@@ -95,7 +86,6 @@ namespace SystemSprawozdan.Backend.Services
 
             var newStudentReport = new StudentReport()
             {
-
                 SentAt = DateTime.UtcNow,
                 LastModified = DateTime.UtcNow,
                 Note = noteToSend,
@@ -174,17 +164,9 @@ namespace SystemSprawozdan.Backend.Services
             return uploadResults;
         }
 
-        public IEnumerable<ReportTopicDto> GetReports(bool? toCheck)
+        public IEnumerable<ReportTopicGetDto> GetReports(bool? toCheck)
         {
-            var authorizationResult = _authorizationService.AuthorizeAsync(
-                _userContextService.User,
-                null,
-                new TeacherResourceOperationRequirement(TeacherResourceOperation.Read)).Result;
-
-            if (!authorizationResult.Succeeded)
-            {
-                throw new ForbidException();
-            }
+            VerifyUserHasTeacherPermission(TeacherResourceOperation.Read);
 
             var teacherId = _userContextService.GetUserId;
 
@@ -202,83 +184,43 @@ namespace SystemSprawozdan.Backend.Services
             
             var reportsFromDbList = reportsFromDb.OrderBy(reportTopic => reportTopic.Deadline).ToList();
             
-            var reportsDto = _mapper.Map<List<ReportTopicDto>>(reportsFromDbList);
+            var reportsDto = _mapper.Map<List<ReportTopicGetDto>>(reportsFromDbList);
             
             return reportsDto;
         }
 
-        public List<StudentIndividualReportGetDto> GetIndividualReportsByTopicId(int reportTopicId, bool? isMarked)
+        public List<StudentReportGetDto> GetStudentReportsByTopicId(int reportTopicId, bool? isIndividual, bool? isMarked)
         {
-            var loginUserId = _userContextService.GetUserId;
-            var loginUser = _dbContext.Teacher.FirstOrDefault(teacher => teacher.Id == loginUserId);
+            VerifyUserHasTeacherPermission(TeacherResourceOperation.Read);
+            
+            var isReportTopicExist = _dbContext.ReportTopic.Any(reportTopic => reportTopic.Id == reportTopicId);
 
-            if (loginUser is null) throw new ForbidException();
-
-            var reportTopic = _dbContext.ReportTopic.FirstOrDefault(topic => topic.Id == reportTopicId);
-
-            if (reportTopic is null) throw new NotFoundException($"Report Topic with Id {reportTopicId} doesn't exist!");
-
-            var reports = _dbContext.StudentReport
-                    .Include(report => report.SubjectSubgroup)
-                    .ThenInclude(subgroup => subgroup.Students)
-                    .Where(report => report.ReportTopicId == reportTopicId && report.SubjectSubgroup.IsIndividual);
-
-            if (isMarked is not null)
-                reports = reports.Where(report => isMarked == (report.Mark != null));
-
-            List<StudentIndividualReportGetDto> reportsGetDto = new();
-            foreach (var report in reports.ToList())
-            {
-                var student = report.SubjectSubgroup.Students.FirstOrDefault(student => true);
-                var studentDto = new StudentBasicGetDto()
-                {
-                    Id = student.Id,
-                    Login = student.Login,
-                    Name = student.Name,
-                    Surname = student.Surname
-                };
-
-                reportsGetDto.Add(new()
-                {
-                    Id = report.Id,
-                    Mark = report.Mark,
-                    Student = studentDto,
-                });
-            }
-
-            return reportsGetDto;
-        }
-
-        public List<StudentCollaborateReportGetDto> GetCollaborateReportsByTopicId(int reportTopicId, bool? isMarked)
-        {
-            var loginUserId = _userContextService.GetUserId;
-            var loginUser = _dbContext.Teacher.FirstOrDefault(teacher => teacher.Id == loginUserId);
-
-            if (loginUser is null) throw new ForbidException();
-
-            var reportTopic = _dbContext.ReportTopic.FirstOrDefault(topic => topic.Id == reportTopicId);
-
-            if (reportTopic is null) throw new NotFoundException($"Report Topic with Id {reportTopicId} doesn't exist!");
+            if (!isReportTopicExist) throw new NotFoundException($"Report Topic with Id equals {reportTopicId} doesn't exist!");
 
             var reports = _dbContext.StudentReport
                 .Include(report => report.SubjectSubgroup)
-                .Where(report => report.ReportTopicId == reportTopicId && !report.SubjectSubgroup.IsIndividual);
+                    .ThenInclude(subgroup => subgroup.Students)
+                .Where(report => report.ReportTopicId == reportTopicId);
 
             if (isMarked is not null)
                 reports = reports.Where(report => isMarked == (report.Mark != null));
 
-            List<StudentCollaborateReportGetDto> reportsGetDto = new();
-            foreach (var report in reports.ToList())
-            {
-                reportsGetDto.Add(new()
-                {
-                    Id = report.Id,
-                    Mark = report.Mark,
-                    SubgroupName = report.SubjectSubgroup.Name,
-                });
-            }
+            if (isIndividual is not null)
+                reports = reports.Where(report => report.SubjectSubgroup.IsIndividual == isIndividual);
 
+            var reportsGetDto = _mapper.Map<List<StudentReportGetDto>>(reports.ToList());
             return reportsGetDto;
+        }
+
+        private void VerifyUserHasTeacherPermission(TeacherResourceOperation teacherResourceOperation)
+        {
+            var authorizationResult = _authorizationService.AuthorizeAsync(
+                _userContextService.User,
+                null,
+                new TeacherResourceOperationRequirement(teacherResourceOperation)).Result;
+
+            if (!authorizationResult.Succeeded)
+                throw new ForbidException();
         }
     }
 }
