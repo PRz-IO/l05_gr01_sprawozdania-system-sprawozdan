@@ -1,7 +1,83 @@
-@page "/edit"
+@page "/edit/{StudentReportId}"
+@using Newtonsoft.Json
+@inject IJSRuntime JS
+@inject HttpClient Http
+@inject IAppHttpClient AppHttpClient
+
 <h3>Edytowanie sprawozdań</h3>
 
+<p>Testowanie pobierania</p>
+
+<ExistingFilesList Files="SubmittedFilesList" SendFileToDownloadData="passArguments" ></ExistingFilesList>
+
+
+<button @onclick="@(() => DownloadFile("kkqfyhlo.vyw", "obrazek.png"))">Pobierz plik!</button>
 
 @code{
+    [Parameter]
+    public string StudentReportId { get; set; }
+
+    public int StudentReportIdInteger { get; set; }
     
+    public string Token { get; set; }
+
+    public List<StudentReportFileGetDto> SubmittedFilesList = new();
+    string randomFileName = string.Empty;
+    string originalName = string.Empty;
+
+
+    private async Task DownloadFile(string storedFileName, string originalFileName)
+    {
+        var response = await Http.GetAsync($"https://localhost:7184/api/StudentReportFile/download/{storedFileName}");
+        if (!response.IsSuccessStatusCode)
+        {
+            await JS.InvokeVoidAsync("alert", "File not found!");
+        }
+        else
+        {
+            var fileStream = response.Content.ReadAsStream();
+            using var streamRef = new DotNetStreamReference(stream: fileStream);
+            await JS.InvokeVoidAsync("downloadFileFromStream", originalFileName, streamRef); // nazwa funkcji JS w Index.html
+        }
+    }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        StudentReportIdInteger = Int32.Parse(StudentReportId);
+        var loginData = new LoginUserDto()
+        {
+            Login = "169587",
+            Password = "Hasło123"
+        };
+        Token = await AppHttpClient.Post("Account/login", loginData);
+        
+        Uri getAllReportFilesEndpointUri;
+        getAllReportFilesEndpointUri =  new Uri($"https://localhost:7184/api/StudentReportFile/{StudentReportIdInteger}");
+        using (var client = new HttpClient())
+        {
+            client.DefaultRequestHeaders.Add("Authorization", "Bearer " + Token);
+            HttpResponseMessage response = await client.GetAsync(getAllReportFilesEndpointUri);
+            string responseBody = await response.Content.ReadAsStringAsync();
+            List<StudentReportFileGetDto> deserializedObjectsList = JsonConvert.DeserializeObject<List<StudentReportFileGetDto>>(responseBody);
+            foreach (var obj in deserializedObjectsList)
+            {
+                var temp = new StudentReportFileGetDto()
+                {
+                    Id = obj.Id,
+                    StudentReportId = obj.StudentReportId,
+                    ContentType = obj.ContentType,
+                    OriginalFileName = obj.OriginalFileName,
+                    RandomizedFileName = obj.RandomizedFileName
+                };
+                SubmittedFilesList.Add(temp);
+            }
+        }
+        
+    }
+
+    public void passArguments(List<string> paramList)
+    {
+        DownloadFile(paramList[0], paramList[1]);
+    }
 }

@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using SystemSprawozdan.Backend.Data;
 using SystemSprawozdan.Backend.Data.Models.DbModels;
 using SystemSprawozdan.Backend.Services;
 using SystemSprawozdan.Shared;
@@ -13,8 +15,7 @@ namespace SystemSprawozdan.Backend.Controllers
     public class StudentReportController : ControllerBase
     {
         private readonly IStudentReportService _studentReportService;
-
-        public StudentReportController(IStudentReportService studentReportService)
+        public StudentReportController(IStudentReportService studentReportService, ApiDbContext dbContext, IWebHostEnvironment env)
         {
             _studentReportService = studentReportService;
         }
@@ -26,18 +27,10 @@ namespace SystemSprawozdan.Backend.Controllers
             return Ok();
         }
 
-        [HttpPut("{studentReportId}")]
+        [HttpPut("{studentReportId:int}")]
         public ActionResult PutStudentReport([FromRoute] int studentReportId, [FromForm] StudentReportPutDto putStudentReportDto)
         {
              _studentReportService.PutStudentReport(studentReportId, putStudentReportDto);
-            return Ok();
-        }
-
-        [HttpPost("files/{studentReportId:int?}")]
-        [RequestSizeLimit(524288000)] // 500Mb
-        public async Task<ActionResult<List<StudentReportFile>>> UploadFile([FromForm] List<IFormFile> files, int studentReportId = -1)
-        {
-            var result = await _studentReportService.UploadFile(studentReportId, files);
             return Ok();
         }
 

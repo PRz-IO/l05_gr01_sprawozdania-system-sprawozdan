@@ -21,7 +21,6 @@ namespace SystemSprawozdan.Backend.Services
     {
         void PostStudentReport(StudentReportPostDto postStudentReportDto);
         void PutStudentReport(int studentReportId, StudentReportPutDto putStudentReportDto);
-        Task<List<StudentReportFile>> UploadFile(int? studentReportId, List<IFormFile> files);
         IEnumerable<ReportTopicDto> GetReports(bool? toCheck);
     }
 
@@ -152,49 +151,7 @@ namespace SystemSprawozdan.Backend.Services
             reportToEdit.LastModified = DateTime.UtcNow;
             _dbContext.SaveChanges();
         }
-
-        public async Task<List<StudentReportFile>> UploadFile(int? studentReportId, List<IFormFile> files)
-        {
-            var uploadResults = new List<StudentReportFile>();
-            foreach (var file in files)
-            {
-                var uploadResult = new StudentReportFile();
-                string trustedFileNameForFileStorage;
-                string originalFileName = file.FileName;
-                uploadResult.FileName = originalFileName;
-
-                trustedFileNameForFileStorage = Path.GetRandomFileName();
-                var pathToCheck = Path.Combine(_env.ContentRootPath, "Uploads");
-                if (!Directory.Exists(pathToCheck))
-                {
-                    var di = Directory.CreateDirectory(pathToCheck);
-                }
-                var path = Path.Combine(_env.ContentRootPath, "Uploads", trustedFileNameForFileStorage);
-
-                using FileStream fs = new(path, FileMode.Create);
-                await file.CopyToAsync(fs);
-
-                
-                
-                uploadResult.FileName = file.FileName;
-                uploadResult.StoredFileName = trustedFileNameForFileStorage;
-                uploadResult.ContentType = file.ContentType;
-                if (studentReportId == -1)
-                {
-                    var reportId = _dbContext.StudentReport.OrderByDescending(report => report.SentAt).FirstOrDefault().Id;
-                    uploadResult.StudentReportId = reportId;
-                }
-                else
-                {
-                    uploadResult.StudentReportId = studentReportId;
-                }
-                uploadResults.Add(uploadResult);
-                _dbContext.StudentReportFile.Add(uploadResult);
-            }
-            
-            _dbContext.SaveChanges();
-            return uploadResults;
-        }
+        
         public IEnumerable<ReportTopicDto> GetReports(bool? toCheck)
         {
             var authorizationResult = _authorizationService.AuthorizeAsync(

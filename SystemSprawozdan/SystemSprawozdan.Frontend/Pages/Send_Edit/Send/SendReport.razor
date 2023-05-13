@@ -55,7 +55,7 @@
         <div class="files-list">
             @if (_files.Count > 0)
             {
-                <FilesList Files="_files" RemoveFile="RemoveFileFromList"></FilesList>
+                <FilesToBeSentList Files="_files" RemoveFile="RemoveFileFromList"></FilesToBeSentList>
             }
         </div>
     </div>
@@ -92,8 +92,6 @@
     {
         return index == numberOfInputFiles - 1 ? "" : "display: none";
     }
-    
-    
     
     
     public string IsIndividual { get; set; } = "true";
@@ -136,7 +134,7 @@
         {
             return;
         }
-        var sendFilesUrl = "https://localhost:7184/api/StudentReport/files";
+        var sendFilesUrl = "https://localhost:7184/api/StudentReportFile";
         foreach (var file in _files)
         {
             var fileContent = new StreamContent(file.OpenReadStream(_maxFileSize));
@@ -177,7 +175,7 @@
     {
         var loginData = new LoginUserDto()
         {
-            Login = "169571",
+            Login = "169587",
             Password = "Hasło123"
         };
 
