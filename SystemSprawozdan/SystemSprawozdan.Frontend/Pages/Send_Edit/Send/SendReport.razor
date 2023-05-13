@@ -45,18 +45,18 @@
 <span class="report-topic-name">@TopicName</span>
 <div class="main-container">
     <div class="left-column">
-        <span class="file-upload-text">Umieść pliki</span>    
-        <InputFile class="file-input"multiple OnChange="OnInputFileChange"></InputFile>
-        @*@for (int i = 0; i < numberOfInputFiles; i++)
+        <span class="file-upload-text">Umieść pliki</span>
+        @for (int i = 0; i < numberOfInputFiles; i++)
         {
-            <InputFile @key="i" OnChange="OnInputFileChange" multiple style="@GetInputFileStyle(i)"></InputFile>
-        }*@
+            <InputFile class="file-input" @key="i" OnChange="OnInputFileChange" multiple style="@GetInputFileStyle(i)"></InputFile>
+        }
+        <pre>@status</pre>
+        
         <div class="files-list">
             @if (_files.Count > 0)
             {
                 <FilesList Files="_files" RemoveFile="RemoveFileFromList"></FilesList>
             }
-            
         </div>
     </div>
     
@@ -82,9 +82,19 @@
 
 
 @code {
-
     [Parameter]
     public string ReportTopicId { get; set; }
+    
+    string? status;
+    int numberOfInputFiles = 1;
+
+    string GetInputFileStyle(int index)
+    {
+        return index == numberOfInputFiles - 1 ? "" : "display: none";
+    }
+    
+    
+    
     
     public string IsIndividual { get; set; } = "true";
     public string Note { get; set; } = string.Empty;
@@ -102,17 +112,10 @@
 
     public async Task OnInputFileChange(InputFileChangeEventArgs e)
     {
+        numberOfInputFiles++;
         foreach (var file in e.GetMultipleFiles(_maxAllowedFiles))
         {
             _files.Add(file);
-            @*var fileContent = new StreamContent(file.OpenReadStream(_maxFileSize));
-            fileContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
-
-            filesMultipartFormDataContent.Add(
-                content: fileContent,
-                name: "\"files\"",
-                fileName: file.Name);*@
-            
         }
     }
     
@@ -138,8 +141,28 @@
         {
             var fileContent = new StreamContent(file.OpenReadStream(_maxFileSize));
             var fileContentType = file.ContentType;
-            fileContent.Headers.ContentType = new MediaTypeHeaderValue(fileContentType);
-
+            var fileName = file.Name;
+            if (fileContentType == "")
+            {
+                var extension = fileName.Split('.').Last();
+                switch (extension)
+                {
+                    case "sql":
+                    {
+                        fileContent.Headers.ContentType = new MediaTypeHeaderValue("application/sql");
+                        break;
+                    }
+                    default:
+                    {
+                        fileContent.Headers.ContentType = new MediaTypeHeaderValue("");
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                fileContent.Headers.ContentType = new MediaTypeHeaderValue(fileContentType);
+            }
             filesMultipartFormDataContent.Add(
                 content: fileContent,
                 name: "\"files\"",
