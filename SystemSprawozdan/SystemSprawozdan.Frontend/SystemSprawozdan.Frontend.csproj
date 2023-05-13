@@ -22,7 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Pages\Send_Edit\Edit\" />
     <PackageReference Include="Toolbelt.Blazor.HttpClientInterceptor" Version="10.2.0" />
   </ItemGroup>
 
@@ -33,7 +32,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Pages\Send_Edit\Edit\" />
     <PackageReference Include="Toolbelt.Blazor.HttpClientInterceptor" Version="10.2.0" />
   </ItemGroup>
 

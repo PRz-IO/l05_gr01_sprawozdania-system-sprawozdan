@@ -4,27 +4,33 @@
     justify-content: space-evenly;
     align-content: flex-start;
     height: 100%;
-    padding-bottom: 6vh;
-    
 }
 
 .report-topic-name{
     display: flex;
     justify-content: center;
-    padding-bottom: 24px;
-    font-size: 26px;
+    margin-bottom: 3vh;
+    font-size: 2rem;
+    margin-top: 3vh;
 }
 
 .file-upload-text{
     position: absolute;
-    left: 42.2%;
-    top: 60%;
-    font-size: 24px;
+    left: 50%;
+    top: 54%;
+    font-size: 2rem;
+    transform: translate(-50%, -50%);
 }
 
 .left-column{
     width: 32%;
+    position: relative;
 }
+
+.files-list{
+    height: 25%;
+}
+
 .right-column{
     display: flex;
     flex-direction: column;
@@ -32,6 +38,9 @@
     justify-content: space-between;
 }
 
+.deadline{
+    font-size: 1.5rem;
+}
 .radio-buttons{
     display: flex;
 }
@@ -40,7 +49,3 @@
     margin-bottom: 0;
 }
 
-.files-list{
-    margin-bottom: 0;
-    margin-top: 20px;
-}
