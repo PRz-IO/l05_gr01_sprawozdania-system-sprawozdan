@@ -104,27 +104,6 @@ namespace SystemSprawozdan.Backend.Services
             };
             _dbContext.StudentReport.Add(newStudentReport);
             _dbContext.SaveChanges();
-
-            /*if (postStudentReportDto.Files is null) return;
-            foreach (var file in postStudentReportDto.Files)
-            {
-                if (file is not null)
-                {
-                    if (file.Length > 0)
-                    {
-                        using var memoryStream = new MemoryStream();
-                        file.CopyToAsync(memoryStream);
-                        var studentReportFile = new StudentReportFile()
-                        {
-                            StudentReportId = newStudentReport.Id,
-                            File = memoryStream.ToArray()
-                        };
-
-                        _dbContext.StudentReportFile.Add(studentReportFile);
-                    }
-                }
-            }
-            _dbContext.SaveChanges();*/
         }
         
         public void PutStudentReport(int studentReportId, StudentReportPutDto putStudentReportDto)
