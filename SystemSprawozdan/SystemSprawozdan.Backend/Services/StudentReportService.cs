@@ -148,28 +148,6 @@ namespace SystemSprawozdan.Backend.Services
                     reportToEdit.Note = commentToInsert;
                 }
             }
-            _dbContext.SaveChanges();
-
-            /*if (putStudentReportDto.Files is null) return;
-
-            foreach (FormFile file in putStudentReportDto.Files)
-            {
-                if (file != null)
-                {
-                    if (file.Length > 0)
-                    {
-                        using var memoryStream = new MemoryStream();
-                        file.CopyToAsync(memoryStream);
-                        var studentReportFile = new StudentReportFile()
-                        {
-                            StudentReportId = reportToEdit.Id,
-                            File = memoryStream.ToArray()
-                        };
-
-                        _dbContext.StudentReportFile.Add(studentReportFile);
-                    }
-                }
-            }*/
             reportToEdit.LastModified = DateTime.UtcNow;
             _dbContext.SaveChanges();
         }
