@@ -27,10 +27,6 @@
     position: relative;
 }
 
-.files-list{
-    height: 25%;
-}
-
 .right-column{
     display: flex;
     flex-direction: column;
