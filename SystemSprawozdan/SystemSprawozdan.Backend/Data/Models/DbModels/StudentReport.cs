@@ -16,6 +16,6 @@ namespace SystemSprawozdan.Backend.Data.Models.DbModels
         public SubjectSubgroup SubjectSubgroup { get; set; }
         public ReportTopic ReportTopic { get; set; }
         public ICollection<ReportComment> ReportComments { get; set; }
-        public ICollection<StudentReportFile> studentReportFiles { get; set; }
+        public ICollection<StudentReportFile> StudentReportFiles { get; set; }
     }
 }

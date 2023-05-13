@@ -38,5 +38,21 @@ namespace SystemSprawozdan.Backend.Controllers
             var result = _studentReportService.GetReports(toCheck);
             return Ok(result);
         }
+
+        //TODO: Paweł: Trzeba stworzyc GETa, ktory wyswietla wszystkie sprawozdania, ktore sa przypisane do danej grupy
+        [HttpGet("{reportTopicId}/Individual")]
+        public ActionResult<IEnumerable<ReportTopicDto>> GetIndividualReportsByTopicId([FromRoute] int reportTopicId, [FromQuery] bool? isMarked)
+        {
+            var result = _studentReportService.GetIndividualReportsByTopicId(reportTopicId, isMarked);
+            return Ok(result);
+        }
+
+        //TODO: Paweł: Trzeba stworzyc GETa, ktory wyswietla wszystkie sprawozdania, ktore sa przypisane do danej grupy
+        [HttpGet("{reportTopicId}/Collaborate")]
+        public ActionResult<IEnumerable<ReportTopicDto>> GetCollaborateReportsByTopicId([FromRoute] int reportTopicId, [FromQuery] bool? isMarked)
+        {
+            var result = _studentReportService.GetCollaborateReportsByTopicId(reportTopicId, isMarked);
+            return Ok(result);
+        }
     }
 }
