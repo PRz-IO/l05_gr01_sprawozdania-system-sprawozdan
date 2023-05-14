@@ -1,17 +1,23 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using System.Text.RegularExpressions;
+using SystemSprawozdan.Backend.Authorization;
 using SystemSprawozdan.Backend.Data;
 using SystemSprawozdan.Backend.Data.Models.DbModels;
-using SystemSprawozdan.Backend.Data.Models.Dto;
 using SystemSprawozdan.Backend.Exceptions;
+using SystemSprawozdan.Shared;
+using SystemSprawozdan.Shared.Dto;
+using SystemSprawozdan.Shared.Enums;
+
 
 namespace SystemSprawozdan.Backend.Services
 {
     public interface ISubjectSubgroupService
     {
-        void CreateSubgroup(CreateSubgroupDto createSubgroupDto);
-        List<GroupTypeSubjectSubgroupDto> GetSubgroups(int GroupId);
+        void CreateSubgroup(SubjectSubgroupPostDto createSubgroupDto);
+        List<SubjectSubgroupGetDto> GetSubgroups(int GroupId);
         void AddUserToSubgroup(int SubgroupId);
     }
 
@@ -19,31 +25,42 @@ namespace SystemSprawozdan.Backend.Services
     {
         private readonly ApiDbContext _dbContext;
         private readonly IUserContextService _userContextService;
+        private readonly IAuthorizationService _authorizationService;
         public SubjectSubgroupService(ApiDbContext dbContext, 
-            IUserContextService userContextService)
+            IUserContextService userContextService,
+            IAuthorizationService authorizationService)
         {
             _dbContext = dbContext;
             _userContextService = userContextService;
+            _authorizationService = authorizationService;
         }
 
         //metodki
-        public void CreateSubgroup(CreateSubgroupDto createSubgroupDto)
+        public void CreateSubgroup(SubjectSubgroupPostDto createSubgroupDto)
         {
             var userId = _userContextService.GetUserId;
+
+            var authorizationResult = _authorizationService.
+                AuthorizeAsync(_userContextService.User, null, new UserResourceOperationRequirement(UserResourceOperation.Get)).Result;
+            if (!authorizationResult.Succeeded)
+            {
+                throw new ForbidException();
+            }
 
             var newSubgroup = new SubjectSubgroup()
             {
                 SubjectGroupId = createSubgroupDto.SubjectGroupId,
                 Students = new List<Student>(),
+                Name = createSubgroupDto.SubgroupName,
             };
 
             if (!createSubgroupDto.isIndividual)
             {
-                newSubgroup.Name = createSubgroupDto.SubgroupName;
+                newSubgroup.IsIndividual = false;
             }
             else
             {
-                newSubgroup.Name = null;
+                newSubgroup.IsIndividual = true;
             }
             var user = _dbContext.Student.FirstOrDefault(student => student.Id == userId);
             newSubgroup.Students.Add(user);
@@ -51,15 +68,27 @@ namespace SystemSprawozdan.Backend.Services
             _dbContext.SaveChanges();
             
         }
-        public List<GroupTypeSubjectSubgroupDto> GetSubgroups(int GroupId)
+        public List<SubjectSubgroupGetDto> GetSubgroups(int groupId)
         {
-            var subgroups = _dbContext.SubjectSubgroup.Where(group => group.SubjectGroupId == GroupId && group.Name != null).ToList();
+            var authorizationResult = _authorizationService.
+                AuthorizeAsync(_userContextService.User, null, new UserResourceOperationRequirement(UserResourceOperation.Get)).Result;
+            if (!authorizationResult.Succeeded)
+            {
+                throw new ForbidException();
+            }
 
-            var groupTypeSubgroups = new List<GroupTypeSubjectSubgroupDto>();
+            if(!(_dbContext.SubjectGroup.Any(group => group.Id == groupId)))
+            {
+                throw new NotFoundException("Wrong group id!");
+            }
+
+            var subgroups = _dbContext.SubjectSubgroup.Where(group => group.SubjectGroupId == groupId && group.IsIndividual == false).ToList();
+
+            var groupTypeSubgroups = new List<SubjectSubgroupGetDto>();
 
             foreach (var subgroup in subgroups)
             {
-                groupTypeSubgroups.Add(new GroupTypeSubjectSubgroupDto()
+                groupTypeSubgroups.Add(new SubjectSubgroupGetDto()
                 {
                     Name = subgroup.Name,
                     Id = subgroup.Id,
@@ -69,22 +98,34 @@ namespace SystemSprawozdan.Backend.Services
 
             return groupTypeSubgroups;
         }
-        public void AddUserToSubgroup(int SubgroupId)
-        {// tylko studenci - forbid
+        public void AddUserToSubgroup(int subgroupId)
+        {
             var userId = _userContextService.GetUserId;
+
+            var authorizationResult = _authorizationService.
+                AuthorizeAsync(_userContextService.User, null, new UserResourceOperationRequirement(UserResourceOperation.Get)).Result;
+            if (!authorizationResult.Succeeded)
+            {
+                throw new ForbidException();
+            }
+
+            if (!(_dbContext.SubjectSubgroup.Any(subgroup => subgroup.Id == subgroupId)))
+            {
+                throw new NotFoundException("Wrong subgroup id!");
+            }
+
             var subgroup = _dbContext.SubjectSubgroup
                 .Include(subjectSubgroup => subjectSubgroup.Students)
-                .FirstOrDefault(subgroup => subgroup.Id == SubgroupId && subgroup.Name != null);
+                .FirstOrDefault(subgroup => subgroup.Id == subgroupId && subgroup.IsIndividual == false);
             var user = _dbContext.Student.FirstOrDefault(student => student.Id == userId);
             if (subgroup == null)
-                throw new BadRequestException("Wrong subgroup id!");
+                throw new NotFoundException("Wrong subgroup id!");
             else if (user == null)
                 throw new ForbidException();
-            else
-            {
-                subgroup.Students.Add(user);
-                _dbContext.SubjectSubgroup.Update(subgroup);
-            }
+            
+            subgroup.Students.Add(user);
+            _dbContext.SubjectSubgroup.Update(subgroup);
+
             _dbContext.SaveChanges();
         }
     }

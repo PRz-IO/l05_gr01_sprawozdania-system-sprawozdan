@@ -7,7 +7,8 @@ namespace SystemSprawozdan.Backend.Authorization
         Create,
         Read,
         Update,
-        Delete
+        Delete,
+        Get
     }
     public class UserResourceOperationRequirement : IAuthorizationRequirement
     {

@@ -1,6 +1,6 @@
-﻿namespace SystemSprawozdan.Backend.Data.Models.Dto
+﻿namespace SystemSprawozdan.Shared.Dto
 {
-    public class CreateSubgroupDto
+    public class SubjectSubgroupPostDto
     {
         public int SubjectGroupId { get; set; }
         public bool isIndividual { get; set; }
