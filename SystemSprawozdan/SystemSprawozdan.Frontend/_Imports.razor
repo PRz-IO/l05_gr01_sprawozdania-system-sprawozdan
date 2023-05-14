@@ -1,12 +1,25 @@
 ﻿@using System.Net.Http
 @using System.Net.Http.Json
+@using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components.Routing
 @using Microsoft.AspNetCore.Components.Web
 @using Microsoft.AspNetCore.Components.Web.Virtualization
 @using Microsoft.AspNetCore.Components.WebAssembly.Http
+@using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.JSInterop
 @using MatBlazor
+
 @using SystemSprawozdan.Frontend
+@using SystemSprawozdan.Frontend.CustomClasses
+@using SystemSprawozdan.Frontend.Providers
+@using SystemSprawozdan.Frontend.Services
 @using SystemSprawozdan.Frontend.Shared
 @using SystemSprawozdan.Frontend.Shared.UI
+@using SystemSprawozdan.Frontend.Shared.Layouts
+
+@using SystemSprawozdan.Shared
+@using SystemSprawozdan.Shared.Dto
+@using SystemSprawozdan.Shared.Enums
+
+@attribute [Authorize]

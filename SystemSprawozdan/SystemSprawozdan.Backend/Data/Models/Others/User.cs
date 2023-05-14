@@ -1,4 +1,4 @@
-﻿using SystemSprawozdan.Backend.Data.Enums;
+﻿using SystemSprawozdan.Shared.Enums;
 
 namespace SystemSprawozdan.Backend.Data.Models.Others
 {

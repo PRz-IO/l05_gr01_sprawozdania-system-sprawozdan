@@ -1,16 +1,14 @@
-﻿.container{
+﻿.container {
 	width: 100%;
-	height: 8vh;
-
+	padding: 10px;
 	display: flex;
 	justify-content: center;
 	align-items: center;
-
 	border-bottom: 2px solid var(--panel-line-color);
 }
 
 .container__text {
-	color: var(--font-color-dark);
-	font-size: var(--font-size-large);
+	color: var(--font-color-header);
+	font-size: var(--font-size-medium);
 	font-weight: var(--font-weight-bold);
 }

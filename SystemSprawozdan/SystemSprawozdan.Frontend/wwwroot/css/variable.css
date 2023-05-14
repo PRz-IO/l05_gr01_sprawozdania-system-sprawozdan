@@ -1,12 +1,17 @@
 ﻿:root {
     --primary-color: #4099E5;
     --background-color: #EAEAEA;
-    --panel-background-color: #FEFEFE;
 
-    --font-color-dark: #373737;
-    --font-color-gray: #868484;
-    --font-size-large: 24px;
+    --font-color-header: #373737;
+    --font-color-basic: #868484;
+    --font-size-small: 20px;
+    --font-size-medium: 24px;
+    --font-size-large: 28px;
+    --font-weight-medium: 500;
     --font-weight-bold: 600;
 
-    --panel-line-color: var(--font-color-gray);
+    --panel-background-color: #FEFEFE;
+    --panel-border-radius: 15px;
+    --panel-line-color: var(--font-color-basic);
+    --panel-drop-shadow: -5px 5px 20px 0px #22222255;
 }

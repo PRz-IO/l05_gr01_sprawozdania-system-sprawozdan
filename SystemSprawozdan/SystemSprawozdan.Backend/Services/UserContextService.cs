@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using SystemSprawozdan.Shared.Enums;
 
 namespace SystemSprawozdan.Backend.Services
 {
@@ -19,6 +20,8 @@ namespace SystemSprawozdan.Backend.Services
         public ClaimsPrincipal User => _httpContextAccessor.HttpContext?.User;
 
         public int? GetUserId =>
-            User is null ? null : (int?)int.Parse(User.FindFirst(claim => claim.Type == ClaimTypes.NameIdentifier).Value);
+            User is null ? null : (int?)int.Parse(User.FindFirst(claim => claim.Type == ClaimTypes.NameIdentifier).Value);        
+        public UserRoleEnum? GetUserRole =>
+            User is null ? null : (UserRoleEnum?)int.Parse(User.FindFirst(claim => claim.Type == ClaimTypes.Role).Value);
     }
 }
