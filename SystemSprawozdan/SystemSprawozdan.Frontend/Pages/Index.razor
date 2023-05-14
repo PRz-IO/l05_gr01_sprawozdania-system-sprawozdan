@@ -1,20 +1,23 @@
 ﻿@page "/"
-
-@inject NavigationManager NavigationManager
-
+@inject IAppHttpClient client
 <PageTitle>Index</PageTitle>
 
-<button @onclick=goLogin >Logowanie</button>
+<button @onclick=goLogin >Send</button>
 
-<h1>Hello, world!</h1>
-
-Welcome to your new app.
-
-<SurveyPrompt Title="How is Blazor working for you?" />
 
 @code{
-	public void goLogin()
+	public async void goLogin()
 	{
-		NavigationManager.NavigateTo("/Login");
+		MultipartFormDataContent content = new();
+		
+		content.Add(new StringContent("1"), name: "ReportTopicId");
+		content.Add(new StringContent("Note"), name: "Note");
+		content.Add(new StringContent("true"), name: "IsIndividual");
+
+		//var res = await client1.PostAsync("https://localhost:7184/api/StudentReport", content);
+		var res = await client.PostFormData("https://localhost:7184/api/StudentReport", content);
+		Console.WriteLine(res);
+		
+		
 	}
 }

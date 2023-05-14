@@ -1,7 +1,6 @@
 ﻿using System.Net;
 using System.Runtime.Serialization;
 using MatBlazor;
-using Microsoft.AspNetCore.Components;
 using Toolbelt.Blazor;
 
 namespace SystemSprawozdan.Frontend.Services;
@@ -29,26 +28,26 @@ internal class HttpResponseException : Exception
 public class HttpInterceptorService
 {
     private readonly HttpClientInterceptor _interceptor;
-    private readonly NavigationManager _navManager;
+    private readonly AuthenticationStateProvider _authState;
     private readonly IMatToaster _toaster;
 
-    public HttpInterceptorService(HttpClientInterceptor interceptor, NavigationManager navManager, IMatToaster toaster)
+    public HttpInterceptorService(HttpClientInterceptor interceptor, IMatToaster toaster, AuthenticationStateProvider authState)
     {
         _interceptor = interceptor;
-        _navManager = navManager;
+        _authState = authState;
         _toaster = toaster;
     }
     public void RegisterEvent() => _interceptor.AfterSend += InterceptResponse;
     private async void InterceptResponse(object sender, HttpClientInterceptorEventArgs e)
     {
-        if (!e.Response.IsSuccessStatusCode)
-        {
-            if(e.Response.StatusCode == HttpStatusCode.Unauthorized)
-                _navManager.NavigateTo("/login");
-            
-            var message = await e.Response.Content.ReadAsStringAsync();
-            _toaster.Add(message, MatToastType.Danger, "Error");
-        }
+        if (e.Response.IsSuccessStatusCode) return;
+        
+        var message = await e.Response.Content.ReadAsStringAsync();
+        _toaster.Add(message, MatToastType.Danger, "Error");
+
+        if (e.Response.StatusCode == HttpStatusCode.Unauthorized)
+            await _authState.GetAuthenticationStateAsync();
+        
     }
     public void DisposeEvent() => _interceptor.AfterSend -= InterceptResponse;
 }

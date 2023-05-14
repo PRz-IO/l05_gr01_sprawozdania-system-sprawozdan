@@ -7,6 +7,7 @@ namespace SystemSprawozdan.Frontend.Services
     public interface IAppHttpClient
     {
         public Task<TResponse?> Get<TResponse>(string url, List<HttpParameter>? parameters = null);
+        public Task<string> PostFormData(string url, HttpContent body, List<HttpParameter>? parameters = null);
         public Task<string> Post<TBody>(string url, TBody body, List<HttpParameter>? parameters = null);
         public Task<string> Put<TBody>(string url, TBody body, List<HttpParameter>? parameters = null);
         public T? SerializeStringToObject<T>(string json);
@@ -37,6 +38,14 @@ namespace SystemSprawozdan.Frontend.Services
         {
             url = AddParamsToUrl(url, parameters);
             using var response = await _httpClient.PostAsJsonAsync(url, body);
+            
+            return await response.Content.ReadAsStringAsync();
+        }
+
+        public async Task<string> PostFormData(string url, HttpContent body, List<HttpParameter>? parameters)
+        {
+            url = AddParamsToUrl(url, parameters);
+            using var response = await _httpClient.PostAsync(url, body);
             
             return await response.Content.ReadAsStringAsync();
         }
