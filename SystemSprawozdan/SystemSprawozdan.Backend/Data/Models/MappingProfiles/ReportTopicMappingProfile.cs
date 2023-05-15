@@ -8,7 +8,7 @@ namespace SystemSprawozdan.Backend.Data.Models.MappingProfiles
     {
         public ReportTopicMappingProfile()
         {
-            CreateMap<ReportTopic, ReportTopicDto>()
+            CreateMap<ReportTopic, ReportTopicGetDto>()
                 .ForMember(dest => dest.ReportTopicName, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.ReportTopicDeadline, opt => opt.MapFrom(src => src.Deadline))
                 .ForMember(dest => dest.SubjectGroupName, opt => opt.MapFrom(src => src.SubjectGroup.Name))
