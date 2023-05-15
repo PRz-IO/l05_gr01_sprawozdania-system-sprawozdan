@@ -41,7 +41,7 @@ namespace SystemSprawozdan.Backend.Services
             var userId = _userContextService.GetUserId;
 
             var authorizationResult = _authorizationService.
-                AuthorizeAsync(_userContextService.User, null, new UserResourceOperationRequirement(UserResourceOperation.Get)).Result;
+                AuthorizeAsync(_userContextService.User, null, new UserResourceOperationRequirement(UserResourceOperation.Read)).Result;
             if (!authorizationResult.Succeeded)
             {
                 throw new ForbidException();
@@ -71,7 +71,7 @@ namespace SystemSprawozdan.Backend.Services
         public List<SubjectSubgroupGetDto> GetSubgroups(int groupId)
         {
             var authorizationResult = _authorizationService.
-                AuthorizeAsync(_userContextService.User, null, new UserResourceOperationRequirement(UserResourceOperation.Get)).Result;
+                AuthorizeAsync(_userContextService.User, null, new UserResourceOperationRequirement(UserResourceOperation.Read)).Result;
             if (!authorizationResult.Succeeded)
             {
                 throw new ForbidException();
@@ -103,7 +103,7 @@ namespace SystemSprawozdan.Backend.Services
             var userId = _userContextService.GetUserId;
 
             var authorizationResult = _authorizationService.
-                AuthorizeAsync(_userContextService.User, null, new UserResourceOperationRequirement(UserResourceOperation.Get)).Result;
+                AuthorizeAsync(_userContextService.User, null, new UserResourceOperationRequirement(UserResourceOperation.Read)).Result;
             if (!authorizationResult.Succeeded)
             {
                 throw new ForbidException();
@@ -118,10 +118,6 @@ namespace SystemSprawozdan.Backend.Services
                 .Include(subjectSubgroup => subjectSubgroup.Students)
                 .FirstOrDefault(subgroup => subgroup.Id == subgroupId && subgroup.IsIndividual == false);
             var user = _dbContext.Student.FirstOrDefault(student => student.Id == userId);
-            if (subgroup == null)
-                throw new NotFoundException("Wrong subgroup id!");
-            else if (user == null)
-                throw new ForbidException();
             
             subgroup.Students.Add(user);
             _dbContext.SubjectSubgroup.Update(subgroup);
