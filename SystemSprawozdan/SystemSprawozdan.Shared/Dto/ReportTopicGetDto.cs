@@ -1,6 +1,6 @@
 ﻿namespace SystemSprawozdan.Shared.Dto
 {
-    public class ReportTopicDto
+    public class ReportTopicGetDto
     {
         public string SubjectName { get; set; }
         public string ReportTopicName { get; set; }
