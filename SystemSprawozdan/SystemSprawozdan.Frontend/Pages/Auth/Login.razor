@@ -36,13 +36,7 @@
     {
         await AuthService.Login(User);
         await AuthStateProvider.GetAuthenticationStateAsync();
-        if (string.IsNullOrEmpty(ReturnUrl))
-        {
-            nav.NavigateTo("");
-        }
-        else
-        {
+        if (!string.IsNullOrEmpty(ReturnUrl))
             nav.NavigateTo(ReturnUrl);
-        }
     }
 }
