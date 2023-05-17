@@ -53,7 +53,7 @@ namespace SystemSprawozdan.Frontend.Services
         public async Task<string> Put<TBody>(string url, TBody body, List<HttpParameter>? parameters)
         {
             url = AddParamsToUrl(url, parameters);
-            using var response = await _httpClient.PostAsJsonAsync(url, body);
+            using var response = await _httpClient.PutAsJsonAsync(url, body);
             
             return await response.Content.ReadAsStringAsync();
         }
