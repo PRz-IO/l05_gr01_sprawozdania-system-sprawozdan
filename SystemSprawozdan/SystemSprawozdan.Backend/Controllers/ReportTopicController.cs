@@ -18,11 +18,11 @@ namespace SystemSprawozdan.Backend.Controllers
 
         //TODO: Olek: Trzeba stworzyć GETa, który wyświetla wszystkie tematy sprawozdan, które są oddane przez zalogowanego użytkownika
 
-        [HttpGet("{reportTopicId}")]
-        public ActionResult GetReportTopic([FromRoute] int reportTopicId)
+        [HttpGet]
+        public ActionResult GetReportTopic([FromQuery] int? reportTopicId, int? studentReportId)
         {
-            var reportTopic = _reportTopicService.GetReportTopic(reportTopicId);
-            if (reportTopic is null) return BadRequest("Brak tematu sprawozdania o danym ID!");
+            var reportTopic = _reportTopicService.GetReportTopic(reportTopicId, studentReportId);
+            if (reportTopic is null) return BadRequest($"Brak tematu sprawozdania o ID: {reportTopicId}!");
 
             return Ok(reportTopic);
 

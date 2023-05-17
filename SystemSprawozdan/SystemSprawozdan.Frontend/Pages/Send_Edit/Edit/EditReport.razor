@@ -1,31 +1,160 @@
 @page "/edit/{StudentReportId}"
-@using Newtonsoft.Json
+@using System.Net.Http.Headers
 @inject IJSRuntime JS
 @inject HttpClient Http
 @inject IAppHttpClient AppHttpClient
 
-<h3>Edytowanie sprawozdań</h3>
+<PageTitle>Edytuj sprawozdanie</PageTitle>
+<style>
+    .body-container{
+        height: 100%;
+    }
+    
+    .report-topic-name{
+        display: flex;
+        justify-content: center;
+        margin-bottom: 3vh;
+        font-size: 2rem;
+        margin-top: 3vh;
+    }
+    
+    .main-container{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-evenly;
+        align-content: flex-start;
+        height: 87%;
+        padding-bottom: 6vh;
+    }
+    
+    .left-column{
+        width: 32%;
+        position: relative;
+    }
+    
+    .file-input{
+        cursor: pointer;
+        transition: background-color 400ms;
+        border: dashed var(--primary-color) 4px;
+        border-radius: 46px;
+        background-image: url("Icons/Send_edit/download-icon.svg");
+        background-size: 10%;
+        background-position-x: center;
+        background-position-y: 30%;
+        background-repeat: no-repeat;
+    }
+    
+    .file-upload-text{
+        position: absolute;
+        left: 50%;
+        top: 20%;
+        font-size: 1.3rem;
+        transform: translate(-50%, -50%);
+    }
+    
+    .file-input:hover{
+        background-color: rgba(64,153,229,0.49);
+    }
+    
+    input::file-selector-button{
+        opacity: 0;
+    }
+    
+    input[type="file"]{
+        width: 100%;
+        height: 30%;
+        color: transparent;
+        margin-bottom: 24px;
+    }
+    
+    .existing-files-list{
+        height: 30%;
+        margin-bottom: 15px;
+        overflow-y: scroll;
+    }
+    
+    .to-be-sent-files-list{
+        height: 30%;
+        overflow-y: scroll;
+    }
 
-<p>Testowanie pobierania</p>
+    .right-column{
+        display: flex;
+        flex-direction: column;
+        width: 32%;
+        justify-content: space-evenly;
+    }
+    
+    .mark-text{
+        font-size: 1.1rem;
+        margin: 0;
+    }
 
-<ExistingFilesList Files="SubmittedFilesList" SendFileToDownloadData="passArguments" ></ExistingFilesList>
+</style>
 
+<div class="body-container">
+    <span class="report-topic-name">@ReportTopicName</span>
+    <div class="main-container">
+        <div class="left-column">
+            <span class="file-upload-text">Umieść pliki</span>
+            @for (int i = 0; i < numberOfInputFiles; i++)
+            {
+                <InputFile class="file-input" @key="i" OnChange="OnInputFileChange" multiple style="@GetInputFileStyle(i)"></InputFile>
+            }
+            <pre>@status</pre>
+            
+            <div class="existing-files-list">
+                @if (SubmittedFilesList.Count > 0)
+                {
+                    <ExistingFilesList Files="SubmittedFilesList" SendFileToDownloadData="passArguments"></ExistingFilesList>
+                }
+            </div>
+            
+            <div class="to-be-sent-files-list">
+                @if (_files.Count > 0)
+                {
+                    <FilesToBeSentList Files="_files" RemoveFile="RemoveFileFromList"></FilesToBeSentList>
+                }
+            </div>
+        </div>
+        
+        <div class="right-column">
+            <p class="mark-text">Ocena: @MarkToDisplay</p>
+            <MatTextField TValue="string" @bind-Value="Note" Label="Komentarz dla prowadzącego:" Outlined="true" TextArea="true" Style="height: 30%;"/>
+            <MatTextField TValue="string" @bind-Value="ReportComment" Label="Informacje od prowadzącego:" Outlined="true" TextArea="true" ReadOnly="true" Style="height: 30%;"/>
+            <MatButton OnClick="@(() => send())" Label="Prześlij" Unelevated="true" Class="send-button" Style="height: 12%"></MatButton>
+        </div>
+    </div>
+</div>
 
-<button @onclick="@(() => DownloadFile("kkqfyhlo.vyw", "obrazek.png"))">Pobierz plik!</button>
 
 @code{
     [Parameter]
     public string StudentReportId { get; set; }
 
+    string? status;
+    int numberOfInputFiles = 1;
+    string GetInputFileStyle(int index)
+    {
+        return index == numberOfInputFiles - 1 ? "" : "display: none";
+    }
+    
+    private readonly int _maxAllowedFiles = 100;
+    private readonly long _maxFileSize = 5368709120; // 5 Gigabytes
+    private List<IBrowserFile> _files = new();
+    MultipartFormDataContent filesMultipartFormDataContent = new();
+    
     public int StudentReportIdInteger { get; set; }
     
     public string Token { get; set; }
 
     public List<StudentReportFileGetDto> SubmittedFilesList = new();
-    string randomFileName = string.Empty;
-    string originalName = string.Empty;
-
-
+    public string ReportTopicName { get; set; } = String.Empty;
+    public MarkEnum Mark { get; set; } = MarkEnum.Three;
+    string MarkToDisplay = String.Empty;
+    public string Note { get; set; } = string.Empty;
+    public string ReportComment = String.Empty;
+    
     private async Task DownloadFile(string storedFileName, string originalFileName)
     {
         var response = await Http.GetAsync($"https://localhost:7184/api/StudentReportFile/download/{storedFileName}");
@@ -41,43 +170,175 @@
         }
     }
 
+    public void passArguments(List<string> paramList)
+    {
+        DownloadFile(paramList[0], paramList[1]);
+    }
+    
+    public void RemoveFileFromList(string name)
+    {
+        var fileObjectToRemove = _files.Find(f => f.Name == name);
+        Console.WriteLine(fileObjectToRemove);
+        Console.WriteLine(fileObjectToRemove.ContentType);
+        _files.Remove(fileObjectToRemove);
+    }
+    
+    public async Task OnInputFileChange(InputFileChangeEventArgs e)
+    {
+        numberOfInputFiles++;
+        foreach (var file in e.GetMultipleFiles(_maxAllowedFiles))
+        {
+            _files.Add(file);
+        }
+    }
 
+    public void send()
+    {
+        sendFiles();
+        sendReport();
+    }
+
+    public async void sendFiles()
+    {
+        if (_files.Count == 0)
+        {
+            return;
+        }
+        using var client = new HttpClient();
+        client.DefaultRequestHeaders.Add("Authorization", "Bearer " + Token);
+        var sendFilesUrl = new Uri($"https://localhost:7184/api/StudentReportFile/{StudentReportId}");
+        foreach (var file in _files)
+        {
+            var fileContent = new StreamContent(file.OpenReadStream(_maxFileSize));
+            var fileContentType = file.ContentType;
+            var fileName = file.Name;
+            if (fileContentType == "")
+            {
+                var extension = fileName.Split('.').Last();
+                switch (extension)
+                {
+                    case "sql":
+                    {
+                        fileContent.Headers.ContentType = new MediaTypeHeaderValue("application/sql");
+                        break;
+                    }
+                    default:
+                    {
+                        fileContent.Headers.ContentType = new MediaTypeHeaderValue("");
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                fileContent.Headers.ContentType = new MediaTypeHeaderValue(fileContentType);
+                
+            }
+            filesMultipartFormDataContent.Add(
+                content: fileContent,
+                name: "\"files\"",
+                fileName: file.Name);
+        }
+        var filesResponse = await client.PostAsync(sendFilesUrl, filesMultipartFormDataContent);
+        filesResponse.EnsureSuccessStatusCode();
+    }
+
+    public async void sendReport()
+    {
+        if (Note.Length == 0) return;
+        var sendReportUri = new Uri($"https://localhost:7184/api/StudentReport/{StudentReportId}");
+        var reportToSend = new StudentReportPutDto { ReportCommentFromStudent = Note };
+        await AppHttpClient.Put(sendReportUri.ToString(), reportToSend);
+    }
+    
     protected override async Task OnInitializedAsync()
     {
         StudentReportIdInteger = Int32.Parse(StudentReportId);
-        var loginData = new LoginUserDto()
+        var loginData = new LoginUserDto
         {
-            Login = "169587",
+            Login = "169571",
             Password = "Hasło123"
         };
         Token = await AppHttpClient.Post("Account/login", loginData);
         
-        Uri getAllReportFilesEndpointUri;
-        getAllReportFilesEndpointUri =  new Uri($"https://localhost:7184/api/StudentReportFile/{StudentReportIdInteger}");
-        using (var client = new HttpClient())
+        
+        var getReportTopicEndpointUri = new Uri($"https://localhost:7184/api/ReportTopic/?studentReportId={StudentReportIdInteger}");
+        var reportTopicGetDto = await AppHttpClient.Get<ReportTopicGetDto>(getReportTopicEndpointUri.ToString());
+        ReportTopicName = reportTopicGetDto.Name;
+        
+        
+        var getReportCommentEndpointUri = new Uri($"https://localhost:7184/api/ReportComment/{StudentReportIdInteger}");
+        var reportCommentDto = await AppHttpClient.Get<ReportCommentGetDto>(getReportCommentEndpointUri.ToString());
+        if (reportCommentDto != null)
         {
-            client.DefaultRequestHeaders.Add("Authorization", "Bearer " + Token);
-            HttpResponseMessage response = await client.GetAsync(getAllReportFilesEndpointUri);
-            string responseBody = await response.Content.ReadAsStringAsync();
-            List<StudentReportFileGetDto> deserializedObjectsList = JsonConvert.DeserializeObject<List<StudentReportFileGetDto>>(responseBody);
-            foreach (var obj in deserializedObjectsList)
-            {
-                var temp = new StudentReportFileGetDto()
-                {
-                    Id = obj.Id,
-                    StudentReportId = obj.StudentReportId,
-                    ContentType = obj.ContentType,
-                    OriginalFileName = obj.OriginalFileName,
-                    RandomizedFileName = obj.RandomizedFileName
-                };
-                SubmittedFilesList.Add(temp);
-            }
+            ReportComment = reportCommentDto.Content;
+        }
+        else
+        {
+            ReportComment = String.Empty;
         }
         
-    }
-
-    public void passArguments(List<string> paramList)
-    {
-        DownloadFile(paramList[0], paramList[1]);
+        
+        var getAllReportFilesEndpointUri = new Uri($"https://localhost:7184/api/StudentReportFile/{StudentReportIdInteger}");
+        var studentReportFilesList = await AppHttpClient.Get<List<StudentReportFileGetDto>>(getAllReportFilesEndpointUri.ToString());
+        foreach (var obj in studentReportFilesList)
+        {
+            var temp = new StudentReportFileGetDto()
+            {
+                Id = obj.Id,
+                StudentReportId = obj.StudentReportId,
+                ContentType = obj.ContentType,
+                OriginalFileName = obj.OriginalFileName,
+                RandomizedFileName = obj.RandomizedFileName
+            };
+            SubmittedFilesList.Add(temp);
+        }
+        
+        
+        var getStudentReportInfoEndpointUri = new Uri($"https://localhost:7184/api/StudentReport/fullReport/{StudentReportId}");
+        var studentReportGetDto = await AppHttpClient.Get<StudentReportGetDto>(getStudentReportInfoEndpointUri.ToString());
+        switch (studentReportGetDto.Mark)
+        {
+            case MarkEnum.Failed:
+            {
+                MarkToDisplay = "Niezaliczone";
+                break;
+            }
+            case MarkEnum.Passed:
+            {
+                MarkToDisplay = "Zaliczone";
+                break;
+            }
+            case MarkEnum.Three:
+            {
+                MarkToDisplay = "3.0";
+                break;
+            }
+            case MarkEnum.ThreeAndHalf:
+            {
+                MarkToDisplay = "3.5";
+                break;
+            }
+            case MarkEnum.Four:
+            {
+                MarkToDisplay = "4.0";
+                break;
+            }
+            case MarkEnum.FourAndHalf:
+            {
+                MarkToDisplay = "4.5";
+                break;
+            }
+            case MarkEnum.Five:
+            {
+                MarkToDisplay = "5.0";
+                break;
+            }
+            default:
+            {
+                MarkToDisplay = "W trakcie oceniania...";
+                break;
+            }
+        }
     }
 }

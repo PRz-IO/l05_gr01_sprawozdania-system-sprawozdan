@@ -21,17 +21,24 @@ namespace SystemSprawozdan.Backend.Controllers
         }
 
         [HttpPost]
-        public ActionResult PostStudentReport([FromForm] StudentReportPostDto postStudentReportDto)
+        public ActionResult PostStudentReport([FromBody] StudentReportPostDto postStudentReportDto)
         {
-            _studentReportService.PostStudentReport(postStudentReportDto);
-            return Ok();
+            var result = _studentReportService.PostStudentReport(postStudentReportDto);
+            return Ok(result.Id);
         }
 
         [HttpPut("{studentReportId:int}")]
-        public ActionResult PutStudentReport([FromRoute] int studentReportId, [FromForm] StudentReportPutDto putStudentReportDto)
+        public ActionResult PutStudentReport([FromRoute] int studentReportId, [FromBody] StudentReportPutDto putStudentReportDto)
         {
              _studentReportService.PutStudentReport(studentReportId, putStudentReportDto);
             return Ok();
+        }
+
+        [HttpGet("fullReport/{studentReportId:int}")]
+        public ActionResult<StudentReportGetDto> GetStudentReport([FromRoute] int studentReportId)
+        {
+            var result = _studentReportService.GetStudentReport(studentReportId);
+            return Ok(result);
         }
 
         //TODO: KUSZO: Trzeba stworzyc GETa, ktory wyswietla wszystkie tematy sprawozdan, ktore sa przypisane do danego prowadzacego, ktory jest zalogowany

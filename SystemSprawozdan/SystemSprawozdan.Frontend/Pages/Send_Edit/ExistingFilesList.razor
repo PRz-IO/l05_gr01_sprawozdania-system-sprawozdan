@@ -27,7 +27,7 @@
     
     .file-icon{
         margin-right: 5px;
-        height: 80%;
+        width: 1.5rem;
     }
     
     .file-name{
@@ -45,7 +45,7 @@
 
 </style>
 
-<div class="main-container-files-list">
+@*<div class="main-container-files-list">*@
     @foreach (var file in Files)
     {
         <div class="file-item">
@@ -147,11 +147,11 @@
             </div>
             
             <button class="button" onclick="@(() => { paramsData.Add(file.RandomizedFileName); paramsData.Add(file.OriginalFileName); InvokeRemoveFile(paramsData); })">
-                <img src="Icons/Send_edit/Send/download-icon.svg" alt="x-button" style="width: 100%; height: 100%"/>
+                <img src="Icons/Send_edit/download-icon.svg" alt="x-button" style="width: 100%; height: 100%"/>
             </button>
         </div>
     }
-</div>
+@*</div>*@
 
 
 @code {

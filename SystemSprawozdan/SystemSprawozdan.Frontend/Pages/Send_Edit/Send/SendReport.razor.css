@@ -14,14 +14,6 @@
     margin-top: 3vh;
 }
 
-.file-upload-text{
-    position: absolute;
-    left: 50%;
-    top: 54%;
-    font-size: 2rem;
-    transform: translate(-50%, -50%);
-}
-
 .left-column{
     width: 32%;
     position: relative;
@@ -36,6 +28,7 @@
 
 .deadline{
     font-size: 1.5rem;
+    margin: 0;
 }
 .radio-buttons{
     display: flex;

@@ -14,6 +14,7 @@ using SystemSprawozdan.Backend.Data.Seeder;
 using SystemSprawozdan.Backend.Authorization;
 using FluentValidation;
 using Microsoft.AspNetCore.Http.Features;
+using SystemSprawozdan.Backend.Controllers;
 using SystemSprawozdan.Backend.Data.Models.Validators;
 using SystemSprawozdan.Shared.Dto;
 
@@ -81,6 +82,7 @@ builder.Services.AddScoped<ISubjectGroupService, SubjectGroupService>();
 builder.Services.AddScoped<ISubjectSubgroupService, SubjectSubgroupService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IStudentReportFileService, StudentReportFileService>();
+builder.Services.AddScoped<IReportCommentService, ReportCommentService>();
 
 var app = builder.Build();
 

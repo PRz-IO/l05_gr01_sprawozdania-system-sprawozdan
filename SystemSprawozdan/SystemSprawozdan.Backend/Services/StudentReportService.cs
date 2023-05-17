@@ -19,9 +19,10 @@ namespace SystemSprawozdan.Backend.Services
 {
     public interface IStudentReportService
     {
-        void PostStudentReport(StudentReportPostDto postStudentReportDto);
+        StudentReport PostStudentReport(StudentReportPostDto postStudentReportDto);
         void PutStudentReport(int studentReportId, StudentReportPutDto putStudentReportDto);
         IEnumerable<ReportTopicDto> GetReports(bool? toCheck);
+        StudentReportGetDto GetStudentReport(int studentReportId);
     }
 
     public class StudentReportService : IStudentReportService
@@ -42,11 +43,11 @@ namespace SystemSprawozdan.Backend.Services
             _authorizationService = authorizationService;
         }
 
-        public void PostStudentReport(StudentReportPostDto postStudentReportDto)
+        public StudentReport PostStudentReport(StudentReportPostDto postStudentReportDto)
         {
             var loginUserId = _userContextService.GetUserId;
-            var reportTopicIdInteger = int.Parse(postStudentReportDto.ReportTopicId);
-            var isIndividualBoolean = bool.Parse(postStudentReportDto.IsIndividual);
+            var reportTopicIdInteger = (postStudentReportDto.ReportTopicId);
+            var isIndividualBoolean = (postStudentReportDto.IsIndividual);
 
             var subjectGroup = _dbContext
                 .SubjectGroup.FirstOrDefault(subjectGroup =>
@@ -103,6 +104,10 @@ namespace SystemSprawozdan.Backend.Services
             };
             _dbContext.StudentReport.Add(newStudentReport);
             _dbContext.SaveChanges();
+
+
+            var result = newStudentReport;
+            return result;
         }
         
         public void PutStudentReport(int studentReportId, StudentReportPutDto putStudentReportDto)
@@ -126,28 +131,6 @@ namespace SystemSprawozdan.Backend.Services
                     reportToEdit.Note = commentToInsert;
                 }
             }
-            _dbContext.SaveChanges();
-
-            /*if (putStudentReportDto.Files is null) return;
-
-            foreach (FormFile file in putStudentReportDto.Files)
-            {
-                if (file != null)
-                {
-                    if (file.Length > 0)
-                    {
-                        using var memoryStream = new MemoryStream();
-                        file.CopyToAsync(memoryStream);
-                        var studentReportFile = new StudentReportFile()
-                        {
-                            StudentReportId = reportToEdit.Id,
-                            File = memoryStream.ToArray()
-                        };
-
-                        _dbContext.StudentReportFile.Add(studentReportFile);
-                    }
-                }
-            }*/
             reportToEdit.LastModified = DateTime.UtcNow;
             _dbContext.SaveChanges();
         }
@@ -183,6 +166,21 @@ namespace SystemSprawozdan.Backend.Services
             var reportsDto = _mapper.Map<List<ReportTopicDto>>(reportsFromDbList);
             
             return reportsDto;
+        }
+
+        public StudentReportGetDto GetStudentReport(int studentReportId)
+        {
+            var studentReport = _dbContext.StudentReport.FirstOrDefault(report => report.Id == studentReportId);
+            var studentReportDto = new StudentReportGetDto
+            {
+                LastModified = studentReport.LastModified,
+                Note = studentReport.Note,
+                Mark = studentReport.Mark,
+                ToCheck = studentReport.ToCheck,
+                SentAt = studentReport.SentAt
+            };
+
+            return studentReportDto;
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿@page "/register"
 @inject IAuthService AuthService
 @using System.ComponentModel.DataAnnotations
+@inject IMatToaster toast
 
 <EditForm Style="height: 100%; width: 100%; display: flex;flex: 1 1 0;flex-direction: column;" Model="frontendRegister" OnValidSubmit="TryRegister">
     <ObjectGraphDataAnnotationsValidator />
@@ -77,5 +78,6 @@
     public void TryRegister()
     {
         AuthService.Register(frontendRegister.User);
+        toast.Add("Konto utowrzone pomyślnie", MatToastType.Success, "Sukces!");
     }
 }

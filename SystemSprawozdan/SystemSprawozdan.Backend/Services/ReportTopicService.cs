@@ -7,7 +7,7 @@ namespace SystemSprawozdan.Backend.Services
 {
     public interface IReportTopicService
     {
-        ReportTopicGetDto GetReportTopic(int reportTopicId);
+        ReportTopicGetDto GetReportTopic(int? reportTopicId, int? studentReportId);
     }
 
     public class ReportTopicService : IReportTopicService
@@ -19,15 +19,26 @@ namespace SystemSprawozdan.Backend.Services
         }
 
 
-        public ReportTopicGetDto GetReportTopic(int reportTopicId)
+        public ReportTopicGetDto GetReportTopic(int? reportTopicId, int? studentReportId)
         {
-            var reportTopic = _dbContext.ReportTopic.FirstOrDefault(t => t.Id == reportTopicId);
-            if (reportTopic is null) return null;
-            var reportTopicDto = new ReportTopicGetDto()
+            var reportTopicDto = new ReportTopicGetDto();
+            if (reportTopicId != null && studentReportId == null)
             {
-                Name = reportTopic.Name,
-                Deadline = reportTopic.Deadline
-            };
+                var reportTopic = _dbContext.ReportTopic.FirstOrDefault(t => t.Id == reportTopicId);
+                if (reportTopic is null) return null;
+                reportTopicDto.Name = reportTopic.Name;
+                reportTopicDto.Deadline = reportTopic.Deadline; 
+                
+            }
+
+            if (reportTopicId == null && studentReportId != null)
+            {
+                var studentReport = _dbContext.StudentReport.FirstOrDefault(report => report.Id == studentReportId);
+                var reportTopic = _dbContext.ReportTopic.FirstOrDefault(topic => topic.Id == studentReport.ReportTopicId);
+
+                reportTopicDto.Name = reportTopic.Name;
+                reportTopicDto.Deadline = reportTopic.Deadline;
+            }
 
             return reportTopicDto;
         }
