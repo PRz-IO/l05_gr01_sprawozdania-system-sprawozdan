@@ -6,8 +6,8 @@ namespace SystemSprawozdan.Frontend.Services
     public interface IAuthService
     {
         public Task Login(LoginUserDto loginUser);
-        public void Register(RegisterStudentDto registerStudent);
-        public void RestorePassword(RestoreUserPasswordDto restoreUserPassword);
+        public Task Register(RegisterStudentDto registerStudent);
+        public Task RestorePassword(RestoreUserPasswordDto restoreUserPassword);
     }
     public class AuthService : IAuthService
     {
@@ -26,12 +26,12 @@ namespace SystemSprawozdan.Frontend.Services
             await _js.InvokeVoidAsync("localStorage.setItem", "token", token);
         }
 
-        public async void Register(RegisterStudentDto registerStudent)
+        public async Task Register(RegisterStudentDto registerStudent)
         {
             await _httpClient.Post("Account/register", registerStudent);
         }
 
-        public async void RestorePassword(RestoreUserPasswordDto restoreUserPassword)
+        public async Task RestorePassword(RestoreUserPasswordDto restoreUserPassword)
         {
             await _httpClient.Put("Account/restorePassword", restoreUserPassword);
         }

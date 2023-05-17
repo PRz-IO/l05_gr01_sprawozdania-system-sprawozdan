@@ -1,7 +1,7 @@
 ﻿@page "/login"
 @inject IAuthService AuthService
 @inject AuthenticationStateProvider AuthStateProvider
-@inject NavigationManager nav
+@inject NavigationManager NavigatorManager
 
 <EditForm Style="height: 100%; width: 100%; display: flex;flex: 1 1 0;flex-direction: column;justify-content: center;" Model="User" OnValidSubmit="TryLogin">
     <DataAnnotationsValidator />
@@ -37,6 +37,8 @@
         await AuthService.Login(User);
         await AuthStateProvider.GetAuthenticationStateAsync();
         if (!string.IsNullOrEmpty(ReturnUrl))
-            nav.NavigateTo(ReturnUrl);
+            NavigatorManager.NavigateTo(ReturnUrl);
+        else
+            NavigatorManager.NavigateTo("/");
     }
 }
