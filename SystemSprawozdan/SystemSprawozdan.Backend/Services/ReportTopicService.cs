@@ -1,6 +1,4 @@
-﻿using SystemSprawozdan.Backend.Controllers;
-using SystemSprawozdan.Backend.Data;
-using SystemSprawozdan.Backend.Data.Models.DbModels;
+﻿using SystemSprawozdan.Backend.Data;
 using SystemSprawozdan.Shared.Dto;
 
 namespace SystemSprawozdan.Backend.Services

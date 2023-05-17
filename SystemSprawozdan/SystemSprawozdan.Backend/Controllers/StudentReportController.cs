@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using SystemSprawozdan.Backend.Data;
-using SystemSprawozdan.Backend.Data.Models.DbModels;
 using SystemSprawozdan.Backend.Services;
-using SystemSprawozdan.Shared;
 using SystemSprawozdan.Shared.Dto;
 
 namespace SystemSprawozdan.Backend.Controllers

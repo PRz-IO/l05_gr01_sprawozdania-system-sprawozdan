@@ -178,8 +178,6 @@
     public void RemoveFileFromList(string name)
     {
         var fileObjectToRemove = _files.Find(f => f.Name == name);
-        Console.WriteLine(fileObjectToRemove);
-        Console.WriteLine(fileObjectToRemove.ContentType);
         _files.Remove(fileObjectToRemove);
     }
     

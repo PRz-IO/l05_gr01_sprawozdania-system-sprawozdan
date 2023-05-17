@@ -1,19 +1,10 @@
-﻿using System.Net;
-using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using System.Security.Claims;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using SystemSprawozdan.Backend.Authorization;
 using SystemSprawozdan.Backend.Data;
 using SystemSprawozdan.Backend.Data.Models.DbModels;
-using SystemSprawozdan.Backend.Exceptions;
 using SystemSprawozdan.Shared.Dto;
-using SystemSprawozdan.Backend.Exceptions;
-using SystemSprawozdan.Shared;
+
 
 namespace SystemSprawozdan.Backend.Services
 {

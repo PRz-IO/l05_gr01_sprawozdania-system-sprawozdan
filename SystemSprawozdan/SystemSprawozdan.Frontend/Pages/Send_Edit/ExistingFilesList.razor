@@ -1,11 +1,5 @@
 ﻿<style>
-    .main-container-files-list{
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-        overflow-y: scroll;
-    }
-        
+    
     .file-item{
         display: flex;
         align-items: center;
@@ -43,9 +37,9 @@
         appearance: none;
     }
 
+
 </style>
 
-@*<div class="main-container-files-list">*@
     @foreach (var file in Files)
     {
         <div class="file-item">
@@ -151,8 +145,6 @@
             </button>
         </div>
     }
-@*</div>*@
-
 
 @code {
 

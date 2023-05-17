@@ -1,6 +1,5 @@
 ﻿@page "/send/{ReportTopicId}"
 @using System.Net.Http.Headers;
-@using Newtonsoft.Json
 @inject IAppHttpClient AppHttpClient
 
 <PageTitle>Wyślij sprawozdanie</PageTitle>
@@ -203,8 +202,6 @@
     public void RemoveFileFromList(string name)
     {
         var fileObjectToRemove = _files.Find(f => f.Name == name);
-        Console.WriteLine(fileObjectToRemove);
-        Console.WriteLine(fileObjectToRemove.ContentType);
         _files.Remove(fileObjectToRemove);
     }
 
