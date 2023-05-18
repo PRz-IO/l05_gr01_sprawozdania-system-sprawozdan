@@ -20,7 +20,7 @@ namespace SystemSprawozdan.Backend.Services
         public ReportTopicGetDto GetReportTopic(int? reportTopicId, int? studentReportId)
         {
             var reportTopicDto = new ReportTopicGetDto();
-            if (reportTopicId != null && studentReportId == null)
+            if (reportTopicId != null)
             {
                 var reportTopic = _dbContext.ReportTopic.FirstOrDefault(t => t.Id == reportTopicId);
                 if (reportTopic is null) return null;
@@ -29,7 +29,7 @@ namespace SystemSprawozdan.Backend.Services
                 
             }
 
-            if (reportTopicId == null && studentReportId != null)
+            if (studentReportId != null)
             {
                 var studentReport = _dbContext.StudentReport.FirstOrDefault(report => report.Id == studentReportId);
                 var reportTopic = _dbContext.ReportTopic.FirstOrDefault(topic => topic.Id == studentReport.ReportTopicId);

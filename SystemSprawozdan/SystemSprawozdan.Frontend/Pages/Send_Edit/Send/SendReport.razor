@@ -17,7 +17,7 @@
         transition: background-color 400ms;
         border: dashed var(--primary-color) 4px;
         border-radius: 46px;
-        background-image: url("Icons/Send_edit/Send/download-icon.svg");
+        background-image: url("Icons/Send_edit/download-icon.svg");
         background-size: 25%;
         background-position: center;
         background-repeat: no-repeat;
@@ -40,8 +40,9 @@
     }
     
     .files-list{
-        height: 25%;
+        height: 28%;
         overflow-y: scroll;
+        border-radius: 15px;
     }
 </style>
 
@@ -58,7 +59,7 @@
             <div class="files-list">
                 @if (_files.Count > 0)
                 {
-                    <FilesToBeSentList Files="_files" RemoveFile="RemoveFileFromList"></FilesToBeSentList>
+                    <FilesList FilesToBeSent="_files" RemoveFile="RemoveFileFromList"></FilesList>
                 }
             </div>
         </div>
@@ -184,16 +185,6 @@
         Token = await AppHttpClient.Post("Account/login", loginData);
 
         reportTopicGetEndpointUri =  new Uri($"https://localhost:7184/api/ReportTopic/?reportTopicId={ReportTopicId}");
-        /*using (var client = new HttpClient())
-        {
-            HttpResponseMessage response = await client.GetAsync(reportTopicGetEndpointUri);
-            string responseBody = await response.Content.ReadAsStringAsync();
-            ReportTopicGetDto deserializedReportTopicDto = JsonConvert.DeserializeObject<ReportTopicGetDto>(responseBody);
-            var dateTime = deserializedReportTopicDto.Deadline;
-            Deadline = dateTime.ToString("g");
-            TopicName = deserializedReportTopicDto.Name;
-        }*/
-
         var reportTopicGetDto = await AppHttpClient.Get<ReportTopicGetDto>(reportTopicGetEndpointUri.ToString());
         Deadline = reportTopicGetDto.Deadline.ToString("g");
         TopicName = reportTopicGetDto.Name;

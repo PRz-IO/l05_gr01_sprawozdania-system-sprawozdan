@@ -8,14 +8,16 @@
 <style>
     .body-container{
         height: 100%;
+        display: flex;
+        flex-direction: column;
     }
     
     .report-topic-name{
         display: flex;
         justify-content: center;
-        margin-bottom: 3vh;
         font-size: 2rem;
-        margin-top: 3vh;
+        padding-top: 2vh;
+        height: 10%;
     }
     
     .main-container{
@@ -23,7 +25,7 @@
         flex-direction: row;
         justify-content: space-evenly;
         align-content: flex-start;
-        height: 87%;
+        height: 90%;
         padding-bottom: 6vh;
     }
     
@@ -67,22 +69,17 @@
         margin-bottom: 24px;
     }
     
-    .existing-files-list{
-        height: 30%;
-        margin-bottom: 15px;
+    .files-list{
+        height: 67%;
         overflow-y: scroll;
-    }
-    
-    .to-be-sent-files-list{
-        height: 30%;
-        overflow-y: scroll;
+        border-radius: 15px;
     }
 
     .right-column{
         display: flex;
         flex-direction: column;
         width: 32%;
-        justify-content: space-evenly;
+        justify-content: space-between;
     }
     
     .mark-text{
@@ -101,20 +98,9 @@
             {
                 <InputFile class="file-input" @key="i" OnChange="OnInputFileChange" multiple style="@GetInputFileStyle(i)"></InputFile>
             }
-            <pre>@status</pre>
-            
-            <div class="existing-files-list">
-                @if (SubmittedFilesList.Count > 0)
-                {
-                    <ExistingFilesList Files="SubmittedFilesList" SendFileToDownloadData="passArguments"></ExistingFilesList>
-                }
-            </div>
-            
-            <div class="to-be-sent-files-list">
-                @if (_files.Count > 0)
-                {
-                    <FilesToBeSentList Files="_files" RemoveFile="RemoveFileFromList"></FilesToBeSentList>
-                }
+
+            <div class="files-list">
+                <FilesList ExistingFiles="SubmittedFilesList" FilesToBeSent="_filesToBeSent" SendFileToDownloadData="passArguments" RemoveFile="RemoveFileFromList"></FilesList>
             </div>
         </div>
         
@@ -131,8 +117,7 @@
 @code{
     [Parameter]
     public string StudentReportId { get; set; }
-
-    string? status;
+    
     int numberOfInputFiles = 1;
     string GetInputFileStyle(int index)
     {
@@ -141,7 +126,7 @@
     
     private readonly int _maxAllowedFiles = 100;
     private readonly long _maxFileSize = 5368709120; // 5 Gigabytes
-    private List<IBrowserFile> _files = new();
+    private List<IBrowserFile> _filesToBeSent = new();
     MultipartFormDataContent filesMultipartFormDataContent = new();
     
     public int StudentReportIdInteger { get; set; }
@@ -177,8 +162,8 @@
     
     public void RemoveFileFromList(string name)
     {
-        var fileObjectToRemove = _files.Find(f => f.Name == name);
-        _files.Remove(fileObjectToRemove);
+        var fileObjectToRemove = _filesToBeSent.Find(f => f.Name == name);
+        _filesToBeSent.Remove(fileObjectToRemove);
     }
     
     public async Task OnInputFileChange(InputFileChangeEventArgs e)
@@ -186,7 +171,7 @@
         numberOfInputFiles++;
         foreach (var file in e.GetMultipleFiles(_maxAllowedFiles))
         {
-            _files.Add(file);
+            _filesToBeSent.Add(file);
         }
     }
 
@@ -198,14 +183,14 @@
 
     public async void sendFiles()
     {
-        if (_files.Count == 0)
+        if (_filesToBeSent.Count == 0)
         {
             return;
         }
         using var client = new HttpClient();
         client.DefaultRequestHeaders.Add("Authorization", "Bearer " + Token);
         var sendFilesUrl = new Uri($"https://localhost:7184/api/StudentReportFile/{StudentReportId}");
-        foreach (var file in _files)
+        foreach (var file in _filesToBeSent)
         {
             var fileContent = new StreamContent(file.OpenReadStream(_maxFileSize));
             var fileContentType = file.ContentType;
