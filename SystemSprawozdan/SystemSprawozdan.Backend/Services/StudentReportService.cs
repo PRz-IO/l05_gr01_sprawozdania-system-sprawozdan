@@ -14,8 +14,9 @@ namespace SystemSprawozdan.Backend.Services
     {
         StudentReport PostStudentReport(StudentReportPostDto postStudentReportDto);
         void PutStudentReport(int studentReportId, StudentReportPutDto putStudentReportDto);
-        IEnumerable<ReportTopicDto> GetReports(bool? toCheck);
+        IEnumerable<ReportTopicGetDto> GetReports(bool? toCheck);
         StudentReportGetDto GetStudentReport(int studentReportId);
+        List<StudentReportGetDto> GetStudentReportsByTopicId(int reportTopicId, bool? isIndividual, bool? isMarked);
     }
 
     public class StudentReportService : IStudentReportService
@@ -125,21 +126,6 @@ namespace SystemSprawozdan.Backend.Services
             _dbContext.SaveChanges();
         }
         
-        public IEnumerable<ReportTopicDto> GetReports(bool? toCheck)
-        {
-            var authorizationResult = _authorizationService.AuthorizeAsync(
-                _userContextService.User,
-                null,
-                new TeacherResourceOperationRequirement(TeacherResourceOperation.Read)).Result;
-
-            if(!authorizationResult.Succeeded)
-            {
-                throw new ForbidException();
-            }
-            
-            _dbContext.SaveChanges();
-            return uploadResults;
-        }
 
         public IEnumerable<ReportTopicGetDto> GetReports(bool? toCheck)
         {
@@ -148,10 +134,10 @@ namespace SystemSprawozdan.Backend.Services
             var teacherId = _userContextService.GetUserId;
 
             var reportsFromDb = _dbContext.ReportTopic
-                        .Include(reportTopic => reportTopic.SubjectGroup)
-                            .ThenInclude(subjectGroup => subjectGroup.Subject)
-                                .ThenInclude(subject => subject.Major)  
-                        .Where(reportTopic => reportTopic.SubjectGroup.TeacherId == teacherId);
+                .Include(reportTopic => reportTopic.SubjectGroup)
+                .ThenInclude(subjectGroup => subjectGroup.Subject)
+                .ThenInclude(subject => subject.Major)  
+                .Where(reportTopic => reportTopic.SubjectGroup.TeacherId == teacherId);
 
             if (toCheck != null)
             {
@@ -180,9 +166,7 @@ namespace SystemSprawozdan.Backend.Services
 
             return studentReportDto;
         }
-    }
-}
-
+        
         public List<StudentReportGetDto> GetStudentReportsByTopicId(int reportTopicId, bool? isIndividual, bool? isMarked)
         {
             VerifyUserHasTeacherPermission(TeacherResourceOperation.Read);
@@ -193,7 +177,7 @@ namespace SystemSprawozdan.Backend.Services
 
             var reports = _dbContext.StudentReport
                 .Include(report => report.SubjectSubgroup)
-                    .ThenInclude(subgroup => subgroup.Students)
+                .ThenInclude(subgroup => subgroup.Students)
                 .Where(report => report.ReportTopicId == reportTopicId);
 
             if (isMarked is not null)
@@ -205,7 +189,7 @@ namespace SystemSprawozdan.Backend.Services
             var reportsGetDto = _mapper.Map<List<StudentReportGetDto>>(reports.ToList());
             return reportsGetDto;
         }
-
+        
         private void VerifyUserHasTeacherPermission(TeacherResourceOperation teacherResourceOperation)
         {
             var authorizationResult = _authorizationService.AuthorizeAsync(
@@ -218,5 +202,3 @@ namespace SystemSprawozdan.Backend.Services
         }
     }
 }
-
-            

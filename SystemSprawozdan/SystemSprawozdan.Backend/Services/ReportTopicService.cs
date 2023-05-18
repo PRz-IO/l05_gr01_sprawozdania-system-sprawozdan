@@ -24,8 +24,8 @@ namespace SystemSprawozdan.Backend.Services
             {
                 var reportTopic = _dbContext.ReportTopic.FirstOrDefault(t => t.Id == reportTopicId);
                 if (reportTopic is null) return null;
-                reportTopicDto.Name = reportTopic.Name;
-                reportTopicDto.Deadline = reportTopic.Deadline; 
+                reportTopicDto.ReportTopicName = reportTopic.Name;
+                reportTopicDto.ReportTopicDeadline = reportTopic.Deadline; 
                 
             }
 
@@ -34,8 +34,8 @@ namespace SystemSprawozdan.Backend.Services
                 var studentReport = _dbContext.StudentReport.FirstOrDefault(report => report.Id == studentReportId);
                 var reportTopic = _dbContext.ReportTopic.FirstOrDefault(topic => topic.Id == studentReport.ReportTopicId);
 
-                reportTopicDto.Name = reportTopic.Name;
-                reportTopicDto.Deadline = reportTopic.Deadline;
+                reportTopicDto.ReportTopicName = reportTopic.Name;
+                reportTopicDto.ReportTopicDeadline = reportTopic.Deadline;
             }
 
             return reportTopicDto;

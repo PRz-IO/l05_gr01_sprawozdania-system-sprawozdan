@@ -9,4 +9,6 @@ public class StudentReportGetDto
     public DateTime LastModified { get; set; }
     public bool ToCheck { get; set; }
     public MarkEnum? Mark { get; set; }
+    public bool IsIndividual { get; set; }
+    public SubjectSubgroupBasicGetDto SubjectSubgroup { get; set; }
 }

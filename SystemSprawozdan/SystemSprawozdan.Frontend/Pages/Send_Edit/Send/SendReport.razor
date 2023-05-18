@@ -186,8 +186,8 @@
 
         reportTopicGetEndpointUri =  new Uri($"https://localhost:7184/api/ReportTopic/?reportTopicId={ReportTopicId}");
         var reportTopicGetDto = await AppHttpClient.Get<ReportTopicGetDto>(reportTopicGetEndpointUri.ToString());
-        Deadline = reportTopicGetDto.Deadline.ToString("g");
-        TopicName = reportTopicGetDto.Name;
+        Deadline = reportTopicGetDto.ReportTopicDeadline.ToString("g");
+        TopicName = reportTopicGetDto.ReportTopicName;
     }
 
     public void RemoveFileFromList(string name)

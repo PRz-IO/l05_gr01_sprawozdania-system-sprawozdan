@@ -107,7 +107,7 @@
         <div class="right-column">
             <p class="mark-text">Ocena: @MarkToDisplay</p>
             <MatTextField TValue="string" @bind-Value="Note" Label="Komentarz dla prowadzącego:" Outlined="true" TextArea="true" Style="height: 30%;"/>
-            <MatTextField TValue="string" @bind-Value="ReportComment" Label="Informacje od prowadzącego:" Outlined="true" TextArea="true" ReadOnly="true" Style="height: 30%;"/>
+            <MatTextField TValue="string" @bind-Value="ReportComment" Label="Informacje od prowadzącego:" Outlined="true" TextArea="true" ReadOnly="true" Disabled="true" Style="height: 30%;"/>
             <MatButton OnClick="@(() => send())" Label="Prześlij" Unelevated="true" Class="send-button" Style="height: 12%"></MatButton>
         </div>
     </div>
@@ -247,7 +247,7 @@
         
         var getReportTopicEndpointUri = new Uri($"https://localhost:7184/api/ReportTopic/?studentReportId={StudentReportIdInteger}");
         var reportTopicGetDto = await AppHttpClient.Get<ReportTopicGetDto>(getReportTopicEndpointUri.ToString());
-        ReportTopicName = reportTopicGetDto.Name;
+        ReportTopicName = reportTopicGetDto.ReportTopicName;
         
         
         var getReportCommentEndpointUri = new Uri($"https://localhost:7184/api/ReportComment/{StudentReportIdInteger}");
