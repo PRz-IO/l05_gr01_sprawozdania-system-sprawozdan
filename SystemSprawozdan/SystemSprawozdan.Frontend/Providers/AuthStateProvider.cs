@@ -24,8 +24,16 @@ public class AuthStateProvider : AuthenticationStateProvider
 
         if (!string.IsNullOrEmpty(token))
         {
-            identity = new ClaimsIdentity(ParseClaimsFromJwt(token), "jwt");
-            _http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.Trim('"'));
+            try
+            {
+                identity = new ClaimsIdentity(ParseClaimsFromJwt(token), "jwt");
+                _http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.Trim('"'));
+            }
+            catch (Exception e)
+            {
+                await _js.InvokeAsync<string?>("localStorage.removeItem", "token");
+                Console.WriteLine(e.Message);
+            }
         }
 
         var user = new ClaimsPrincipal(identity);

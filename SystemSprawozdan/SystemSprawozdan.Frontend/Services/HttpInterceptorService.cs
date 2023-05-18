@@ -1,54 +1,44 @@
 ﻿using System.Net;
-using System.Runtime.Serialization;
 using MatBlazor;
-using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using Toolbelt.Blazor;
 
 namespace SystemSprawozdan.Frontend.Services;
 
-[Serializable]
-internal class HttpResponseException : Exception
-{
-    public HttpResponseException()
-    {
-    }
-    public HttpResponseException(string message) 
-        : base(message)
-    {
-    }
-    public HttpResponseException(string message, Exception innerException) 
-        : base(message, innerException)
-    {
-    }
-    protected HttpResponseException(SerializationInfo info, StreamingContext context) 
-        : base(info, context)
-    {
-    }
-}
-
 public class HttpInterceptorService
 {
     private readonly HttpClientInterceptor _interceptor;
-    private readonly NavigationManager _navManager;
+    private readonly AuthenticationStateProvider _authState;
     private readonly IMatToaster _toaster;
+    private readonly IJSRuntime _js;
 
-    public HttpInterceptorService(HttpClientInterceptor interceptor, NavigationManager navManager, IMatToaster toaster)
+    public HttpInterceptorService(
+        HttpClientInterceptor interceptor, 
+        IMatToaster toaster, 
+        AuthenticationStateProvider authState,
+        IJSRuntime js
+        )
     {
         _interceptor = interceptor;
-        _navManager = navManager;
+        _authState = authState;
         _toaster = toaster;
+        _js = js;
     }
     public void RegisterEvent() => _interceptor.AfterSend += InterceptResponse;
     private async void InterceptResponse(object sender, HttpClientInterceptorEventArgs e)
     {
-        if (!e.Response.IsSuccessStatusCode)
+        if (e.Response.IsSuccessStatusCode) return;
+        
+        var message = await e.Response.Content.ReadAsStringAsync();
+        _toaster.Add(message, MatToastType.Danger, "Error");
+        Console.WriteLine(message);
+
+        if (e.Response.StatusCode == HttpStatusCode.Unauthorized)
         {
-            if(e.Response.StatusCode == HttpStatusCode.Unauthorized)
-                _navManager.NavigateTo("/login");
-            
-            var message = await e.Response.Content.ReadAsStringAsync();
-            _toaster.Add(message, MatToastType.Danger, "Error");
+            await _js.InvokeVoidAsync("localStorage.removeItem", "token");
+            await _authState.GetAuthenticationStateAsync();
         }
+
     }
     public void DisposeEvent() => _interceptor.AfterSend -= InterceptResponse;
 }

@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.Globalization;
+using Microsoft.AspNetCore.Identity;
 using SystemSprawozdan.Backend.Data.Models.DbModels;
+using SystemSprawozdan.Shared.Enums;
 
 namespace SystemSprawozdan.Backend.Data.Seeder
 {
@@ -81,9 +83,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                     _dbContext.ReportComment.AddRange(GetReportComments());
                     _dbContext.SaveChanges();
                 }
-
             }
-            
         }
 
 
@@ -615,7 +615,8 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                     LastModified = DateTime.Now,
                     Note = "Sprawko z przedmiotu \"Bazy danych\" z labów 1 \"Wprowadzanie do Oracle\", nadesłane przez Kusal",
                     ReportTopicId = 1,
-                    SubjectSubgroupId = 1
+                    SubjectSubgroupId = 1,
+                    Mark = MarkEnum.Failed
                 },
 
                 new StudentReport()
@@ -625,7 +626,8 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                     LastModified = DateTime.Now,
                     Note = "Sprawko z przedmiotu \"Bazy danych\" z labów 1 \"Wprowadzanie do Oracle\", nadesłane przez Kuszowski-Morawczyński",
                     ReportTopicId = 1,
-                    SubjectSubgroupId = 2
+                    SubjectSubgroupId = 2,
+                    Mark = MarkEnum.Passed
                 },
 
                 new StudentReport()
@@ -635,7 +637,8 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                     LastModified = DateTime.Now,
                     Note = "Sprawko z przedmiotu \"Gnębienie studentów\" z labów 1 \"Gnębienie studentów cz. 1\", nadesłane przez Mazur",
                     ReportTopicId = 5,
-                    SubjectSubgroupId = 3
+                    SubjectSubgroupId = 3,
+                    Mark = MarkEnum.Three
                 },
 
                 new StudentReport()

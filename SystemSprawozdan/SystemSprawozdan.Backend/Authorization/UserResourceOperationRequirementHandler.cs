@@ -13,7 +13,7 @@ namespace SystemSprawozdan.Backend.Authorization
                 return Task.CompletedTask;
             }
 
-            if (role == (int)UserRoleEnum.Admin)
+            if (role == (int)UserRoleEnum.Student)
             {
                 context.Succeed(requirement);
             }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SystemSprawozdan.Backend.Data;
+using SystemSprawozdan.Backend.Data.Models.DbModels;
 using SystemSprawozdan.Backend.Services;
 using SystemSprawozdan.Shared.Dto;
 
@@ -40,9 +41,17 @@ namespace SystemSprawozdan.Backend.Controllers
 
         //TODO: KUSZO: Trzeba stworzyc GETa, ktory wyswietla wszystkie tematy sprawozdan, ktore sa przypisane do danego prowadzacego, ktory jest zalogowany
         [HttpGet]
-        public ActionResult<IEnumerable<ReportTopicDto>> GetReports([FromQuery] bool? toCheck)
+        public ActionResult<IEnumerable<ReportTopicGetDto>> GetReports([FromQuery] bool? toCheck)
         {
             var result = _studentReportService.GetReports(toCheck);
+            return Ok(result);
+        }
+
+        //TODO: Paweł: Trzeba stworzyc GETa, ktory wyswietla wszystkie sprawozdania, ktore sa przypisane do danej grupy
+        [HttpGet("/api/ReportTopic/{reportTopicId}/StudentReports")]
+        public ActionResult<IEnumerable<StudentReportGetDto>> GetCollaborateReportsByTopicId([FromRoute] int reportTopicId, [FromQuery] bool? isIndividual, [FromQuery] bool? isMarked)
+        {
+            var result = _studentReportService.GetStudentReportsByTopicId(reportTopicId, isIndividual, isMarked);
             return Ok(result);
         }
     }

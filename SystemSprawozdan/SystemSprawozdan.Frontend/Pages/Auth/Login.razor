@@ -1,6 +1,7 @@
 ﻿@page "/login"
 @inject IAuthService AuthService
 @inject AuthenticationStateProvider AuthStateProvider
+@inject NavigationManager NavigatorManager
 
 <EditForm Style="height: 100%; width: 100%; display: flex;flex: 1 1 0;flex-direction: column;justify-content: center;" Model="User" OnValidSubmit="TryLogin">
     <DataAnnotationsValidator />
@@ -21,6 +22,10 @@
 
 @code
 {
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string? ReturnUrl { get; set; }
+    
     public LoginUserDto User { get; set; } = new LoginUserDto()
     {
         Login = "",
@@ -31,5 +36,9 @@
     {
         await AuthService.Login(User);
         await AuthStateProvider.GetAuthenticationStateAsync();
+        if (!string.IsNullOrEmpty(ReturnUrl))
+            NavigatorManager.NavigateTo(ReturnUrl);
+        else
+            NavigatorManager.NavigateTo("/");
     }
 }

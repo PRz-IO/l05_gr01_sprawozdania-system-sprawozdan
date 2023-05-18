@@ -1,12 +1,12 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using SystemSprawozdan.Backend.Authorization;
 using SystemSprawozdan.Backend.Data;
 using SystemSprawozdan.Backend.Data.Models.DbModels;
 using SystemSprawozdan.Backend.Exceptions;
 using SystemSprawozdan.Shared.Dto;
-
 
 namespace SystemSprawozdan.Backend.Services
 {
@@ -23,8 +23,7 @@ namespace SystemSprawozdan.Backend.Services
         private readonly ApiDbContext _dbContext;
         private readonly IUserContextService _userContextService;
         private readonly IWebHostEnvironment _env;
-
-        public readonly IMapper _mapper;
+        private readonly IMapper _mapper;
         private readonly IAuthorizationService _authorizationService;
 
         public StudentReportService(ApiDbContext dbContext, IUserContextService userContextService, IMapper mapper, IAuthorizationService authorizationService, IWebHostEnvironment env)
@@ -87,13 +86,11 @@ namespace SystemSprawozdan.Backend.Services
 
             var newStudentReport = new StudentReport()
             {
-
                 SentAt = DateTime.UtcNow,
                 LastModified = DateTime.UtcNow,
                 Note = noteToSend,
                 ReportTopicId = reportTopicIdInteger,
                 SubjectSubgroupId = subjectSubgroup.Id
-                
             };
             _dbContext.StudentReport.Add(newStudentReport);
             _dbContext.SaveChanges();
@@ -102,7 +99,7 @@ namespace SystemSprawozdan.Backend.Services
             var result = newStudentReport;
             return result;
         }
-        
+
         public void PutStudentReport(int studentReportId, StudentReportPutDto putStudentReportDto)
         {
             var reportToEdit = _dbContext.StudentReport.FirstOrDefault(report => report.Id == studentReportId);
@@ -139,9 +136,17 @@ namespace SystemSprawozdan.Backend.Services
             {
                 throw new ForbidException();
             }
+            
+            _dbContext.SaveChanges();
+            return uploadResults;
+        }
+
+        public IEnumerable<ReportTopicGetDto> GetReports(bool? toCheck)
+        {
+            VerifyUserHasTeacherPermission(TeacherResourceOperation.Read);
 
             var teacherId = _userContextService.GetUserId;
-            
+
             var reportsFromDb = _dbContext.ReportTopic
                         .Include(reportTopic => reportTopic.SubjectGroup)
                             .ThenInclude(subjectGroup => subjectGroup.Subject)
@@ -156,7 +161,7 @@ namespace SystemSprawozdan.Backend.Services
             
             var reportsFromDbList = reportsFromDb.OrderBy(reportTopic => reportTopic.Deadline).ToList();
             
-            var reportsDto = _mapper.Map<List<ReportTopicDto>>(reportsFromDbList);
+            var reportsDto = _mapper.Map<List<ReportTopicGetDto>>(reportsFromDbList);
             
             return reportsDto;
         }
@@ -178,5 +183,40 @@ namespace SystemSprawozdan.Backend.Services
     }
 }
 
+        public List<StudentReportGetDto> GetStudentReportsByTopicId(int reportTopicId, bool? isIndividual, bool? isMarked)
+        {
+            VerifyUserHasTeacherPermission(TeacherResourceOperation.Read);
             
+            var isReportTopicExist = _dbContext.ReportTopic.Any(reportTopic => reportTopic.Id == reportTopicId);
 
+            if (!isReportTopicExist) throw new NotFoundException($"Report Topic with Id equals {reportTopicId} doesn't exist!");
+
+            var reports = _dbContext.StudentReport
+                .Include(report => report.SubjectSubgroup)
+                    .ThenInclude(subgroup => subgroup.Students)
+                .Where(report => report.ReportTopicId == reportTopicId);
+
+            if (isMarked is not null)
+                reports = reports.Where(report => isMarked == (report.Mark != null));
+
+            if (isIndividual is not null)
+                reports = reports.Where(report => report.SubjectSubgroup.IsIndividual == isIndividual);
+
+            var reportsGetDto = _mapper.Map<List<StudentReportGetDto>>(reports.ToList());
+            return reportsGetDto;
+        }
+
+        private void VerifyUserHasTeacherPermission(TeacherResourceOperation teacherResourceOperation)
+        {
+            var authorizationResult = _authorizationService.AuthorizeAsync(
+                _userContextService.User,
+                null,
+                new TeacherResourceOperationRequirement(teacherResourceOperation)).Result;
+
+            if (!authorizationResult.Succeeded)
+                throw new ForbidException();
+        }
+    }
+}
+
+            
