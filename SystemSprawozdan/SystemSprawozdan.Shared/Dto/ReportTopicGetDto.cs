@@ -2,6 +2,7 @@
 {
     public class ReportTopicGetDto
     {
+        public int Id { get; set; }
         public string SubjectName { get; set; }
         public string ReportTopicName { get; set; }
         public string MajorName { get; set; }

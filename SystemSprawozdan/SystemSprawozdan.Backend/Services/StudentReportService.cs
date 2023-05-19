@@ -14,7 +14,6 @@ namespace SystemSprawozdan.Backend.Services
         void PostStudentReport(StudentReportPostDto postStudentReportDto);
         void PutStudentReport(int studentReportId, StudentReportPutDto putStudentReportDto);
         Task<List<StudentReportFile>> UploadFile(int? studentReportId, List<IFormFile> files);
-        IEnumerable<ReportTopicGetDto> GetReports(bool? toCheck);
         List<StudentReportGetDto> GetStudentReportsByTopicId(int reportTopicId, bool? isIndividual, bool? isMarked);
     }
 
@@ -164,34 +163,16 @@ namespace SystemSprawozdan.Backend.Services
             return uploadResults;
         }
 
-        public IEnumerable<ReportTopicGetDto> GetReports(bool? toCheck)
-        {
-            VerifyUserHasTeacherPermission(TeacherResourceOperation.Read);
-
-            var teacherId = _userContextService.GetUserId;
-
-            var reportsFromDb = _dbContext.ReportTopic
-                        .Include(reportTopic => reportTopic.SubjectGroup)
-                            .ThenInclude(subjectGroup => subjectGroup.Subject)
-                                .ThenInclude(subject => subject.Major)  
-                        .Where(reportTopic => reportTopic.SubjectGroup.TeacherId == teacherId);
-
-            if (toCheck != null)
-            {
-                reportsFromDb = reportsFromDb.Where(reportTopic =>
-                    reportTopic.StudentReports.Any(studentReport => studentReport.ToCheck == toCheck));
-            }
-            
-            var reportsFromDbList = reportsFromDb.OrderBy(reportTopic => reportTopic.Deadline).ToList();
-            
-            var reportsDto = _mapper.Map<List<ReportTopicGetDto>>(reportsFromDbList);
-            
-            return reportsDto;
-        }
-
         public List<StudentReportGetDto> GetStudentReportsByTopicId(int reportTopicId, bool? isIndividual, bool? isMarked)
         {
-            VerifyUserHasTeacherPermission(TeacherResourceOperation.Read);
+            
+            var authorizationResult = _authorizationService.AuthorizeAsync(
+                _userContextService.User,
+                null,
+                new TeacherResourceOperationRequirement(TeacherResourceOperation.Read)).Result;
+
+            if (!authorizationResult.Succeeded)
+                throw new ForbidException();
             
             var isReportTopicExist = _dbContext.ReportTopic.Any(reportTopic => reportTopic.Id == reportTopicId);
 
@@ -210,17 +191,6 @@ namespace SystemSprawozdan.Backend.Services
 
             var reportsGetDto = _mapper.Map<List<StudentReportGetDto>>(reports.ToList());
             return reportsGetDto;
-        }
-
-        private void VerifyUserHasTeacherPermission(TeacherResourceOperation teacherResourceOperation)
-        {
-            var authorizationResult = _authorizationService.AuthorizeAsync(
-                _userContextService.User,
-                null,
-                new TeacherResourceOperationRequirement(teacherResourceOperation)).Result;
-
-            if (!authorizationResult.Succeeded)
-                throw new ForbidException();
         }
     }
 }
