@@ -28,4 +28,8 @@
     <Folder Include="Services\StudentServices\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <AdditionalFiles Include="Pages\Teacher\Reports\ReportTopicDetails\ReportTopicDetails.razor" />
+  </ItemGroup>
+
 </Project>
