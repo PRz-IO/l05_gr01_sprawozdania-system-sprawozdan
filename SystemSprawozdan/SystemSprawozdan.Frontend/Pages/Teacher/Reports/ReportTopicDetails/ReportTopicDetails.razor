@@ -1,0 +1,67 @@
+﻿@inject IReportHttpService ReportHttpService
+
+<HeaderReportTopicDetails ReportTopic="@ReportTopic"/>
+
+<TabBar Data="TabBarData" @bind-Value="@IsMarked"/>
+
+@code {
+    [Parameter]
+    public int? ReportTopicId {
+        set
+        {
+            GetReportTopicData(value??0);
+        } 
+    }
+
+    [Parameter]
+    public EventCallback<int> SelectedStudentReportId { get; set; }
+
+    public bool? IsMarked
+    {
+        get => _isMarked;
+        set
+        {
+            _isMarked = value;
+            GetStudentReports(ReportTopic.Id);
+        }
+    }
+
+    private bool? _isMarked = null;
+
+    public ReportTopicGetDto? ReportTopic { get; set; } = new ReportTopicGetDto();
+    public List<StudentReportGetDto>? IndividualReports { get; set; } = new ();
+    public List<StudentReportGetDto>? GroupReports { get; set; } = new ();
+
+    public async Task GetReportTopicData(int reportTopicId)
+    {
+        ReportTopic = await ReportHttpService.GetReportTopicById(reportTopicId);
+        await GetStudentReports(ReportTopic.Id);
+    }
+
+    public async Task GetStudentReports(int reportTopicId)
+    {
+        IndividualReports = await ReportHttpService.GetStudentReportsByReportTopicId(reportTopicId, true, IsMarked);
+        GroupReports = await ReportHttpService.GetStudentReportsByReportTopicId(reportTopicId, false, IsMarked);
+        StateHasChanged();
+    }
+
+    public readonly List<TabBarData<bool?>> TabBarData = new()
+    {
+        new()
+        {
+            Text = "Wszystkie",
+            Value = null
+        },
+        new()
+        {
+            Text = "Nieocenione",
+            Value = false
+        },
+        new()
+        {
+            Text = "Ocenione",
+            Value = true
+        },
+    };
+
+}

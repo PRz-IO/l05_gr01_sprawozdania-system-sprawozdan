@@ -1,9 +1,0 @@
-﻿<h3 @onclick="()=>SelectedStudentReportId.InvokeAsync(1)">ReportsTopicDetails @ReportTopicId</h3>
-
-@code {
-    [Parameter]
-    public int? ReportTopicId { get; set; }
-    
-    [Parameter]
-    public EventCallback<int> SelectedStudentReportId { get; set; }
-}
