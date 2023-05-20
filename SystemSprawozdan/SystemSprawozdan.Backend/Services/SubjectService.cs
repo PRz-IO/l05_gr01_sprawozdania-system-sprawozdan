@@ -22,11 +22,11 @@ namespace SystemSprawozdan.Backend.Services
         {
             var subjects = _dbContext.Subject.Include(subject => subject.Major).ToList();
             
-            List<SubjectGetDto> allSubject = new();
+            List<SubjectGetDto> allSubjects = new();
 
             foreach (var subject in subjects) 
             {
-                allSubject.Add(new SubjectGetDto()
+                allSubjects.Add(new SubjectGetDto()
                 {
                     Id = subject.Id,
                     Name = subject.Name,
@@ -34,7 +34,7 @@ namespace SystemSprawozdan.Backend.Services
                     SubjectGroups = new List<SubjectGroupGetDto>()
                 });    
             }
-            return allSubject;
+            return allSubjects;
         }
     }
 }

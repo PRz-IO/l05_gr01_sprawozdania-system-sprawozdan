@@ -33,7 +33,7 @@ namespace SystemSprawozdan.Backend.Services
             _mapper = mapper;
             _authorizationService = authorizationService;
         }
-        public List<SubjectGroupGetDto> GetSubjectGroup(int subjectId, bool isUser)
+        public List<SubjectGroupGetDto> GetSubjectGroup(int subjectId, bool isUserBelong)
         {
             var authorizationResult = _authorizationService.AuthorizeAsync(
                 _userContextService.User,
@@ -53,7 +53,7 @@ namespace SystemSprawozdan.Backend.Services
                 .Include(subjectGroup => subjectGroup.Teacher)
                 .Where(subjectGroup => subjectGroup.SubjectId == subjectId);
 
-            if (isUser)
+            if (isUserBelong)
             {
                 subjectGroupsFromDb = subjectGroupsFromDb.Where(subjectGroup =>
                     subjectGroup.subjectSubgroups.Any(subjectSubgroup =>

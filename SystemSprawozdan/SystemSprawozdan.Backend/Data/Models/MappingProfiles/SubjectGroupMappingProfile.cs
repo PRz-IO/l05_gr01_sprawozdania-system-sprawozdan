@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using SystemSprawozdan.Backend.Data.Models.DbModels;
 using SystemSprawozdan.Backend.Data.Models.Dto;
+using SystemSprawozdan.Frontend.Shared;
 
 namespace SystemSprawozdan.Backend.Data.Models.MappingProfiles;
 
