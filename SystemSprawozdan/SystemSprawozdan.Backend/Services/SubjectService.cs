@@ -2,6 +2,7 @@
 using SystemSprawozdan.Backend.Data;
 using SystemSprawozdan.Backend.Data.Models.DbModels;
 using SystemSprawozdan.Backend.Data.Models.Dto;
+using SystemSprawozdan.Shared.Dto;
 
 namespace SystemSprawozdan.Backend.Services
 {

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using SystemSprawozdan.Backend.Controllers;
 using SystemSprawozdan.Backend.Data;
 using SystemSprawozdan.Backend.Data.Models.DbModels;
-using SystemSprawozdan.Backend.Data.Models.Dto;
+using SystemSprawozdan.Shared.Dto;
 using MimeKit.Cryptography;
 using Microsoft.AspNetCore.Mvc;
 using SystemSprawozdan.Backend.Authorization;
