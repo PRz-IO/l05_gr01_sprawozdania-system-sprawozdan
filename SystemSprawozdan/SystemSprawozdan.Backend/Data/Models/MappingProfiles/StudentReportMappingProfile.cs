@@ -9,10 +9,11 @@ public class StudentReportMappingProfile : Profile
     public StudentReportMappingProfile()
     {
         CreateMap<Student, StudentBasicGetDto>();
+        CreateMap<SubjectSubgroup, SubjectSubgroupBasicGetDto>()
+            .ForMember(dest => dest.Students, opt => opt.MapFrom(src => src.Students.ToList()));
 
         CreateMap<StudentReport, StudentReportGetDto>()
-            .ForMember(dest => dest.IsIndividual, opt => opt.MapFrom(src => src.SubjectSubgroup.IsIndividual))
-            .ForPath(dest => dest.SubjectSubgroup.Students,opt => opt.MapFrom(src => src.SubjectSubgroup.Students.ToList()));
+            .ForMember(dest => dest.IsIndividual, opt => opt.MapFrom(src => src.SubjectSubgroup.IsIndividual));
     }
     
 }
