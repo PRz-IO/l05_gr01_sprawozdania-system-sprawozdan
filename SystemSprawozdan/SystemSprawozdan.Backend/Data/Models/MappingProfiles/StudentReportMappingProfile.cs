@@ -13,7 +13,8 @@ public class StudentReportMappingProfile : Profile
             .ForMember(dest => dest.Students, opt => opt.MapFrom(src => src.Students.ToList()));
 
         CreateMap<StudentReport, StudentReportGetDto>()
-            .ForMember(dest => dest.IsIndividual, opt => opt.MapFrom(src => src.SubjectSubgroup.IsIndividual));
+            .ForMember(dest => dest.IsIndividual, opt => opt.MapFrom(src => src.SubjectSubgroup.IsIndividual))
+            .ForMember(dest => dest.SubjectSubgroup, opt => opt.MapFrom(src => src.SubjectSubgroup));
     }
     
 }

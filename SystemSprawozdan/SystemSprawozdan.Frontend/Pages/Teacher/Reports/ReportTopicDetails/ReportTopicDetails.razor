@@ -4,11 +4,8 @@
 
 <TabBar Data="TabBarData" @bind-Value="@IsMarked"/>
 
-<div class="reports" style="overflow-y: auto; height: 100%;">
-    <div class="reports__table-label">Sprawozdania indywidualne</div>
+<div class="reports">
     <StudentReportsTable StudentReports="@IndividualReports" SelectedStudentReportId="SelectedStudentReportId"/>
-
-    <div class="reports__table-label">Sprawozdania grupowe</div>
     <StudentReportsTable StudentReports="@GroupReports" IsIndividualReports="false" SelectedStudentReportId="SelectedStudentReportId"/>
 </div>
 
@@ -47,8 +44,8 @@
 
     public async Task GetStudentReports(int reportTopicId)
     {
-        IndividualReports = new();
-        GroupReports = new();
+        IndividualReports = null;
+        GroupReports = null;
         IndividualReports = await ReportHttpService.GetStudentReportsByReportTopicId(reportTopicId, true, IsMarked);
         GroupReports = await ReportHttpService.GetStudentReportsByReportTopicId(reportTopicId, false, IsMarked);
         StateHasChanged();
