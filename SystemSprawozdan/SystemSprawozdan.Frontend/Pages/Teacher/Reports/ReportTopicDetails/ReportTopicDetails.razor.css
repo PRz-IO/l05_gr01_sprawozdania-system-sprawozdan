@@ -1,1 +1,10 @@
-﻿
+﻿.reports{
+    overflow-y: auto; 
+    height: 100%;
+}
+
+.reports__table-label{
+    font-size: var(--font-size-large);
+    font-weight: var(--font-weight-bold);
+    padding: 10px 20px;
+}

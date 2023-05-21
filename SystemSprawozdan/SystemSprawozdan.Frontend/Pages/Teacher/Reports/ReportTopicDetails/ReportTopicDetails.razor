@@ -4,6 +4,14 @@
 
 <TabBar Data="TabBarData" @bind-Value="@IsMarked"/>
 
+<div class="reports" style="overflow-y: auto; height: 100%;">
+    <div class="reports__table-label">Sprawozdania indywidualne</div>
+    <StudentReportsTable StudentReports="@IndividualReports" SelectedStudentReportId="SelectedStudentReportId"/>
+
+    <div class="reports__table-label">Sprawozdania grupowe</div>
+    <StudentReportsTable StudentReports="@GroupReports" IsIndividualReports="false" SelectedStudentReportId="SelectedStudentReportId"/>
+</div>
+
 @code {
     [Parameter]
     public int? ReportTopicId {
@@ -25,12 +33,11 @@
             GetStudentReports(ReportTopic.Id);
         }
     }
-
     private bool? _isMarked = null;
 
     public ReportTopicGetDto? ReportTopic { get; set; } = new ReportTopicGetDto();
-    public List<StudentReportGetDto>? IndividualReports { get; set; } = new ();
-    public List<StudentReportGetDto>? GroupReports { get; set; } = new ();
+    public List<StudentReportGetDto>? IndividualReports { get; set; }
+    public List<StudentReportGetDto>? GroupReports { get; set; }
 
     public async Task GetReportTopicData(int reportTopicId)
     {
@@ -40,6 +47,8 @@
 
     public async Task GetStudentReports(int reportTopicId)
     {
+        IndividualReports = new();
+        GroupReports = new();
         IndividualReports = await ReportHttpService.GetStudentReportsByReportTopicId(reportTopicId, true, IsMarked);
         GroupReports = await ReportHttpService.GetStudentReportsByReportTopicId(reportTopicId, false, IsMarked);
         StateHasChanged();
