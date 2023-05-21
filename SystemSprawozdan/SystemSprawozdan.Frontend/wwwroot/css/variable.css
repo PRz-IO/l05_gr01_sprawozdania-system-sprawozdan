@@ -11,7 +11,7 @@
     --font-weight-bold: 600;
 
     --panel-background-color: #FEFEFE;
-    --panel-border-radius: 15px;
+    --panel-border-radius: 10px;
     --panel-line-color: var(--font-color-basic);
     --panel-drop-shadow: -5px 5px 20px 0px #22222255;
 }
