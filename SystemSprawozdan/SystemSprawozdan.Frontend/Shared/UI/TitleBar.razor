@@ -1,9 +1,12 @@
-﻿
-<div class="container">
-	<span class="container__text">@Text</span>
+﻿<div class="container">
+	<span class="container__text" style="font-size:@FontSize;">@Text</span>
 </div>
 
 @code {
 	[Parameter]
 	public string Text { get; set; } = "E-SPRAWOZDANIA";
+
+	[Parameter]
+	public string FontSize { get; set; } = "var(--font-size-medium)";
+
 }

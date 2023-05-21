@@ -1,8 +1,7 @@
 ﻿@page "/register"
-@inject IAuthService authService
+@inject IAuthService AuthService
+@inject IMatToaster toast
 @using System.ComponentModel.DataAnnotations
-@using System.IO
-@using System.Net.Http.Headers
 
 <EditForm Style="height: 100%; width: 100%; display: flex;flex: 1 1 0;flex-direction: column;" Model="frontendRegister" OnValidSubmit="TryRegister">
     <ObjectGraphDataAnnotationsValidator />
@@ -35,8 +34,8 @@
                 <ValidationMessage For="@(() => frontendRegister.User.ConfirmPassword)" style="font-size:12px;" />
             </p>
             <p class="checkBox">
-                <MatCheckbox @bind-Value="@frontendRegister.checked1" Label="Zgoda na przetwarzanie danych osobowych"></MatCheckbox>
-                <ValidationMessage For="@(() => frontendRegister.checked1)" style="font-size:12px;" />
+                <MatCheckbox @bind-Value="@frontendRegister.AgreementToProcessingData" Label="Zgoda na przetwarzanie danych osobowych"></MatCheckbox>
+                <ValidationMessage For="@(() => frontendRegister.AgreementToProcessingData)" style="font-size:12px;" />
             </p>
         </div>
     </div>
@@ -51,7 +50,7 @@
         public RegisterStudentDto User { get; set; }
 
         [CustomValidation(typeof(FrontendRegister), nameof(rodoChecked))]
-        public bool checked1 { get; set; } = false;
+        public bool AgreementToProcessingData { get; set; } = false;
 
         public FrontendRegister()
         {
@@ -68,7 +67,7 @@
 
         public static ValidationResult rodoChecked(bool checked1, ValidationContext vc)
         {
-            return checked1 == true
+            return checked1
                 ? ValidationResult.Success
                 : new ValidationResult("Zaznacz zgodę", new[] { vc.MemberName });
         }
@@ -76,8 +75,9 @@
 
     public FrontendRegister frontendRegister { get; set; } = new FrontendRegister();
 
-    public void TryRegister()
+    public async void TryRegister()
     {
-        authService.Register(frontendRegister.User);
+        await AuthService.Register(frontendRegister.User);
+        toast.Add("Konto utowrzone pomyślnie", MatToastType.Success, "Sukces!");
     }
 }

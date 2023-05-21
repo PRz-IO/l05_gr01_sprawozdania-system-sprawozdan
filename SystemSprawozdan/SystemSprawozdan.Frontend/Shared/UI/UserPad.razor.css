@@ -3,10 +3,9 @@
 }
 
 .user-pad {
-    overflow: hidden;
     position: relative;
 
-    width: 250px;
+    width: 100%;
 
     color: var(--font-color-header);
     border-radius: var(--panel-border-radius);
@@ -69,7 +68,7 @@
     width: 100%;
     height: calc(var(--userpad-default-height) + .5rem);
     background-color: var(--background-color);
-    border-radius: 10px;
+    border-radius: var(--panel-border-radius);
     /*transition: height .2s ease-out;*/
     transition: height .5s cubic-bezier(0.24, -0.56, 0.27, 1.79);
 }

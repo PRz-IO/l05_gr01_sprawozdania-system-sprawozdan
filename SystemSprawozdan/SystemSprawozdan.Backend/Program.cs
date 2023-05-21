@@ -61,6 +61,7 @@ builder.Services.AddControllers().AddFluentValidation();
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddScoped<IAuthorizationHandler, UserResourceOperationRequirementHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, TeacherResourceOperationRequirementHandler>();
 builder.Services.AddScoped<IPasswordHasher<Student>, PasswordHasher<Student>>();
 builder.Services.AddScoped<IPasswordHasher<Teacher>, PasswordHasher<Teacher>>();
 builder.Services.AddScoped<IPasswordHasher<Admin>, PasswordHasher<Admin>>();
@@ -74,7 +75,7 @@ builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ISubjectGroupService, SubjectGroupService>();
 builder.Services.AddScoped<ISubjectSubgroupService, SubjectSubgroupService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
-
+builder.Services.AddScoped<ISubjectService, SubjectService>();
 
 var app = builder.Build();
 
