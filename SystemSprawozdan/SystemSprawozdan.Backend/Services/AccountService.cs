@@ -31,7 +31,6 @@ namespace SystemSprawozdan.Backend.Services
         private readonly IPasswordHasher<Teacher> _passwordHasherTeacher;
         private readonly IPasswordHasher<Admin> _passwordHasherAdmin;
         private readonly AuthenticationSettings _authenticationSettings;
-        private readonly IAuthorizationService _authorizationService;
         private readonly IUserContextService _userContextService;
         public readonly IMapper _mapper;
         private readonly IEmailService _emailService;
@@ -41,7 +40,6 @@ namespace SystemSprawozdan.Backend.Services
             IPasswordHasher<Teacher> passwordHasherTeacher, 
             IPasswordHasher<Admin> passwordHasherAdmin, 
             AuthenticationSettings authenticationSettings,
-            IAuthorizationService authorizationService,
             IUserContextService userContextService, 
             IMapper mapper,
             IEmailService emailService)
@@ -51,7 +49,6 @@ namespace SystemSprawozdan.Backend.Services
             _passwordHasherTeacher = passwordHasherTeacher;
             _passwordHasherAdmin = passwordHasherAdmin;
             _authenticationSettings = authenticationSettings;
-            _authorizationService = authorizationService;
             _userContextService = userContextService;
             _mapper = mapper;
             _emailService = emailService;
@@ -124,14 +121,6 @@ namespace SystemSprawozdan.Backend.Services
 
         public void RegisterTeacherOrAdmin(RegisterTeacherOrAdminDto registerTeacherOrAdminDto)
         {
-            var authorizationResult = _authorizationService
-                .AuthorizeAsync(_userContextService.User, null, new UserResourceOperationRequirement(UserResourceOperation.Create)).Result;
-
-            if (!authorizationResult.Succeeded) 
-            {
-                throw new ForbidException();
-            }
-
             if (registerTeacherOrAdminDto.UserRole == UserRoleEnum.Teacher)
             {
                 var newTeacher = new Teacher()
@@ -200,7 +189,7 @@ namespace SystemSprawozdan.Backend.Services
             var claims = new List<Claim>()
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Role, $"{(int)user.UserRole}")
+                new Claim(ClaimTypes.Role, $"{user.UserRole}")
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_authenticationSettings.JwtKey));

@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SystemSprawozdan.Backend.Services;
 using SystemSprawozdan.Shared.Dto;
+using SystemSprawozdan.Shared.Enums;
 
 namespace SystemSprawozdan.Backend.Controllers
 {
@@ -32,6 +34,7 @@ namespace SystemSprawozdan.Backend.Controllers
         }
 
         [HttpPost("create")]
+        [Authorize(Roles = nameof(UserRoleEnum.Admin))]
         public ActionResult RegisterTeacherOrAdmin([FromBody] RegisterTeacherOrAdminDto registerTeacherOrAdminDto)
         {
             _accountService.RegisterTeacherOrAdmin(registerTeacherOrAdminDto);
