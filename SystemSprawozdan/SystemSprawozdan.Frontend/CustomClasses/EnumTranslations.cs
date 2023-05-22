@@ -10,7 +10,7 @@ public static class EnumTranslations
         { UserRoleEnum.Teacher , "Prowadzący"},
         { UserRoleEnum.Admin , "Administator"}
     };
-    public static Dictionary<MarkEnum?, string> Mark = new()
+    public static Dictionary<MarkEnum, string> Mark = new()
     {
         { MarkEnum.Two , "2.0"},
         { MarkEnum.Three , "3.0"},
