@@ -1,0 +1,67 @@
+﻿<div class="table__label">@TableLabel()</div>
+@if (StudentReports is null)
+{  
+    <LoadingBar IsLoading="true"/>
+}
+ else if(StudentReports.Count == 0)
+{
+    <div class="table__no-data">Brak sprawozdań do wyświetlenia</div>
+}
+else if (StudentReports.Count != 0)
+{
+    <MatTable 
+        TableItem="StudentReportGetDto"
+        Items="@StudentReports" 
+        ShowPaging="false" 
+        OnRowDbClick="(studentReport) => HandleSelectedStudentReport((StudentReportGetDto)studentReport)"
+    >
+        <MatTableHeader>
+            @if (IsIndividualReports)
+            {
+                <th class="table__header-cell">Nr albumu</th>
+                <th class="table__header-cell">Imię</th>
+                <th class="table__header-cell">Nazwisko</th>
+            }
+            else
+            {
+                <th class="table__header-cell--wider">Nazwa grupy</th>
+            }
+            <th class="table__header-cell">Ocena</th>
+            <th></th>
+        </MatTableHeader>
+        <MatTableRow>
+            @if (IsIndividualReports)
+            {
+                <td>@context.SubjectSubgroup.Students.First().Login</td>
+                <td>@context.SubjectSubgroup.Students.First().Name</td>
+                <td>@context.SubjectSubgroup.Students.First().Surname</td>
+            }
+            else
+            {
+                <td>@context.SubjectSubgroup.Name</td>
+            }
+            <td>@(context.Mark is not null ? @EnumTranslations.Mark[context.Mark] : "") </td>
+            <td><div class="table__row-icon"><MatIcon Icon="@MatIconNames.Arrow_forward" Style="height: 100%" Class="pointer" @onclick="() => HandleSelectedStudentReport(context)"/></div></td>
+        </MatTableRow>
+    </MatTable>
+}
+
+@code {
+
+    [Parameter]
+    public List<StudentReportGetDto> StudentReports { get; set; }
+
+    [Parameter]
+    public bool IsIndividualReports { get; set; } = true;
+    
+    [Parameter]
+    public EventCallback<int> SelectedStudentReportId { get; set; }
+
+    public string TableLabel() => 
+        IsIndividualReports ? "Sprawozdania indywidualne" : "Sprawozdania grupowe";
+
+    public void HandleSelectedStudentReport(StudentReportGetDto studentReport)
+    {
+        SelectedStudentReportId.InvokeAsync(studentReport.Id);
+    }
+}

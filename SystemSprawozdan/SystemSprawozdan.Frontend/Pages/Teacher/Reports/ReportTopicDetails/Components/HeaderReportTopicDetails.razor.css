@@ -1,0 +1,19 @@
+﻿.header{
+    font-size: var(--font-size-medium);
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.header__row{
+    display: flex;
+    justify-content: space-between;
+}
+
+.header__cell b{
+    color: var(--font-color-header);
+}
+
+.header__cell-value{
+    color: var(--font-color-basic);
+}

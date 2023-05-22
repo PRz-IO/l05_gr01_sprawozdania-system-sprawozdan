@@ -24,4 +24,12 @@
     <ProjectReference Include="..\SystemSprawozdan.Shared\SystemSprawozdan.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Services\StudentServices\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="Pages\Teacher\Reports\ReportTopicDetails\ReportTopicDetails.razor" />
+  </ItemGroup>
+
 </Project>

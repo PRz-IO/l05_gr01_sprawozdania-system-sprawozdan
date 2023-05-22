@@ -10,7 +10,8 @@
 
         if (authState?.User?.Identity is null || !authState.User.Identity.IsAuthenticated)
         {
-            var returnUrl = Navigation.ToBaseRelativePath(Navigation.Uri);
+            var returnUrl = Navigation.GetUriWithQueryParameter("returnUrl", true);
+            
             
             if(string.IsNullOrWhiteSpace(returnUrl))
                 Navigation.NavigateTo("/login", true);
