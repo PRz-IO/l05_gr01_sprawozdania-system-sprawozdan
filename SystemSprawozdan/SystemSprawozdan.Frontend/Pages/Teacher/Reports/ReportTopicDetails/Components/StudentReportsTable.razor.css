@@ -6,6 +6,9 @@
     width: 75%;
 }
 
+.table__no-data {
+    padding: 10px 25px;
+}
 .table__label{
     font-size: var(--font-size-large);
     font-weight: var(--font-weight-bold);
