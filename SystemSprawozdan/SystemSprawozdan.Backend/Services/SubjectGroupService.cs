@@ -25,26 +25,14 @@ namespace SystemSprawozdan.Backend.Services
         private readonly ApiDbContext _dbContext;
         private readonly IUserContextService _userContextService;
         private readonly IMapper _mapper;
-        private readonly IAuthorizationService _authorizationService;
-        public SubjectGroupService(ApiDbContext dbContext, IUserContextService userContextService, IMapper mapper, IAuthorizationService authorizationService)
+        public SubjectGroupService(ApiDbContext dbContext, IUserContextService userContextService, IMapper mapper)
         {
             _dbContext = dbContext;
             _userContextService = userContextService;
             _mapper = mapper;
-            _authorizationService = authorizationService;
         }
         public List<SubjectGroupGetDto> GetSubjectGroup(int subjectId, bool isUserBelong)
         {
-            var authorizationResult = _authorizationService.AuthorizeAsync(
-                _userContextService.User,
-                null,
-                new UserResourceOperationRequirement(UserResourceOperation.Read)).Result;
-
-            if(!authorizationResult.Succeeded)
-            {
-                throw new ForbidException();
-            }
-            
             var loginUserId = _userContextService.GetUserId;
 
             var subjectGroupsFromDb = _dbContext.SubjectGroup
@@ -54,22 +42,16 @@ namespace SystemSprawozdan.Backend.Services
                 .Where(subjectGroup => subjectGroup.SubjectId == subjectId);
 
             if (isUserBelong)
-            {
                 subjectGroupsFromDb = subjectGroupsFromDb.Where(subjectGroup =>
                     subjectGroup.subjectSubgroups.Any(subjectSubgroup =>
                         subjectSubgroup.Students.Any(student => student.Id == loginUserId)));
-            }
             else
-            {
                 subjectGroupsFromDb = subjectGroupsFromDb.Where(subjectGroup =>
                     !subjectGroup.subjectSubgroups.Any(subjectSubgroup =>
                         subjectSubgroup.Students.Any(student => student.Id == loginUserId)));
-            }
 
             var subjectGroups = subjectGroupsFromDb.ToList();
-            
             var subjectGroupsDto = _mapper.Map<List<SubjectGroupGetDto>>(subjectGroups);
-            
             return subjectGroupsDto;
         }
     }
