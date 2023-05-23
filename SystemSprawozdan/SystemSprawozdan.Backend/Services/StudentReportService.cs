@@ -14,7 +14,7 @@ namespace SystemSprawozdan.Backend.Services
         void PostStudentReport(StudentReportPostDto postStudentReportDto);
         void PutStudentReport(int studentReportId, StudentReportPutDto putStudentReportDto);
         Task<List<StudentReportFile>> UploadFile(int? studentReportId, List<IFormFile> files);
-        List<StudentReportGetDto> GetStudentReportsByTopicId(int reportTopicId, bool? isIndividual, bool? isMarked);
+        List<ReportTopicGetDto> GetStudentReportsByTopicId(int reportTopicId, bool? isIndividual, bool? isMarked);
     }
 
     public class StudentReportService : IStudentReportService
@@ -163,7 +163,7 @@ namespace SystemSprawozdan.Backend.Services
             return uploadResults;
         }
 
-        public List<StudentReportGetDto> GetStudentReportsByTopicId(int reportTopicId, bool? isIndividual, bool? isMarked)
+        public List<ReportTopicGetDto> GetStudentReportsByTopicId(int reportTopicId, bool? isIndividual, bool? isMarked)
         {
             
             var authorizationResult = _authorizationService.AuthorizeAsync(
@@ -189,7 +189,7 @@ namespace SystemSprawozdan.Backend.Services
             if (isIndividual is not null)
                 reports = reports.Where(report => report.SubjectSubgroup.IsIndividual == isIndividual);
 
-            var reportsGetDto = _mapper.Map<List<StudentReportGetDto>>(reports.ToList());
+            var reportsGetDto = _mapper.Map<List<ReportTopicGetDto>>(reports.ToList());
             return reportsGetDto;
         }
     }
