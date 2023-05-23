@@ -32,8 +32,8 @@ namespace SystemSprawozdan.Backend.Controllers
             return Ok(result);
         }
         //TODO: Grzesiek: Trzeba zrobić PUTa, który będzie do danej podgrupy, która jest typu "grupowego", dodawał kolejnych zalogowanych uzytkownikow
-        [HttpPut("{subgroupId}/AddUserToSubgroup")]
-        public ActionResult AddUserToSubgroup(int subgroupId)
+        [HttpPost("AddUserToSubgroup")]
+        public ActionResult AddUserToSubgroup([FromBody] int subgroupId)
         {
             _subjectSubgroupService.AddUserToSubgroup(subgroupId);
             return Ok();
