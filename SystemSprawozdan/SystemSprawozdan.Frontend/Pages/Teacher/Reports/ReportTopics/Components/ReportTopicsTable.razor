@@ -1,0 +1,45 @@
+﻿@if (ReportTopics is null)
+{  
+    <LoadingBar IsLoading="true"/>
+}
+else if(ReportTopics.Count == 0)
+{
+    <div class="table__no-data">Brak danych do wyświetlenia</div>
+}
+else
+{
+    <MatTable Items="@ReportTopics" ShowPaging="false" OnRowDbClick="(reportTopic) => HandleSelectedReportTopic((ReportTopicGetDto)reportTopic)">
+        <MatTableHeader>
+            <th class="table__header-cell--big">Przedmiot</th>
+            <th class="table__header-cell--extra">Zadania</th>
+            <th class="table__header-cell--normal">Rok</th>
+            <th class="table__header-cell--small">Grupa</th>
+            <th class="table__header-cell--wider">Rodzaj</th>
+            <th class="table__header-cell--wider">Termin oddania</th>
+            <th class="table__row-icon"></th>
+        </MatTableHeader>
+        <MatTableRow>
+            <td>@context.SubjectName</td>
+            <td>@context.ReportTopicName</td>
+            <td>@context.MajorName</td>
+            <td>@context.SubjectGroupName</td>
+            <td>@context.SubjectGroupGroupType</td>
+            <td>@context.ReportTopicDeadline</td>
+            <td><div class="table__row-icon"><MatIcon Icon="@MatIconNames.Arrow_forward" Style="height: 100%" Class="pointer" @onclick="() => HandleSelectedReportTopic(context)"/></div></td>
+        </MatTableRow>
+    </MatTable>
+}
+
+@code
+{
+    [Parameter]
+    public List<ReportTopicGetDto> ReportTopics { get; set; }
+    [Parameter]
+    public EventCallback<int> SelectedReportTopicId { get; set; }
+
+    public void HandleSelectedReportTopic(ReportTopicGetDto reportTopicGetDto)
+    {
+        SelectedReportTopicId.InvokeAsync(reportTopicGetDto.Id);
+    }
+    
+}
