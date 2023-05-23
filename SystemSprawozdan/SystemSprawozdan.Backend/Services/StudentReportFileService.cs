@@ -83,14 +83,8 @@ namespace SystemSprawozdan.Backend.Services
                     (report => report.StudentReportId == studentReportId).ToList();
             foreach (var file in studentReportFileList)
             {
-                var reportDto = new StudentReportFileGetDto()
-                {
-                    Id = file.Id,
-                    StudentReportId = file.StudentReportId,
-                    ContentType = file.ContentType,
-                    OriginalFileName = file.FileName,
-                    RandomizedFileName = file.StoredFileName
-                };
+                var reportDto = new StudentReportFileGetDto();
+                reportDto = _mapper.Map<StudentReportFileGetDto>(file);
                 reportsDto.Add(reportDto);
             }
             return reportsDto;
