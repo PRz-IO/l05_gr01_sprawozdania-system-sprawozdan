@@ -33,7 +33,9 @@
     
     .file-icon{
         margin-right: 5px;
-        width: 1.5rem;
+        font-size: 1.6rem;
+        display: flex;
+        color: black;
     }
     
     .file-name{
@@ -48,7 +50,6 @@
         cursor: pointer;
         appearance: none;
     }
-
 </style>
 
 @foreach (var file in ExistingFiles)
@@ -59,92 +60,92 @@
                 {
                     case "image/bmp":
                     {
-                        <img src="Icons/Send_edit/jpg_png-icon.svg" alt="Image file icon." class="file-icon"/>
+                        <i class="bi bi-file-earmark-image file-icon"></i>
                         break;
                     }
                     case "text/csv":
                     {
-                        <img src="Icons/Send_edit/csv_xls-icon.svg" alt="Csv file icon." class="file-icon"/>
+                        <i class="bi bi-file-earmark-excel file-icon"></i>
                         break;
                     }
                     case "application/msword":
                     {
-                        <img src="Icons/Send_edit/doc_docx-icon.svg" alt="Word file icon." class="file-icon"/>
+                        <i class="bi bi-file-earmark-word file-icon" ></i>
                         break;
                     }
                     case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
                     {
-                        <img src="Icons/Send_edit/doc_docx-icon.svg" alt="Docx file icon." class="file-icon"/>
+                        <i class="bi bi-file-earmark-word file-icon"></i>
                         break;
                     }
                     case "image/jpeg":
                     {
-                        <img src="Icons/Send_edit/jpg_png-icon.svg" alt="Image file icon." class="file-icon"/>
+                        <i class="bi bi-file-earmark-image file-icon"></i>
                         break;
                     }
                     case "image/png":
                     {
-                        <img src="Icons/Send_edit/jpg_png-icon.svg" alt="Image file icon." class="file-icon"/>
+                        <i class="bi bi-file-earmark-image file-icon"></i>
                         break;
                     }
                     case "application/pdf":
                     {
-                        <img src="Icons/Send_edit/pdf-icon.svg" alt="Pdf file icon." class="file-icon"/>
+                        <i class="bi bi-file-earmark-pdf file-icon"></i>
                         break;
                     }
                     case "application/vnd.ms-powerpoint":
                     {
-                        <img src="Icons/Send_edit/ppt_pptx-icon.svg" alt="Powerpoint file icon." class="file-icon"/>
+                        <i class="bi bi-file-earmark-easel file-icon"></i>
                         break;
                     }
                     case "application/vnd.openxmlformats-officedocument.presentationml.presentation":
                     {
-                        <img src="Icons/Send_edit/ppt_pptx-icon.svg" alt="Powerpoint file icon." class="file-icon"/>
+                        <i class="bi bi-file-earmark-easel file-icon"></i>
                         break;
                     }
                     case "application/vnd.rar":
                     {
-                        <img src="Icons/Send_edit/zip_7zip_rar-icon.svg" alt="Zip file icon." class="file-icon"/>
+                        <i class="bi bi-file-earmark-zip file-icon"></i>
                         break;
                     }
                     case "application/x-tar":
                     {
-                        <img src="Icons/Send_edit/zip_7zip_rar-icon.svg" alt="Zip file icon." class="file-icon"/>
+                        <i class="bi bi-file-earmark-zip file-icon"></i>
                         break;
                     }
                     case "text/plain":
                     {
-                        <img src="Icons/Send_edit/txt-icon.svg" alt="Txt file icon." class="file-icon"/>
+                        <i class="bi bi-file-earmark-text file-icon"></i>
                         break;
                     }
                     case "application/vnd.ms-excel":
                     {
-                        <img src="Icons/Send_edit/csv_xls-icon.svg" alt="Excel file icon." class="file-icon"/>
+                        <i class="bi bi-file-earmark-excel file-icon"></i>
                         break;
                     }
                     case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
                     {
-                        <img src="Icons/Send_edit/csv_xls-icon.svg" alt="Excel file icon." class="file-icon"/>
+                        <i class="bi bi-file-earmark-excel file-icon"></i>
                         break;
                     }
                     case "application/zip":
                     {
-                        <img src="Icons/Send_edit/zip_7zip_rar-icon.svg" alt="Zip file icon." class="file-icon"/>
+                        <i class="bi bi-file-earmark-zip file-icon"></i>
                         break;
                     }
                     case "application/x-zip-compressed":
                     {
-                        <img src="Icons/Send_edit/zip_7zip_rar-icon.svg" alt="Zip file icon." class="file-icon"/>
+                        <i class="bi bi-file-earmark-zip file-icon"></i>
                         break;
                     }    
                     case "application/x-7z-compressed":
                     {
-                        <img src="Icons/Send_edit/zip_7zip_rar-icon.svg" alt="Zip file icon." class="file-icon"/>
+                        <i class="bi bi-file-earmark-zip file-icon"></i>
                         break;
                     }
                     default:
                     {
-                        <img src="Icons/Send_edit/default-file.svg" alt="Default file icon." class="file-icon"/>
+                        <i class="bi bi-file-earmark file-icon"></i>
                         break;
                     }
                 }
@@ -152,7 +153,7 @@
             </div>
             
             <button class="button" onclick="@(() => { paramsData.Add(file.RandomizedFileName); paramsData.Add(file.OriginalFileName); InvokeRemoveFile(paramsData); })">
-                <img src="Icons/Send_edit/download-icon.svg" alt="x-button" style="width: 100%; height: 100%"/>
+                <i class="bi bi-download file-icon"></i>
             </button>
         </div>
     }
@@ -165,92 +166,92 @@
                 {
                     case "image/bmp":
                     {
-                        <img src="Icons/Send_edit/jpg_png-icon.svg" alt="Image file icon." class="file-icon"/>
+                        <i class="bi bi-file-earmark-image file-icon"></i>
                         break;
                     }
                     case "text/csv":
                     {
-                        <img src="Icons/Send_edit/csv_xls-icon.svg" alt="Csv file icon." class="file-icon"/>
+                        <i class="bi bi-file-earmark-excel file-icon"></i>
                         break;
                     }
                     case "application/msword":
                     {
-                        <img src="Icons/Send_edit/doc_docx-icon.svg" alt="Word file icon." class="file-icon"/>
+                        <i class="bi bi-file-earmark-word file-icon"></i>
                         break;
                     }
                     case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
                     {
-                        <img src="Icons/Send_edit/doc_docx-icon.svg" alt="Docx file icon." class="file-icon"/>
+                        <i class="bi bi-file-earmark-word file-icon"></i>
                         break;
                     }
                     case "image/jpeg":
                     {
-                        <img src="Icons/Send_edit/jpg_png-icon.svg" alt="Image file icon." class="file-icon"/>
+                        <i class="bi bi-file-earmark-image file-icon"></i>
                         break;
                     }
                     case "image/png":
                     {
-                        <img src="Icons/Send_edit/jpg_png-icon.svg" alt="Image file icon." class="file-icon"/>
+                        <i class="bi bi-file-earmark-image file-icon"></i>
                         break;
                     }
                     case "application/pdf":
                     {
-                        <img src="Icons/Send_edit/pdf-icon.svg" alt="Pdf file icon." class="file-icon"/>
+                        <i class="bi bi-file-earmark-pdf file-icon"></i>
                         break;
                     }
                     case "application/vnd.ms-powerpoint":
                     {
-                        <img src="Icons/Send_edit/ppt_pptx-icon.svg" alt="Powerpoint file icon." class="file-icon"/>
+                        <i class="bi bi-file-earmark-easel file-icon"></i>
                         break;
                     }
                     case "application/vnd.openxmlformats-officedocument.presentationml.presentation":
                     {
-                        <img src="Icons/Send_edit/ppt_pptx-icon.svg" alt="Powerpoint file icon." class="file-icon"/>
+                        <i class="bi bi-file-earmark-easel file-icon"></i>
                         break;
                     }
                     case "application/vnd.rar":
                     {
-                        <img src="Icons/Send_edit/zip_7zip_rar-icon.svg" alt="Zip file icon." class="file-icon"/>
+                        <i class="bi bi-file-earmark-zip file-icon"></i>
                         break;
                     }
                     case "application/x-tar":
                     {
-                        <img src="Icons/Send_edit/zip_7zip_rar-icon.svg" alt="Zip file icon." class="file-icon"/>
+                        <i class="bi bi-file-earmark-zip file-icon"></i>
                         break;
                     }
                     case "text/plain":
                     {
-                        <img src="Icons/Send_edit/txt-icon.svg" alt="Txt file icon." class="file-icon"/>
+                        <i class="bi bi-file-earmark-text file-icon"></i>
                         break;
                     }
                     case "application/vnd.ms-excel":
                     {
-                        <img src="Icons/Send_edit/csv_xls-icon.svg" alt="Excel file icon." class="file-icon"/>
+                        <i class="bi bi-file-earmark-excel file-icon"></i>
                         break;
                     }
                     case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
                     {
-                        <img src="Icons/Send_edit/csv_xls-icon.svg" alt="Excel file icon." class="file-icon"/>
+                        <i class="bi bi-file-earmark-excel file-icon"></i>
                         break;
                     }
                     case "application/zip":
                     {
-                        <img src="Icons/Send_edit/zip_7zip_rar-icon.svg" alt="Zip file icon." class="file-icon"/>
+                        <i class="bi bi-file-earmark-zip file-icon"></i>
                         break;
                     }
                     case "application/x-zip-compressed":
                     {
-                        <img src="Icons/Send_edit/zip_7zip_rar-icon.svg" alt="Zip file icon." class="file-icon"/>
+                        <i class="bi bi-file-earmark-zip file-icon"></i>
                         break;
                     }    
                     case "application/x-7z-compressed":
                     {
-                        <img src="Icons/Send_edit/zip_7zip_rar-icon.svg" alt="Zip file icon." class="file-icon"/>
+                        <i class="bi bi-file-earmark-zip file-icon"></i>
                         break;
                     }
                     default:
                     {
-                        <img src="Icons/Send_edit/default-file.svg" alt="Default file icon." class="file-icon"/>
+                        <i class="bi bi-file-earmark file-icon"></i>
                         break;
                     }
                 }
@@ -258,7 +259,7 @@
             </div>
             
             <button class="button" onclick="@(() => { InvokeRemoveFile(file.Name); FilesToBeSent.Remove(file);})">
-                <img src="Icons/Send_edit/x-button.svg" alt="x-button" style="width: 100%; height: 100%"/>
+                <i class="bi bi-x file-icon"></i>
             </button>
         </div>
     }

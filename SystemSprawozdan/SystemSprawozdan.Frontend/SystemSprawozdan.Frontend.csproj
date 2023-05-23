@@ -37,6 +37,7 @@
 
   <ItemGroup>
     <Folder Include="Services\StudentServices\" />
+    <Folder Include="wwwroot\Icons\" />
   </ItemGroup>
 
   <ItemGroup>
