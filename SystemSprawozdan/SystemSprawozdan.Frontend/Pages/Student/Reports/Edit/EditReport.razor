@@ -1,5 +1,6 @@
 @page "/edit/{StudentReportId}"
 @using System.Net.Http.Headers
+@using SystemSprawozdan.Frontend.Pages.Student.Reports.Components
 @inject IJSRuntime JS
 @inject HttpClient Http
 @inject IAppHttpClient AppHttpClient
@@ -39,7 +40,7 @@
         transition: background-color 400ms;
         border: dashed var(--primary-color) 4px;
         border-radius: 46px;
-        background-image: url("Icons/Send_edit/download-icon.svg");
+        background-image: element("bi bi-download file-icon");
         background-size: 10%;
         background-position-x: center;
         background-position-y: 30%;
@@ -94,6 +95,7 @@
     <div class="main-container">
         <div class="left-column">
             <span class="file-upload-text">Umieść pliki</span>
+            <i class="bi bi-download file-icon" style="position: absolute; left: 50%; top: 10%; font-size: 4rem; transform: translate(-50%, -50%)"></i>
             @for (int i = 0; i < numberOfInputFiles; i++)
             {
                 <InputFile class="file-input" @key="i" OnChange="OnInputFileChange" multiple style="@GetInputFileStyle(i)"></InputFile>
@@ -117,7 +119,7 @@
 @code{
     [Parameter]
     public string StudentReportId { get; set; }
-    
+
     int numberOfInputFiles = 1;
     string GetInputFileStyle(int index)
     {

@@ -1,5 +1,6 @@
 ﻿@page "/send/{ReportTopicId}"
 @using System.Net.Http.Headers;
+@using SystemSprawozdan.Frontend.Pages.Student.Reports.Components
 @inject IAppHttpClient AppHttpClient
 
 <PageTitle>Wyślij sprawozdanie</PageTitle>
@@ -31,7 +32,6 @@
         transition: background-color 400ms;
         border: dashed var(--primary-color) 4px;
         border-radius: 46px;
-        background-image: url("Icons/Send_edit/download-icon.svg");
         background-size: 25%;
         background-position: center;
         background-repeat: no-repeat;
@@ -82,6 +82,7 @@
     <div class="main-container">
         <div class="left-column">
             <span style="position: absolute; left: 50%; top: 50%; font-size: 2rem; transform: translate(-50%, -50%);">Umieść pliki</span>
+            <i class="bi bi-download file-icon" style="position: absolute; left: 50%; top: 30%; font-size: 7rem; transform: translate(-50%, -50%)"></i>
             @for (int i = 0; i < numberOfInputFiles; i++)
             {
                 <InputFile class="file-input" @key="i" OnChange="OnInputFileChange" multiple style="@GetInputFileStyle(i)"></InputFile>
