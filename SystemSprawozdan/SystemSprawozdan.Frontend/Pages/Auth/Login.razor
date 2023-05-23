@@ -26,7 +26,7 @@
     [SupplyParameterFromQuery]
     public string? ReturnUrl { get; set; }
     
-    public LoginUserDto User { get; set; } = new LoginUserDto()
+    public LoginUserDto User { get;   } = new LoginUserDto()
     {
         Login = "",
         Password = ""

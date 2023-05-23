@@ -12,7 +12,7 @@ using SystemSprawozdan.Backend.Data;
 namespace SystemSprawozdan.Backend.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    [Migration("20230430111221_databaseImplementation")]
+    [Migration("20230503111045_databaseImplementation")]
     partial class databaseImplementation
     {
         /// <inheritdoc />

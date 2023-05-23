@@ -2,10 +2,20 @@
 
 public class HttpParameter
 {
-    public HttpParameter(string key, string value)
+    public HttpParameter(string key, string? value)
     {
         Key = key;
         Value = value;
+    }
+    public HttpParameter(string key, int? value)
+    {
+        Key = key;
+        Value = value?.ToString();
+    }
+    public HttpParameter(string key, bool? value)
+    {
+        Key = key;
+        Value = value?.ToString();
     }
     public string Key { get; set; }
     public string Value { get; set; }

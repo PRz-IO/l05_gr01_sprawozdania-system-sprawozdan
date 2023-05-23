@@ -1,0 +1,75 @@
+﻿@page "/teacher/reports"
+@page "/teacher/reports/{ReportTopicId:int?}"
+@page "/teacher/reports/{ReportTopicId:int?}/{StudentReportId:int?}"
+
+@inject NavigationManager NavigationManager
+
+@switch (ActivePage)
+{
+    case ReportsPagesEnum.ReportTopicList:
+        <h1>ReportTopicList</h1>
+        break;
+    case ReportsPagesEnum.ReportTopicDetails:
+        <ReportTopicDetails ReportTopicId="@ReportTopicId" SelectedStudentReportId="@HandleStudentReportId"/>
+        break;
+    case ReportsPagesEnum.StudentReportDetails:
+        <h1>StudentReportDetails @StudentReportId</h1>
+        break;
+}
+
+@code {
+    [Parameter]
+    public int? ReportTopicId
+    {
+        get => _reportTopicId;
+        set
+        {
+            _reportTopicId = value;
+            CheckPage();
+        }
+    }
+    private int? _reportTopicId { get; set; }
+    
+    [Parameter]
+    public int? StudentReportId 
+    {   
+        get => _studentReportId;
+        set
+        {
+            _studentReportId = value;
+            CheckPage();
+        } 
+    }
+    private int? _studentReportId { get; set; }
+
+    public void HandleReportTopicId(int reportTopicId)
+    {
+        NavigationManager.NavigateTo($"teacher/reports/{reportTopicId}");
+    }
+
+    public void HandleStudentReportId(int studentReportId)
+    {
+        NavigationManager.NavigateTo($"teacher/reports/{ReportTopicId}/{studentReportId}");
+    }
+
+    public ReportsPagesEnum ActivePage = ReportsPagesEnum.ReportTopicList;
+
+    private void CheckPage()
+    {
+        if(ReportTopicId is not null && StudentReportId is not null)
+            ActivePage = ReportsPagesEnum.StudentReportDetails;
+        else if (ReportTopicId is not null)
+            ActivePage = ReportsPagesEnum.ReportTopicDetails;
+        else
+            ActivePage = ReportsPagesEnum.ReportTopicList;
+        
+        StateHasChanged();
+    }
+
+    public enum ReportsPagesEnum
+    {
+        ReportTopicList,
+        ReportTopicDetails,
+        StudentReportDetails,
+    }
+}
