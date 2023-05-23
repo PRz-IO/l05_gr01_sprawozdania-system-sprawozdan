@@ -245,7 +245,7 @@
         Token = await AppHttpClient.Post("Account/login", loginData);
         
         
-        var getReportTopicEndpointUri = new Uri($"https://localhost:7184/api/ReportTopic/?studentReportId={StudentReportIdInteger}");
+        var getReportTopicEndpointUri = new Uri($"https://localhost:7184/api/ReportTopic/selective/?studentReportId={StudentReportIdInteger}");
         var reportTopicGetDto = await AppHttpClient.Get<ReportTopicGetDto>(getReportTopicEndpointUri.ToString());
         ReportTopicName = reportTopicGetDto.ReportTopicName;
         

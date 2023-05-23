@@ -14,7 +14,7 @@ namespace SystemSprawozdan.Backend.Services
     {
         StudentReport PostStudentReport(StudentReportPostDto postStudentReportDto);
         void PutStudentReport(int studentReportId, StudentReportPutDto putStudentReportDto);
-        IEnumerable<ReportTopicGetDto> GetReports(bool? toCheck);
+        StudentReportGetDto GetStudentReport(int studentReportId);
         List<StudentReportGetDto> GetStudentReportsByTopicId(int reportTopicId, bool? isIndividual, bool? isMarked);
     }
 
@@ -22,7 +22,6 @@ namespace SystemSprawozdan.Backend.Services
     {
         private readonly ApiDbContext _dbContext;
         private readonly IUserContextService _userContextService;
-        private readonly IWebHostEnvironment _env;
         private readonly IMapper _mapper;
         private readonly IAuthorizationService _authorizationService;
 
@@ -30,7 +29,6 @@ namespace SystemSprawozdan.Backend.Services
         {
             _dbContext = dbContext;
             _userContextService = userContextService;
-            _env = env;
             _mapper = mapper;
             _authorizationService = authorizationService;
         }
@@ -125,7 +123,23 @@ namespace SystemSprawozdan.Backend.Services
             _dbContext.SaveChanges();
         }
         
+        
+        public StudentReportGetDto GetStudentReport(int studentReportId)
+        {
+            var studentReport = _dbContext.StudentReport.FirstOrDefault(report => report.Id == studentReportId);
+            var studentReportDto = new StudentReportGetDto
+            {
+                LastModified = studentReport.LastModified,
+                Note = studentReport.Note,
+                Mark = studentReport.Mark,
+                ToCheck = studentReport.ToCheck,
+                SentAt = studentReport.SentAt
+            };
 
+            return studentReportDto;
+        }
+        
+        
         public List<StudentReportGetDto> GetStudentReportsByTopicId(int reportTopicId, bool? isIndividual, bool? isMarked)
         {
             
@@ -154,6 +168,17 @@ namespace SystemSprawozdan.Backend.Services
 
             var reportsGetDto = _mapper.Map<List<StudentReportGetDto>>(reports.ToList());
             return reportsGetDto;
+        }
+
+        private void VerifyUserHasTeacherPermission(TeacherResourceOperation teacherResourceOperation)
+        {
+            var authorizationResult = _authorizationService.AuthorizeAsync(
+                _userContextService.User,
+                null,
+                new TeacherResourceOperationRequirement(teacherResourceOperation)).Result;
+
+            if (!authorizationResult.Succeeded)
+                throw new ForbidException();
         }
     }
 }

@@ -11,7 +11,6 @@ namespace SystemSprawozdan.Backend.Services
     public interface IReportTopicService
     {
         ReportTopicGetDto GetReportTopic(int? reportTopicId, int? studentReportId);
-        
         IEnumerable<ReportTopicGetDto> GetReports(bool? toCheck);
         ReportTopicGetDto GetReportById(int reportTopicId);
     }

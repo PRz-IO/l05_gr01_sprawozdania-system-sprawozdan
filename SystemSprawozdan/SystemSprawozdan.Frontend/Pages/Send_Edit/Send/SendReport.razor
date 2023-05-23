@@ -12,6 +12,20 @@
         height: 100%;
         padding-bottom: 6vh;
     }
+    
+    .report-topic-name{
+        display: flex;
+        justify-content: center;
+        margin-bottom: 3vh;
+        font-size: 2rem;
+        margin-top: 3vh;
+    }
+    
+    .left-column{
+        width: 32%;
+        position: relative;
+    }
+    
     .file-input{
         cursor: pointer;
         transition: background-color 400ms;
@@ -22,7 +36,6 @@
         background-position: center;
         background-repeat: no-repeat;
     }
-    
     
     .file-input:hover{
         background-color: rgba(64,153,229,0.49);
@@ -43,6 +56,25 @@
         height: 28%;
         overflow-y: scroll;
         border-radius: 15px;
+    }
+    
+    .right-column{
+        display: flex;
+        flex-direction: column;
+        width: 32%;
+        justify-content: space-between;
+    }
+    
+    .deadline{
+        font-size: 1.5rem;
+        margin: 0;
+    }
+    .radio-buttons{
+        display: flex;
+    }
+    
+    .radio-button-description{
+        margin-bottom: 0;
     }
 </style>
 
@@ -184,7 +216,7 @@
         };
         Token = await AppHttpClient.Post("Account/login", loginData);
 
-        reportTopicGetEndpointUri =  new Uri($"https://localhost:7184/api/ReportTopic/?reportTopicId={ReportTopicId}");
+        reportTopicGetEndpointUri =  new Uri($"https://localhost:7184/api/ReportTopic/selective/?reportTopicId={ReportTopicId}");
         var reportTopicGetDto = await AppHttpClient.Get<ReportTopicGetDto>(reportTopicGetEndpointUri.ToString());
         Deadline = reportTopicGetDto.ReportTopicDeadline.ToString("g");
         TopicName = reportTopicGetDto.ReportTopicName;

@@ -4,6 +4,7 @@ namespace SystemSprawozdan.Shared.Dto;
 
 public class StudentReportGetDto
 {
+    public int Id { get; set; }
     public DateTime SentAt { get; set; }
     public string? Note { get; set; }
     public DateTime LastModified { get; set; }

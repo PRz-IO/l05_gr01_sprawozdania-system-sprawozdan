@@ -37,7 +37,7 @@ namespace SystemSprawozdan.Backend.Controllers
 
         //TODO: Olek: Trzeba stworzyć GETa, który wyświetla wszystkie tematy sprawozdan, które są oddane przez zalogowanego użytkownika
 
-        [HttpGet]
+        [HttpGet("selective")]
         public ActionResult GetReportTopic([FromQuery] int? reportTopicId, int? studentReportId)
         {
             var reportTopic = _reportTopicService.GetReportTopic(reportTopicId, studentReportId);
