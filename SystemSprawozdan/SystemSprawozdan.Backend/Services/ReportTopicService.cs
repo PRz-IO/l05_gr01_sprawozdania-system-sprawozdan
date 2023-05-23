@@ -35,11 +35,12 @@ namespace SystemSprawozdan.Backend.Services
             if (reportTopicId != null)
             {
                 var reportTopic = _dbContext.ReportTopic.FirstOrDefault(t => t.Id == reportTopicId);
-                if (reportTopic is null) return null;
+                if (reportTopic is null) throw new BadRequestException($"Nie ma takiego tematu sprawozdania z ID = {reportTopicId}!");
                 reportTopicDto.ReportTopicName = reportTopic.Name;
                 reportTopicDto.ReportTopicDeadline = reportTopic.Deadline; 
                 
             }
+            
 
             if (studentReportId != null)
             {

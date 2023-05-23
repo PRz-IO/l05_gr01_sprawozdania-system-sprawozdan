@@ -41,7 +41,6 @@ namespace SystemSprawozdan.Backend.Controllers
         public ActionResult GetReportTopic([FromQuery] int? reportTopicId, int? studentReportId)
         {
             var reportTopic = _reportTopicService.GetReportTopic(reportTopicId, studentReportId);
-            if (reportTopic is null) return BadRequest($"Brak tematu sprawozdania o ID: {reportTopicId}!");
 
             return Ok(reportTopic);
 
