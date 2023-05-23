@@ -189,8 +189,6 @@
         {
             return;
         }
-        using var client = new HttpClient();
-        client.DefaultRequestHeaders.Add("Authorization", "Bearer " + Token);
         var sendFilesUrl = new Uri($"https://localhost:7184/api/StudentReportFile/{StudentReportId}");
         foreach (var file in _filesToBeSent)
         {
@@ -224,8 +222,7 @@
                 name: "\"files\"",
                 fileName: file.Name);
         }
-        var filesResponse = await client.PostAsync(sendFilesUrl, filesMultipartFormDataContent);
-        filesResponse.EnsureSuccessStatusCode();
+        await AppHttpClient.PostFormData(sendFilesUrl.ToString(), filesMultipartFormDataContent);
     }
 
     public async void sendReport()

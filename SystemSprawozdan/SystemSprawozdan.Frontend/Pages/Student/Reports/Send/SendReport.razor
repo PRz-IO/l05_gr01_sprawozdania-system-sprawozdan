@@ -162,16 +162,14 @@
             ReportTopicId = Int32.Parse(ReportTopicId),
             Note = Note
         };
-        var sentReportResponse = await (AppHttpClient.Post(sendReportUri, reportToSend));
+        var sentReportResponse = await AppHttpClient.Post(sendReportUri, reportToSend);
         var createdStudentReportId = Int32.Parse(sentReportResponse);
 
         if (_files is null)
         {
             return;
         }
-        using var client = new HttpClient();
-        client.DefaultRequestHeaders.Add("Authorization", "Bearer " + Token);
-        var sendFilesUrl = $"https://localhost:7184/api/StudentReportFile/{createdStudentReportId}";
+        var sendFilesUri = new Uri ($"https://localhost:7184/api/StudentReportFile/{createdStudentReportId}");
         foreach (var file in _files)
         {
             var fileContent = new StreamContent(file.OpenReadStream(_maxFileSize));
@@ -203,8 +201,7 @@
                 name: "\"files\"",
                 fileName: file.Name);
         }
-        var filesResponse = await client.PostAsync(sendFilesUrl, filesMultipartFormDataContent);
-        filesResponse.EnsureSuccessStatusCode();
+        await AppHttpClient.PostFormData(sendFilesUri.ToString(), filesMultipartFormDataContent);
     }
     
     
