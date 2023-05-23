@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SystemSprawozdan.Backend.Authorization;
 using SystemSprawozdan.Backend.Services;
 using SystemSprawozdan.Shared.Dto;
-using SystemSprawozdan.Backend.Services;
+using SystemSprawozdan.Shared.Enums;
 
 namespace SystemSprawozdan.Backend.Controllers
 {
@@ -19,14 +20,17 @@ namespace SystemSprawozdan.Backend.Controllers
         }
         //DONE: KUSZO: Trzeba stworzyc GETa, ktory wyswietla wszystkie tematy sprawozdan, ktore sa przypisane do danego prowadzacego, ktory jest zalogowany
         [HttpGet]
+        [Authorize(Roles = nameof(UserRoleEnum.Teacher))]
         public ActionResult<IEnumerable<ReportTopicGetDto>> GetReports([FromQuery] bool? toCheck)
         {
             var result = _reportTopicService.GetReports(toCheck);
             return Ok(result);
+            
         }
         
         //DONE: KUSZO: Trzeba stworzyc GETa, ktory wyswietla pojedynczy temat sprawozdania, ktory jest przypisany do danego prowadzacego, ktory jest zalogowany
         [HttpGet("{reportTopicId}")]
+        [Authorize(Roles = nameof(UserRoleEnum.Teacher))]
         public ActionResult<ReportTopicGetDto> GetReport([FromRoute] int reportTopicId)
         {
             var result = _reportTopicService.GetReportById(reportTopicId);
@@ -47,4 +51,5 @@ namespace SystemSprawozdan.Backend.Controllers
             
         }
     }
+    
 }

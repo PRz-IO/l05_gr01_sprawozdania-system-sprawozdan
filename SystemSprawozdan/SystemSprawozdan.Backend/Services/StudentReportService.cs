@@ -23,14 +23,12 @@ namespace SystemSprawozdan.Backend.Services
         private readonly ApiDbContext _dbContext;
         private readonly IUserContextService _userContextService;
         private readonly IMapper _mapper;
-        private readonly IAuthorizationService _authorizationService;
 
-        public StudentReportService(ApiDbContext dbContext, IUserContextService userContextService, IMapper mapper, IAuthorizationService authorizationService, IWebHostEnvironment env)
+        public StudentReportService(ApiDbContext dbContext, IUserContextService userContextService, IMapper mapper, IWebHostEnvironment env)
         {
             _dbContext = dbContext;
             _userContextService = userContextService;
             _mapper = mapper;
-            _authorizationService = authorizationService;
         }
 
         public StudentReport PostStudentReport(StudentReportPostDto postStudentReportDto)
@@ -142,15 +140,6 @@ namespace SystemSprawozdan.Backend.Services
         
         public List<StudentReportGetDto> GetStudentReportsByTopicId(int reportTopicId, bool? isIndividual, bool? isMarked)
         {
-            
-            var authorizationResult = _authorizationService.AuthorizeAsync(
-                _userContextService.User,
-                null,
-                new TeacherResourceOperationRequirement(TeacherResourceOperation.Read)).Result;
-
-            if (!authorizationResult.Succeeded)
-                throw new ForbidException();
-            
             var isReportTopicExist = _dbContext.ReportTopic.Any(reportTopic => reportTopic.Id == reportTopicId);
 
             if (!isReportTopicExist) throw new NotFoundException($"Report Topic with Id equals {reportTopicId} doesn't exist!");

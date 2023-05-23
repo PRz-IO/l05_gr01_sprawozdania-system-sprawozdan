@@ -4,6 +4,7 @@ using SystemSprawozdan.Backend.Data;
 using SystemSprawozdan.Backend.Data.Models.DbModels;
 using SystemSprawozdan.Backend.Services;
 using SystemSprawozdan.Shared.Dto;
+using SystemSprawozdan.Shared.Enums;
 
 namespace SystemSprawozdan.Backend.Controllers
 {
@@ -19,6 +20,7 @@ namespace SystemSprawozdan.Backend.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = nameof(UserRoleEnum.Student))]
         public ActionResult PostStudentReport([FromBody] StudentReportPostDto postStudentReportDto)
         {
             var result = _studentReportService.PostStudentReport(postStudentReportDto);
@@ -26,6 +28,7 @@ namespace SystemSprawozdan.Backend.Controllers
         }
 
         [HttpPut("{studentReportId:int}")]
+        [Authorize(Roles = nameof(UserRoleEnum.Student))]
         public ActionResult PutStudentReport([FromRoute] int studentReportId, [FromBody] StudentReportPutDto putStudentReportDto)
         {
              _studentReportService.PutStudentReport(studentReportId, putStudentReportDto);
@@ -33,6 +36,7 @@ namespace SystemSprawozdan.Backend.Controllers
         }
 
         [HttpGet("fullReport/{studentReportId:int}")]
+        [Authorize(Roles = nameof(UserRoleEnum.Student))]
         public ActionResult<StudentReportGetDto> GetStudentReport([FromRoute] int studentReportId)
         {
             var result = _studentReportService.GetStudentReport(studentReportId);
@@ -41,6 +45,7 @@ namespace SystemSprawozdan.Backend.Controllers
 
         //TODO: Paweł: Trzeba stworzyc GETa, ktory wyswietla wszystkie sprawozdania, ktore sa przypisane do danej grupy
         [HttpGet("/api/ReportTopic/{reportTopicId}/StudentReports")]
+        [Authorize(Roles = nameof(UserRoleEnum.Teacher))]
         public ActionResult<IEnumerable<StudentReportGetDto>> GetCollaborateReportsByTopicId([FromRoute] int reportTopicId, [FromQuery] bool? isIndividual, [FromQuery] bool? isMarked)
         {
             var result = _studentReportService.GetStudentReportsByTopicId(reportTopicId, isIndividual, isMarked);
