@@ -158,17 +158,6 @@ namespace SystemSprawozdan.Backend.Services
             var reportsGetDto = _mapper.Map<List<StudentReportGetDto>>(reports.ToList());
             return reportsGetDto;
         }
-
-        private void VerifyUserHasTeacherPermission(TeacherResourceOperation teacherResourceOperation)
-        {
-            var authorizationResult = _authorizationService.AuthorizeAsync(
-                _userContextService.User,
-                null,
-                new TeacherResourceOperationRequirement(teacherResourceOperation)).Result;
-
-            if (!authorizationResult.Succeeded)
-                throw new ForbidException();
-        }
     }
 }
 
