@@ -7,7 +7,7 @@
 @switch (ActivePage)
 {
     case ReportsPagesEnum.ReportTopicList:
-        <h1>ReportTopicList</h1>
+        <ReportTopics SelectedReportTopicId="@HandleReportTopicId"/>
         break;
     case ReportsPagesEnum.ReportTopicDetails:
         <ReportTopicDetails ReportTopicId="@ReportTopicId" SelectedStudentReportId="@HandleStudentReportId"/>

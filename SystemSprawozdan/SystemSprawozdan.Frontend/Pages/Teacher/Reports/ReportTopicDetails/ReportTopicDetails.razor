@@ -2,7 +2,7 @@
 
 <HeaderReportTopicDetails ReportTopic="@ReportTopic"/>
 
-<TabBar Data="TabBarData" @bind-Value="@IsMarked"/>
+<TabBar Data="@TabBarData" @bind-Value="@IsMarked"/>
 
 <div class="reports">
     <StudentReportsTable StudentReports="@IndividualReports" SelectedStudentReportId="SelectedStudentReportId"/>
