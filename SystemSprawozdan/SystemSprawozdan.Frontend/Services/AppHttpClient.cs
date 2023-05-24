@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using System.Net.Http.Json;
+using Microsoft.JSInterop;
 using SystemSprawozdan.Frontend.CustomClasses;
 
 namespace SystemSprawozdan.Frontend.Services
@@ -16,6 +17,7 @@ namespace SystemSprawozdan.Frontend.Services
         public Task<string> Put<TBody>(string url, TBody body, HttpParameter parameter);
 
         public Task<string> Put<TBody>(string url, TBody body, List<HttpParameter>? parameters = null);
+        public Task DownloadFile(string url, string fileName = "report");
         public T? SerializeStringToObject<T>(string json);
     }
 
@@ -23,12 +25,14 @@ namespace SystemSprawozdan.Frontend.Services
     {
         private readonly HttpClient _httpClient;
         private readonly JsonSerializerOptions _serializer = new (){ PropertyNameCaseInsensitive = true };
+        private readonly IJSRuntime _js;
 
-        public AppHttpClient(HttpClient httpClient, HttpInterceptorService interceptor)
+        public AppHttpClient(HttpClient httpClient, HttpInterceptorService interceptor, IJSRuntime js)
         {
             interceptor.RegisterEvent();
             _httpClient = httpClient;
             _httpClient.BaseAddress = new Uri("https://localhost:7184/api/");
+            _js = js;
         }
 
         public async Task<TResponse?> Get<TResponse>(string url, HttpParameter? parameter = null)
@@ -87,6 +91,14 @@ namespace SystemSprawozdan.Frontend.Services
             using var response = await _httpClient.PutAsJsonAsync(url, body);
             
             return await response.Content.ReadAsStringAsync();
+        }
+
+        public async Task DownloadFile(string url, string fileName)
+        {
+            var response = await _httpClient.GetAsync(url);
+            var fileStream = response.Content.ReadAsStream();
+            using var streamRef = new DotNetStreamReference(stream: fileStream);
+            await _js.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef); // nazwa funkcji JS w Index.html
         }
 
         public T? SerializeStringToObject<T>(string json)
