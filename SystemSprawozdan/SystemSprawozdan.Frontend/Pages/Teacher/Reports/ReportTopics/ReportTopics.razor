@@ -10,14 +10,14 @@
     private List<ReportTopicGetDto> ReportTopicGetDtos;
     private bool? ToCheck
     {
-        get => _isMarked;
+        get => _toCheck;
         set
         {
-            _isMarked = value;
+            _toCheck = value;
             GetReportTopics(ToCheck);
         }
     }
-    private bool? _isMarked = null;
+    private bool? _toCheck = null;
     
     public async Task GetReportTopics(bool? toCheck)
     {
