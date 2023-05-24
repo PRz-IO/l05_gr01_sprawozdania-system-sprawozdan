@@ -1,0 +1,20 @@
+﻿.table__header-cell{
+    width: 25%;
+}
+
+.table__header-cell--wider{
+    width: 75%;
+}
+
+.table__no-data {
+    padding: 10px 25px;
+}
+.table__label{
+    font-size: var(--font-size-large);
+    font-weight: var(--font-weight-bold);
+    padding: 10px 20px;
+}
+
+.table__row-icon{
+    display: flex;
+}

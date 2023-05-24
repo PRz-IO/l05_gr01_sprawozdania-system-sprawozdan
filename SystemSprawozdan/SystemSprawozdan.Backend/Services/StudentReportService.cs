@@ -1,5 +1,6 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using SystemSprawozdan.Backend.Authorization;
 using SystemSprawozdan.Backend.Data;
@@ -11,10 +12,9 @@ namespace SystemSprawozdan.Backend.Services
 {
     public interface IStudentReportService
     {
-        void PostStudentReport(StudentReportPostDto postStudentReportDto);
+        StudentReport PostStudentReport(StudentReportPostDto postStudentReportDto);
         void PutStudentReport(int studentReportId, StudentReportPutDto putStudentReportDto);
-        Task<List<StudentReportFile>> UploadFile(int? studentReportId, List<IFormFile> files);
-        IEnumerable<ReportTopicGetDto> GetReports(bool? toCheck);
+        StudentReportGetDto GetStudentReport(int studentReportId);
         List<StudentReportGetDto> GetStudentReportsByTopicId(int reportTopicId, bool? isIndividual, bool? isMarked);
     }
 
@@ -22,24 +22,20 @@ namespace SystemSprawozdan.Backend.Services
     {
         private readonly ApiDbContext _dbContext;
         private readonly IUserContextService _userContextService;
-        private readonly IWebHostEnvironment _env;
         private readonly IMapper _mapper;
-        private readonly IAuthorizationService _authorizationService;
 
-        public StudentReportService(ApiDbContext dbContext, IUserContextService userContextService, IMapper mapper, IAuthorizationService authorizationService, IWebHostEnvironment env)
+        public StudentReportService(ApiDbContext dbContext, IUserContextService userContextService, IMapper mapper, IWebHostEnvironment env)
         {
             _dbContext = dbContext;
             _userContextService = userContextService;
-            _env = env;
             _mapper = mapper;
-            _authorizationService = authorizationService;
         }
 
-        public void PostStudentReport(StudentReportPostDto postStudentReportDto)
+        public StudentReport PostStudentReport(StudentReportPostDto postStudentReportDto)
         {
             var loginUserId = _userContextService.GetUserId;
-            var reportTopicIdInteger = int.Parse(postStudentReportDto.ReportTopicId);
-            var isIndividualBoolean = bool.Parse(postStudentReportDto.IsIndividual);
+            var reportTopicIdInteger = (postStudentReportDto.ReportTopicId);
+            var isIndividualBoolean = (postStudentReportDto.IsIndividual);
 
             var subjectGroup = _dbContext
                 .SubjectGroup.FirstOrDefault(subjectGroup =>
@@ -94,8 +90,12 @@ namespace SystemSprawozdan.Backend.Services
             };
             _dbContext.StudentReport.Add(newStudentReport);
             _dbContext.SaveChanges();
+
+
+            var result = newStudentReport;
+            return result;
         }
-        
+
         public void PutStudentReport(int studentReportId, StudentReportPutDto putStudentReportDto)
         {
             var reportToEdit = _dbContext.StudentReport.FirstOrDefault(report => report.Id == studentReportId);
@@ -120,79 +120,26 @@ namespace SystemSprawozdan.Backend.Services
             reportToEdit.LastModified = DateTime.UtcNow;
             _dbContext.SaveChanges();
         }
-
-        public async Task<List<StudentReportFile>> UploadFile(int? studentReportId, List<IFormFile> files)
+        
+        
+        public StudentReportGetDto GetStudentReport(int studentReportId)
         {
-            var uploadResults = new List<StudentReportFile>();
-            foreach (var file in files)
+            var studentReport = _dbContext.StudentReport.FirstOrDefault(report => report.Id == studentReportId);
+            var studentReportDto = new StudentReportGetDto
             {
-                var uploadResult = new StudentReportFile();
-                string trustedFileNameForFileStorage;
-                string originalFileName = file.FileName;
-                uploadResult.FileName = originalFileName;
+                LastModified = studentReport.LastModified,
+                Note = studentReport.Note,
+                Mark = studentReport.Mark,
+                ToCheck = studentReport.ToCheck,
+                SentAt = studentReport.SentAt
+            };
 
-                trustedFileNameForFileStorage = Path.GetRandomFileName();
-                var pathToCheck = Path.Combine(_env.ContentRootPath, "Uploads");
-                if (!Directory.Exists(pathToCheck))
-                {
-                    var di = Directory.CreateDirectory(pathToCheck);
-                }
-                var path = Path.Combine(_env.ContentRootPath, "Uploads", trustedFileNameForFileStorage);
-
-                using FileStream fs = new(path, FileMode.Create);
-                await file.CopyToAsync(fs);
-
-                
-                
-                uploadResult.FileName = file.FileName;
-                uploadResult.StoredFileName = trustedFileNameForFileStorage;
-                uploadResult.ContentType = file.ContentType;
-                if (studentReportId == -1)
-                {
-                    var reportId = _dbContext.StudentReport.OrderByDescending(report => report.SentAt).FirstOrDefault().Id;
-                    uploadResult.StudentReportId = reportId;
-                }
-                else
-                {
-                    uploadResult.StudentReportId = studentReportId;
-                }
-                uploadResults.Add(uploadResult);
-                _dbContext.StudentReportFile.Add(uploadResult);
-            }
-            
-            _dbContext.SaveChanges();
-            return uploadResults;
+            return studentReportDto;
         }
-
-        public IEnumerable<ReportTopicGetDto> GetReports(bool? toCheck)
-        {
-            VerifyUserHasTeacherPermission(TeacherResourceOperation.Read);
-
-            var teacherId = _userContextService.GetUserId;
-
-            var reportsFromDb = _dbContext.ReportTopic
-                        .Include(reportTopic => reportTopic.SubjectGroup)
-                            .ThenInclude(subjectGroup => subjectGroup.Subject)
-                                .ThenInclude(subject => subject.Major)  
-                        .Where(reportTopic => reportTopic.SubjectGroup.TeacherId == teacherId);
-
-            if (toCheck != null)
-            {
-                reportsFromDb = reportsFromDb.Where(reportTopic =>
-                    reportTopic.StudentReports.Any(studentReport => studentReport.ToCheck == toCheck));
-            }
-            
-            var reportsFromDbList = reportsFromDb.OrderBy(reportTopic => reportTopic.Deadline).ToList();
-            
-            var reportsDto = _mapper.Map<List<ReportTopicGetDto>>(reportsFromDbList);
-            
-            return reportsDto;
-        }
-
+        
+        
         public List<StudentReportGetDto> GetStudentReportsByTopicId(int reportTopicId, bool? isIndividual, bool? isMarked)
         {
-            VerifyUserHasTeacherPermission(TeacherResourceOperation.Read);
-            
             var isReportTopicExist = _dbContext.ReportTopic.Any(reportTopic => reportTopic.Id == reportTopicId);
 
             if (!isReportTopicExist) throw new NotFoundException($"Report Topic with Id equals {reportTopicId} doesn't exist!");
@@ -210,17 +157,6 @@ namespace SystemSprawozdan.Backend.Services
 
             var reportsGetDto = _mapper.Map<List<StudentReportGetDto>>(reports.ToList());
             return reportsGetDto;
-        }
-
-        private void VerifyUserHasTeacherPermission(TeacherResourceOperation teacherResourceOperation)
-        {
-            var authorizationResult = _authorizationService.AuthorizeAsync(
-                _userContextService.User,
-                null,
-                new TeacherResourceOperationRequirement(teacherResourceOperation)).Result;
-
-            if (!authorizationResult.Succeeded)
-                throw new ForbidException();
         }
     }
 }

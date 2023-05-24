@@ -14,10 +14,11 @@
 
 .container {
     position: relative;
-    width: 100%;
+    width: 100% !important;
+    max-width: 100% !important;
     height: 100vh;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-evenly;
     gap: 4vh;
 }

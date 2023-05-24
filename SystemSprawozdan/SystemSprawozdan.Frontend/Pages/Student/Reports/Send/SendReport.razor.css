@@ -1,0 +1,40 @@
+﻿.main-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-content: flex-start;
+    height: 100%;
+}
+
+.report-topic-name{
+    display: flex;
+    justify-content: center;
+    margin-bottom: 3vh;
+    font-size: 2rem;
+    margin-top: 3vh;
+}
+
+.left-column{
+    width: 32%;
+    position: relative;
+}
+
+.right-column{
+    display: flex;
+    flex-direction: column;
+    width: 32%;
+    justify-content: space-between;
+}
+
+.deadline{
+    font-size: 1.5rem;
+    margin: 0;
+}
+.radio-buttons{
+    display: flex;
+}
+
+.radio-button-description{
+    margin-bottom: 0;
+}
+

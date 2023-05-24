@@ -4,14 +4,14 @@
 
     --font-color-header: #373737;
     --font-color-basic: #868484;
-    --font-size-small: 20px;
-    --font-size-medium: 24px;
-    --font-size-large: 28px;
+    --font-size-small: 16px;
+    --font-size-medium: 18px;
+    --font-size-large: 20px;
     --font-weight-medium: 500;
     --font-weight-bold: 600;
 
     --panel-background-color: #FEFEFE;
-    --panel-border-radius: 15px;
+    --panel-border-radius: 10px;
     --panel-line-color: var(--font-color-basic);
     --panel-drop-shadow: -5px 5px 20px 0px #22222255;
 }

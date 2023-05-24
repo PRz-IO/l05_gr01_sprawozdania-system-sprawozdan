@@ -1,0 +1,19 @@
+﻿<div class="header">
+    <div class="header__row">
+        <div class="header__cell"><b>Zadanie: </b><span class="header__cell-value">@ReportTopic?.ReportTopicName</span></div>
+        <div class="header__cell"><b>Termin oddania: </b><span class="header__cell-value">@ReportTopic?.ReportTopicDeadline</span></div>
+    </div>
+    <div class="header__row">
+        <div class="header__cell"><b>Przedmiot: </b><span class="header__cell-value">@ReportTopic?.SubjectName</span></div>
+        <div class="header__cell"><b>Rodzaj zajęć: </b><span class="header__cell-value">@ReportTopic?.SubjectGroupGroupType</span></div>
+    </div>
+    <div class="header__row">
+        <div class="header__cell"><b>Rok: </b><span class="header__cell-value">@ReportTopic?.MajorName</span></div>
+        <div class="header__cell"><b>Grupa: </b><span class="header__cell-value">@ReportTopic?.SubjectGroupName</span></div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public ReportTopicGetDto ReportTopic { get; set; }
+}

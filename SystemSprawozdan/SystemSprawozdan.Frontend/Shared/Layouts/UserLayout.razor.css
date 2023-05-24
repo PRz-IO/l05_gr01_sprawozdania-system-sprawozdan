@@ -8,6 +8,7 @@
     flex-direction: column;
     gap: 4vh;
     width: 20vw;
+    max-width: 300px;
 }
 
 .navigation{

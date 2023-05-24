@@ -30,12 +30,6 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                     _dbContext.Admin.AddRange(admin);
                 }
 
-                //if (!_dbContext.Student.Any())
-                //{
-                //    _dbContext.Student.AddRange(GetStudents());
-                //    _dbContext.SaveChanges();
-                //}
-
                 if (!_dbContext.Major.Any())
                 {
                     _dbContext.Major.AddRange(GetMajors());
@@ -447,6 +441,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                     {
                         kusal
                     }
+                    
                 },
 
                 new SubjectSubgroup()
@@ -616,8 +611,8 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                 new StudentReport()
                 {
                     //Id = 1,
-                    //SentAt = DateTime.Parse("21-04-2023 05:30:00 PM"),
                     SentAt = DateTime.UtcNow,
+                    LastModified = DateTime.UtcNow,
                     Note = "Sprawko z przedmiotu \"Bazy danych\" z labów 1 \"Wprowadzanie do Oracle\", nadesłane przez Kusal",
                     ReportTopicId = 1,
                     SubjectSubgroupId = 1,
@@ -627,8 +622,8 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                 new StudentReport()
                 {
                     //Id = 2,
-                    //SentAt = DateTime.Parse("23-04-2023 06:00:00 PM"),
                     SentAt = DateTime.UtcNow,
+                    LastModified = DateTime.UtcNow,
                     Note = "Sprawko z przedmiotu \"Bazy danych\" z labów 1 \"Wprowadzanie do Oracle\", nadesłane przez Kuszowski-Morawczyński",
                     ReportTopicId = 1,
                     SubjectSubgroupId = 2,
@@ -638,8 +633,8 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                 new StudentReport()
                 {
                     //Id = 3,
-                    //SentAt = DateTime.Parse("22-04-2023 09:00:00 PM"),
                     SentAt = DateTime.UtcNow,
+                    LastModified = DateTime.UtcNow,
                     Note = "Sprawko z przedmiotu \"Gnębienie studentów\" z labów 1 \"Gnębienie studentów cz. 1\", nadesłane przez Mazur",
                     ReportTopicId = 5,
                     SubjectSubgroupId = 3,
@@ -649,8 +644,8 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                 new StudentReport()
                 {
                     //Id = 4,
-                    //SentAt = DateTime.Parse("26-04-2023 05:30:00 PM"),
                     SentAt = DateTime.UtcNow,
+                    LastModified = DateTime.UtcNow,
                     Note = "Sprawko z przedmiotu \"Gnębienie studentów\" z labów 1 \"Gnębienie studentów cz. 1\", nadesłane przez Kaczmarski-Parówczak",
                     ReportTopicId = 6,
                     SubjectSubgroupId = 7
@@ -659,57 +654,17 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                 new StudentReport()
                 {
                     //Id = 5,
-                    //SentAt = DateTime.Parse("02-05-2023 05:30:00 PM"),
                     SentAt = DateTime.UtcNow,
+                    LastModified = DateTime.UtcNow,
                     Note = "Sprawko z przedmiotu \"Gnębienie studentów\" z labów 2 \"Gnębienie studentów cz. 2\", nadesłane przez Kusal",
                     ReportTopicId = 4,
                     SubjectSubgroupId = 6
                 }
-
             };
-
+            
             return studentReports;
         }
-
-        /*
-        private List<StudentReportFile> GetStudentReportFiles()
-        {
-            var studentReports = new List<StudentReportFile>()
-            {
-                new StudentReportFile()
-                {
-                    Id = 1,
-                    StudentReportId = 1
-                },
-
-                new StudentReportFile()
-                {
-                    Id = 2,
-                    StudentReportId = 2
-                },
-
-                new StudentReportFile()
-                {
-                    Id = 3,
-                    StudentReportId = 3
-                },
-
-                new StudentReportFile()
-                {
-                    Id = 4,
-                    StudentReportId = 4
-                },
-
-                new StudentReportFile()
-                {
-                    Id = 5,
-                    StudentReportId = 5
-                },
-            };
-
-            return studentReports;
-        }
-        */
+        
 
         private List<Student> GetStudents()
         {

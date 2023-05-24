@@ -1,0 +1,24 @@
+﻿@inject NavigationManager Navigation
+
+@code {
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthStateTask { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthStateTask;
+        var returnUrl = Navigation.Uri;
+
+        if ((authState?.User?.Identity is null || !authState.User.Identity.IsAuthenticated) && 
+            !returnUrl.Contains("login") && !returnUrl.Contains("register") && !returnUrl.Contains("restore-password"))
+        {
+            if(string.IsNullOrWhiteSpace(returnUrl))
+                Navigation.NavigateTo("/login", true);
+            else
+            {
+                var returnUrlParam = new HttpParameter("returnUrl", returnUrl);
+                Navigation.NavigateTo(returnUrlParam.AddToUrl("/login"));
+            }
+        }
+    }
+}
