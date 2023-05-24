@@ -84,7 +84,7 @@ namespace SystemSprawozdan.Backend.Services
             {
                 SentAt = DateTime.UtcNow,
                 LastModified = DateTime.UtcNow,
-                Note = noteToSend,
+                StudentNote = noteToSend,
                 ReportTopicId = reportTopicIdInteger,
                 SubjectSubgroupId = subjectSubgroup.Id
             };
@@ -99,7 +99,7 @@ namespace SystemSprawozdan.Backend.Services
         public void PutStudentReport(int studentReportId, StudentReportPutDto putStudentReportDto)
         {
             var reportToEdit = _dbContext.StudentReport.FirstOrDefault(report => report.Id == studentReportId);
-            string previousComment = reportToEdit.Note;
+            string previousComment = reportToEdit.StudentNote;
             string commentToInsert;
             var currentDateTime = DateTime.Now.ToString();
             
@@ -108,13 +108,13 @@ namespace SystemSprawozdan.Backend.Services
                 if (previousComment != null)
                 {
                     commentToInsert = previousComment + "\n\n" + currentDateTime + ":\n" + putStudentReportDto.ReportCommentFromStudent;
-                    reportToEdit.Note = commentToInsert;
+                    reportToEdit.StudentNote = commentToInsert;
 
                 }
                 else
                 {
                     commentToInsert = currentDateTime + ":\n" + putStudentReportDto.ReportCommentFromStudent;
-                    reportToEdit.Note = commentToInsert;
+                    reportToEdit.StudentNote = commentToInsert;
                 }
             }
             reportToEdit.LastModified = DateTime.UtcNow;

@@ -3,18 +3,18 @@ using SystemSprawozdan.Shared.Dto;
 
 namespace SystemSprawozdan.Frontend.Services.TeacherServices;
 
-public interface IReportHttpService
+public interface ITReportHttpService
 {
     Task<List<ReportTopicGetDto>?> GetReportTopics(bool? toCheck);
     Task<ReportTopicGetDto?> GetReportTopicById(int reportTopicId);
     Task<List<StudentReportGetDto>?> GetStudentReportsByReportTopicId(int reportTopicId, bool isIndividual, bool? isMarked);
 }
 
-public class ReportHttpService : IReportHttpService
+public class TReportHttpService : ITReportHttpService
 {
     private readonly IAppHttpClient _httpClient;
 
-    public ReportHttpService(IAppHttpClient httpClient)
+    public TReportHttpService(IAppHttpClient httpClient)
     {
         _httpClient = httpClient;
     }
