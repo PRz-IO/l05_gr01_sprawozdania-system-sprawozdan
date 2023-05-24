@@ -11,5 +11,6 @@ public class StudentReportGetDto
     public bool ToCheck { get; set; }
     public MarkEnum? Mark { get; set; }
     public bool IsIndividual { get; set; }
+    public int ReportTopicId { get; set; }
     public SubjectSubgroupBasicGetDto SubjectSubgroup { get; set; }
 }

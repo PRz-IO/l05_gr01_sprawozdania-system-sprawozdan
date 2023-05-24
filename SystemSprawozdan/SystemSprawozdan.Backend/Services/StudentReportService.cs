@@ -125,14 +125,7 @@ namespace SystemSprawozdan.Backend.Services
         public StudentReportGetDto GetStudentReport(int studentReportId)
         {
             var studentReport = _dbContext.StudentReport.FirstOrDefault(report => report.Id == studentReportId);
-            var studentReportDto = new StudentReportGetDto
-            {
-                LastModified = studentReport.LastModified,
-                Note = studentReport.Note,
-                Mark = studentReport.Mark,
-                ToCheck = studentReport.ToCheck,
-                SentAt = studentReport.SentAt
-            };
+            var studentReportDto = _mapper.Map<StudentReportGetDto>(studentReport);
 
             return studentReportDto;
         }
