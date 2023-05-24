@@ -1,18 +1,25 @@
-﻿.table__header-cell{
-    width: 25%;
+﻿.table__header-cell--small{
+    width: 5%;
+}
+
+.table__header-cell--normal{
+    width: 10%;
 }
 
 .table__header-cell--wider{
-    width: 75%;
+    width: 15%;
+}
+
+.table__header-cell--big{
+    width: 20%;
+}
+
+.table__header-cell--extra{
+    width: 35%;
 }
 
 .table__no-data {
     padding: 10px 25px;
-}
-.table__label{
-    font-size: var(--font-size-large);
-    font-weight: var(--font-weight-bold);
-    padding: 10px 20px;
 }
 
 .table__row-icon{
