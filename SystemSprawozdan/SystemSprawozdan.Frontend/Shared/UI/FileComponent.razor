@@ -1,0 +1,110 @@
+﻿<div class="file @NewFileClass()">
+    <div class="file__label">
+        <i class="bi @("bi-file-earmark" + GetFileTypeIcon()) file__icon"></i>
+        <div class="file__name">@FileName</div>
+    </div>
+    <MatIcon Icon="@GetActionIcon()" Class="pointer" @onclick="() => ActionEmitter.InvokeAsync()" />
+</div>
+
+@code {
+    [Parameter]
+    public string FileName { get; set; }
+
+    [Parameter]
+    public string ContentType { get; set; } = "";
+
+    [Parameter]
+    public bool IsNewFile { get; set; }
+    
+    [Parameter]
+    public EventCallback ActionEmitter { get; set; }
+
+    public string NewFileClass()
+    {
+        return IsNewFile ? "file--new" : "";
+    }
+    
+    public string GetActionIcon()
+    {
+        return IsNewFile ? MatIconNames.Close : MatIconNames.Cloud_download;
+    }
+
+    public string GetFileTypeIcon()
+    {
+        @switch (ContentType)
+        {
+            case "image/bmp":
+            {
+                return "-image";
+            }
+            case "image/jpeg":
+            {
+                return "-image";
+            }
+            case "image/png":
+            {
+                return "-image";
+            }
+            case "text/csv":
+            {
+                return "-excel";
+            }
+            case "application/vnd.ms-excel":
+            {
+                return "-excel";
+            }
+            case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+            {
+                return "-excel";
+            }
+            case "application/msword":
+            {
+                return "-word";
+            }
+            case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+            {
+                return "-word";
+            }
+            case "application/pdf":
+            {
+                return "-pdf";
+            }
+            case "application/vnd.ms-powerpoint":
+            {
+                return "-easel";
+            }
+            case "application/vnd.openxmlformats-officedocument.presentationml.presentation":
+            {
+                return "-easel";
+            }
+            case "text/plain":
+            {
+                return "-text";
+            }
+            case "application/zip":
+            {
+                return "-zip";
+            }
+            case "application/x-zip-compressed":
+            {
+                return "-zip";
+            }
+            case "application/vnd.rar":
+            {
+                return "-zip";
+            }
+            case "application/x-tar":
+            {
+                return "-zip";
+            }
+            case "application/x-7z-compressed":
+            {
+                return "-zip";
+            }
+            default:
+            {
+                return "";
+            }
+        }
+    }
+}
