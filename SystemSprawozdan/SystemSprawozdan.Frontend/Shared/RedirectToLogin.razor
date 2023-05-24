@@ -7,12 +7,11 @@
     protected override async Task OnInitializedAsync()
     {
         var authState = await AuthStateTask;
+        var returnUrl = Navigation.Uri;
 
-        if (authState?.User?.Identity is null || !authState.User.Identity.IsAuthenticated)
+        if ((authState?.User?.Identity is null || !authState.User.Identity.IsAuthenticated) && 
+            !returnUrl.Contains("login") && !returnUrl.Contains("register") && !returnUrl.Contains("restore-password"))
         {
-            var returnUrl = Navigation.GetUriWithQueryParameter("returnUrl", true);
-            
-            
             if(string.IsNullOrWhiteSpace(returnUrl))
                 Navigation.NavigateTo("/login", true);
             else

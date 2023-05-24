@@ -1,12 +1,14 @@
 ﻿@inherits LayoutComponentBase
 @inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthStateProvider
+@inject IJSRuntime js
 
 <div class="left-side">
     <UserPad/>
     
     <div class="navigation panel">
         <TitleBar FontSize="18px"/>
-        <TabBar TValue="string" ValueChanged="@NavigateTo" Data="@TabBarData" ActiveIndex="index" FlexDirection="column"/>
+        <TabBar TValue="string" ValueChanged="@NavigateTo" Data="@TabBarData" ActiveIndex="@Index" FlexDirection="column"/>
     </div>
 </div>
 
@@ -17,9 +19,9 @@
 
 @code
 {
-    public int index { get; set; }
+    public int Index { get; set; }
 
-    public int activeIndex()
+    public int GetActiveIndex()
     {
         var uri = NavigationManager.Uri;
         foreach (var data in TabBarData)
@@ -32,16 +34,33 @@
 
     public void NavigateTo(string link)
     {
-        index = TabBarData.FindIndex(el => el.Value.Equals(link));
+        Index = TabBarData.FindIndex(el => el.Value.Equals(link));
         StateHasChanged();
         NavigationManager.NavigateTo(link);
     }
-    
+
+    private async void Logout()
+    {
+        var url = NavigationManager.Uri;
+        if (url.Contains("login") || url.Contains("register") || url.Contains("restore-password"))
+        {
+            await js.InvokeVoidAsync("localStorage.removeItem", "token");
+            await AuthStateProvider.GetAuthenticationStateAsync();
+        }
+    }
+
+    protected override Task OnInitializedAsync()
+    {
+        var task = Task.Run(Logout);
+        task.Wait(50);
+        return base.OnInitializedAsync();
+    }
+
     protected override void OnAfterRender(bool firstRender)
     {
         if (firstRender)
         {
-            index = activeIndex();
+            Index = GetActiveIndex();
             StateHasChanged();
         }
     }

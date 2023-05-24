@@ -26,7 +26,7 @@
     [SupplyParameterFromQuery]
     public string? ReturnUrl { get; set; }
     
-    public LoginUserDto User { get;   } = new LoginUserDto()
+    public LoginUserDto User { get; } = new LoginUserDto()
     {
         Login = "",
         Password = ""
@@ -36,9 +36,10 @@
     {
         await AuthService.Login(User);
         await AuthStateProvider.GetAuthenticationStateAsync();
-        if (!string.IsNullOrEmpty(ReturnUrl))
-            NavigatorManager.NavigateTo(ReturnUrl);
-        else
+        
+        if (string.IsNullOrEmpty(ReturnUrl))
             NavigatorManager.NavigateTo("/");
+        else
+            NavigatorManager.NavigateTo(ReturnUrl);
     }
 }
