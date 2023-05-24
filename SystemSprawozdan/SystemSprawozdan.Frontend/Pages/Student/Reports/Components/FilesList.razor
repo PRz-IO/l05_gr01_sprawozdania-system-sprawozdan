@@ -1,0 +1,294 @@
+﻿<style>
+    .existing-file-item{
+        display: flex;
+        align-items: center;
+        width: 100%;
+        border: solid black 2px;
+        border-radius: 15px;
+        justify-content: space-between;
+        margin-bottom: 15px;
+        padding: 16px 20px;
+        background-color: #EAEAEA;
+    }
+    
+    .to-be-sent-file-item{
+        color: #4099E5;
+        display: flex;
+        align-items: center;
+        width: 100%;
+        border: solid #4099E5 2px;
+        border-radius: 15px;
+        justify-content: space-between;
+        margin-bottom: 15px;
+        padding: 16px 20px;
+        background-color: #EAEAEA;
+    }
+    
+    .img-text{
+          display: flex;
+          justify-content: space-between;
+          height: 100%;
+          align-items: center;
+    }
+    
+    .file-icon{
+        margin-right: 5px;
+        font-size: 1.6rem;
+        display: flex;
+        color: black;
+    }
+    
+    .file-name{
+        font-size: 1.3rem;
+    }
+    
+    .button{
+        height: 100%;
+        width: 10%;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        appearance: none;
+    }
+</style>
+
+@foreach (var file in ExistingFiles)
+    {
+        <div class="existing-file-item">
+            <div class="img-text">
+                @switch (file.ContentType)
+                {
+                    case "image/bmp":
+                    {
+                        <i class="bi bi-file-earmark-image file-icon"></i>
+                        break;
+                    }
+                    case "text/csv":
+                    {
+                        <i class="bi bi-file-earmark-excel file-icon"></i>
+                        break;
+                    }
+                    case "application/msword":
+                    {
+                        <i class="bi bi-file-earmark-word file-icon" ></i>
+                        break;
+                    }
+                    case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+                    {
+                        <i class="bi bi-file-earmark-word file-icon"></i>
+                        break;
+                    }
+                    case "image/jpeg":
+                    {
+                        <i class="bi bi-file-earmark-image file-icon"></i>
+                        break;
+                    }
+                    case "image/png":
+                    {
+                        <i class="bi bi-file-earmark-image file-icon"></i>
+                        break;
+                    }
+                    case "application/pdf":
+                    {
+                        <i class="bi bi-file-earmark-pdf file-icon"></i>
+                        break;
+                    }
+                    case "application/vnd.ms-powerpoint":
+                    {
+                        <i class="bi bi-file-earmark-easel file-icon"></i>
+                        break;
+                    }
+                    case "application/vnd.openxmlformats-officedocument.presentationml.presentation":
+                    {
+                        <i class="bi bi-file-earmark-easel file-icon"></i>
+                        break;
+                    }
+                    case "application/vnd.rar":
+                    {
+                        <i class="bi bi-file-earmark-zip file-icon"></i>
+                        break;
+                    }
+                    case "application/x-tar":
+                    {
+                        <i class="bi bi-file-earmark-zip file-icon"></i>
+                        break;
+                    }
+                    case "text/plain":
+                    {
+                        <i class="bi bi-file-earmark-text file-icon"></i>
+                        break;
+                    }
+                    case "application/vnd.ms-excel":
+                    {
+                        <i class="bi bi-file-earmark-excel file-icon"></i>
+                        break;
+                    }
+                    case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+                    {
+                        <i class="bi bi-file-earmark-excel file-icon"></i>
+                        break;
+                    }
+                    case "application/zip":
+                    {
+                        <i class="bi bi-file-earmark-zip file-icon"></i>
+                        break;
+                    }
+                    case "application/x-zip-compressed":
+                    {
+                        <i class="bi bi-file-earmark-zip file-icon"></i>
+                        break;
+                    }    
+                    case "application/x-7z-compressed":
+                    {
+                        <i class="bi bi-file-earmark-zip file-icon"></i>
+                        break;
+                    }
+                    default:
+                    {
+                        <i class="bi bi-file-earmark file-icon"></i>
+                        break;
+                    }
+                }
+                <span class="file-name">@file.OriginalFileName</span>
+            </div>
+            
+            <button class="button" onclick="@(() => { paramsData.Add(file.RandomizedFileName); paramsData.Add(file.OriginalFileName); InvokeRemoveFile(paramsData); })">
+                <i class="bi bi-download file-icon"></i>
+            </button>
+        </div>
+    }
+
+@foreach (var file in FilesToBeSent)
+    {
+        <div class="to-be-sent-file-item">
+            <div class="img-text">
+                @switch (file.ContentType)
+                {
+                    case "image/bmp":
+                    {
+                        <i class="bi bi-file-earmark-image file-icon"></i>
+                        break;
+                    }
+                    case "text/csv":
+                    {
+                        <i class="bi bi-file-earmark-excel file-icon"></i>
+                        break;
+                    }
+                    case "application/msword":
+                    {
+                        <i class="bi bi-file-earmark-word file-icon"></i>
+                        break;
+                    }
+                    case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+                    {
+                        <i class="bi bi-file-earmark-word file-icon"></i>
+                        break;
+                    }
+                    case "image/jpeg":
+                    {
+                        <i class="bi bi-file-earmark-image file-icon"></i>
+                        break;
+                    }
+                    case "image/png":
+                    {
+                        <i class="bi bi-file-earmark-image file-icon"></i>
+                        break;
+                    }
+                    case "application/pdf":
+                    {
+                        <i class="bi bi-file-earmark-pdf file-icon"></i>
+                        break;
+                    }
+                    case "application/vnd.ms-powerpoint":
+                    {
+                        <i class="bi bi-file-earmark-easel file-icon"></i>
+                        break;
+                    }
+                    case "application/vnd.openxmlformats-officedocument.presentationml.presentation":
+                    {
+                        <i class="bi bi-file-earmark-easel file-icon"></i>
+                        break;
+                    }
+                    case "application/vnd.rar":
+                    {
+                        <i class="bi bi-file-earmark-zip file-icon"></i>
+                        break;
+                    }
+                    case "application/x-tar":
+                    {
+                        <i class="bi bi-file-earmark-zip file-icon"></i>
+                        break;
+                    }
+                    case "text/plain":
+                    {
+                        <i class="bi bi-file-earmark-text file-icon"></i>
+                        break;
+                    }
+                    case "application/vnd.ms-excel":
+                    {
+                        <i class="bi bi-file-earmark-excel file-icon"></i>
+                        break;
+                    }
+                    case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+                    {
+                        <i class="bi bi-file-earmark-excel file-icon"></i>
+                        break;
+                    }
+                    case "application/zip":
+                    {
+                        <i class="bi bi-file-earmark-zip file-icon"></i>
+                        break;
+                    }
+                    case "application/x-zip-compressed":
+                    {
+                        <i class="bi bi-file-earmark-zip file-icon"></i>
+                        break;
+                    }    
+                    case "application/x-7z-compressed":
+                    {
+                        <i class="bi bi-file-earmark-zip file-icon"></i>
+                        break;
+                    }
+                    default:
+                    {
+                        <i class="bi bi-file-earmark file-icon"></i>
+                        break;
+                    }
+                }
+                <span class="file-name">@file.Name</span>
+            </div>
+            
+            <button class="button" onclick="@(() => { InvokeRemoveFile(file.Name); FilesToBeSent.Remove(file);})">
+                <i class="bi bi-x file-icon"></i>
+            </button>
+        </div>
+    }
+    
+@code {
+
+    [Parameter]
+    public List<IBrowserFile> FilesToBeSent { get; set; } = new();
+    
+    [Parameter]
+    public List<StudentReportFileGetDto> ExistingFiles { get; set; } = new();
+    
+    [Parameter]
+    public EventCallback<string> RemoveFile { get; set; }
+
+    [Parameter]
+    public EventCallback<List<string>> SendFileToDownloadData { get; set; }
+    
+    public List<string> paramsData = new();
+
+    private void InvokeRemoveFile(List<string> dataList)
+    {
+        SendFileToDownloadData.InvokeAsync(dataList);
+        paramsData.Clear();
+    }
+    
+    private void InvokeRemoveFile(string name)
+    {
+        RemoveFile.InvokeAsync(name);
+    }
+    
+}

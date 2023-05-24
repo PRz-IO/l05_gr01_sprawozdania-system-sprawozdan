@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SystemSprawozdan.Backend.Data;
 using SystemSprawozdan.Backend.Data.Models.DbModels;
 using SystemSprawozdan.Backend.Services;
 using SystemSprawozdan.Shared.Dto;
@@ -13,35 +14,33 @@ namespace SystemSprawozdan.Backend.Controllers
     public class StudentReportController : ControllerBase
     {
         private readonly IStudentReportService _studentReportService;
-
-        public StudentReportController(IStudentReportService studentReportService)
+        public StudentReportController(IStudentReportService studentReportService, ApiDbContext dbContext, IWebHostEnvironment env)
         {
             _studentReportService = studentReportService;
         }
 
         [HttpPost]
         [Authorize(Roles = nameof(UserRoleEnum.Student))]
-        public ActionResult PostStudentReport([FromForm] StudentReportPostDto postStudentReportDto)
+        public ActionResult PostStudentReport([FromBody] StudentReportPostDto postStudentReportDto)
         {
-            _studentReportService.PostStudentReport(postStudentReportDto);
+            var result = _studentReportService.PostStudentReport(postStudentReportDto);
+            return Ok(result.Id);
+        }
+
+        [HttpPut("{studentReportId:int}")]
+        [Authorize(Roles = nameof(UserRoleEnum.Student))]
+        public ActionResult PutStudentReport([FromRoute] int studentReportId, [FromBody] StudentReportPutDto putStudentReportDto)
+        {
+             _studentReportService.PutStudentReport(studentReportId, putStudentReportDto);
             return Ok();
         }
 
-        [HttpPut("{studentReportId}")]
+        [HttpGet("fullReport/{studentReportId:int}")]
         [Authorize(Roles = nameof(UserRoleEnum.Student))]
-        public ActionResult PutStudentReport([FromRoute] int studentReportId, [FromForm] StudentReportPutDto putStudentReportDto)
+        public ActionResult<StudentReportGetDto> GetStudentReport([FromRoute] int studentReportId)
         {
-            _studentReportService.PutStudentReport(studentReportId, putStudentReportDto);
-            return Ok();
-        }
-
-        [HttpPost("files/{studentReportId:int?}")]
-        [Authorize(Roles = nameof(UserRoleEnum.Student))]
-        [RequestSizeLimit(524288000)] // 500Mb
-        public async Task<ActionResult<List<StudentReportFile>>> UploadFile([FromForm] List<IFormFile> files, int studentReportId = -1)
-        {
-            var result = await _studentReportService.UploadFile(studentReportId, files);
-            return Ok();
+            var result = _studentReportService.GetStudentReport(studentReportId);
+            return Ok(result);
         }
 
         //TODO: Paweł: Trzeba stworzyc GETa, ktory wyswietla wszystkie sprawozdania, ktore sa przypisane do danej grupy

@@ -13,12 +13,11 @@ namespace SystemSprawozdan.Backend.Controllers
     public class ReportTopicController : ControllerBase
     {
         private readonly IReportTopicService _reportTopicService;
-        
+
         public ReportTopicController(IReportTopicService reportTopicService)
         {
             _reportTopicService = reportTopicService;
         }
-        
         //DONE: KUSZO: Trzeba stworzyc GETa, ktory wyswietla wszystkie tematy sprawozdan, ktore sa przypisane do danego prowadzacego, ktory jest zalogowany
         [HttpGet]
         [Authorize(Roles = nameof(UserRoleEnum.Teacher))]
@@ -37,10 +36,20 @@ namespace SystemSprawozdan.Backend.Controllers
             var result = _reportTopicService.GetReportById(reportTopicId);
             return Ok(result);
         }
-
+        
         //TODO: Olek: Trzeba stworzyć GETa, ktory wyswietla wszystkie tematy sprawozdan, które są przypisane do SubjectGroup, do której należy zalogowany użytkownik
 
         //TODO: Olek: Trzeba stworzyć GETa, który wyświetla wszystkie tematy sprawozdan, które są oddane przez zalogowanego użytkownika
+
+        [HttpGet("selective")]
+        public ActionResult GetReportTopic([FromQuery] int? reportTopicId, int? studentReportId)
+        {
+            var reportTopic = _reportTopicService.GetReportTopic(reportTopicId, studentReportId);
+
+            return Ok(reportTopic);
+
+            
+        }
     }
     
 }
