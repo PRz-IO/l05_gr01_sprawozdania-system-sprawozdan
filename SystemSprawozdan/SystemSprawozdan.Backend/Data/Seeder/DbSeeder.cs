@@ -612,7 +612,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                 {
                     //Id = 1,
                     SentAt = DateTime.UtcNow,
-                    LastModified = DateTime.Now,
+                    LastModified = DateTime.UtcNow,
                     Note = "Sprawko z przedmiotu \"Bazy danych\" z labów 1 \"Wprowadzanie do Oracle\", nadesłane przez Kusal",
                     ReportTopicId = 1,
                     SubjectSubgroupId = 1,
@@ -623,7 +623,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                 {
                     //Id = 2,
                     SentAt = DateTime.UtcNow,
-                    LastModified = DateTime.Now,
+                    LastModified = DateTime.UtcNow,
                     Note = "Sprawko z przedmiotu \"Bazy danych\" z labów 1 \"Wprowadzanie do Oracle\", nadesłane przez Kuszowski-Morawczyński",
                     ReportTopicId = 1,
                     SubjectSubgroupId = 2,
@@ -634,7 +634,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                 {
                     //Id = 3,
                     SentAt = DateTime.UtcNow,
-                    LastModified = DateTime.Now,
+                    LastModified = DateTime.UtcNow,
                     Note = "Sprawko z przedmiotu \"Gnębienie studentów\" z labów 1 \"Gnębienie studentów cz. 1\", nadesłane przez Mazur",
                     ReportTopicId = 5,
                     SubjectSubgroupId = 3,
@@ -645,7 +645,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                 {
                     //Id = 4,
                     SentAt = DateTime.UtcNow,
-                    LastModified = DateTime.Now,
+                    LastModified = DateTime.UtcNow,
                     Note = "Sprawko z przedmiotu \"Gnębienie studentów\" z labów 1 \"Gnębienie studentów cz. 1\", nadesłane przez Kaczmarski-Parówczak",
                     ReportTopicId = 6,
                     SubjectSubgroupId = 7
@@ -655,7 +655,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                 {
                     //Id = 5,
                     SentAt = DateTime.UtcNow,
-                    LastModified = DateTime.Now,
+                    LastModified = DateTime.UtcNow,
                     Note = "Sprawko z przedmiotu \"Gnębienie studentów\" z labów 2 \"Gnębienie studentów cz. 2\", nadesłane przez Kusal",
                     ReportTopicId = 4,
                     SubjectSubgroupId = 6

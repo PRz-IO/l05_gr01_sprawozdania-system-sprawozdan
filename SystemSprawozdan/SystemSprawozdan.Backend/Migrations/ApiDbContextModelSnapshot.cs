@@ -313,6 +313,7 @@ namespace SystemSprawozdan.Backend.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("SubjectGroupId")
@@ -459,7 +460,7 @@ namespace SystemSprawozdan.Backend.Migrations
             modelBuilder.Entity("SystemSprawozdan.Backend.Data.Models.DbModels.StudentReportFile", b =>
                 {
                     b.HasOne("SystemSprawozdan.Backend.Data.Models.DbModels.StudentReport", "StudentReport")
-                        .WithMany("studentReportFiles")
+                        .WithMany("StudentReportFiles")
                         .HasForeignKey("StudentReportId");
 
                     b.Navigation("StudentReport");
@@ -533,7 +534,7 @@ namespace SystemSprawozdan.Backend.Migrations
                 {
                     b.Navigation("ReportComments");
 
-                    b.Navigation("studentReportFiles");
+                    b.Navigation("StudentReportFiles");
                 });
 
             modelBuilder.Entity("SystemSprawozdan.Backend.Data.Models.DbModels.Subject", b =>

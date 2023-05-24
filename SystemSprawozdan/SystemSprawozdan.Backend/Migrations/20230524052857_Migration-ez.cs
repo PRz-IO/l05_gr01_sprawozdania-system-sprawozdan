@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace SystemSprawozdan.Backend.Migrations
 {
     /// <inheritdoc />
-    public partial class Changed_nullability_in_StudentReport : Migration
+    public partial class Migrationez : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

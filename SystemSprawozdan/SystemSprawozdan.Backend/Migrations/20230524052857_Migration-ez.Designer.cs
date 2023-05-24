@@ -12,8 +12,8 @@ using SystemSprawozdan.Backend.Data;
 namespace SystemSprawozdan.Backend.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    [Migration("20230513134028_Bonus_bagno_migracja")]
-    partial class Bonus_bagno_migracja
+    [Migration("20230524052857_Migration-ez")]
+    partial class Migrationez
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -186,7 +186,7 @@ namespace SystemSprawozdan.Backend.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseSerialColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime?>("LastModified")
+                    b.Property<DateTime>("LastModified")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int?>("Mark")
@@ -463,7 +463,7 @@ namespace SystemSprawozdan.Backend.Migrations
             modelBuilder.Entity("SystemSprawozdan.Backend.Data.Models.DbModels.StudentReportFile", b =>
                 {
                     b.HasOne("SystemSprawozdan.Backend.Data.Models.DbModels.StudentReport", "StudentReport")
-                        .WithMany("studentReportFiles")
+                        .WithMany("StudentReportFiles")
                         .HasForeignKey("StudentReportId");
 
                     b.Navigation("StudentReport");
@@ -537,7 +537,7 @@ namespace SystemSprawozdan.Backend.Migrations
                 {
                     b.Navigation("ReportComments");
 
-                    b.Navigation("studentReportFiles");
+                    b.Navigation("StudentReportFiles");
                 });
 
             modelBuilder.Entity("SystemSprawozdan.Backend.Data.Models.DbModels.Subject", b =>
