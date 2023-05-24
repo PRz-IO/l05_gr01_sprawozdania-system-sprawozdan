@@ -11,8 +11,7 @@
         display:flex;
         justify-content:center;
         align-items:center;
-        width: 80%;
-        
+        width: 100%;
     }
 
 </style>
@@ -25,9 +24,8 @@
         <p><b>Grupa:</b> @groupName</p>
         <p><b>Prowadzący:</b> @groupTeacher</p>
     </div>
-
     <div class="block-right">
-        <p>Wybierz sposób w jaki chcesz się zapisać do zespołu: @groupId </p>
+            <p>Wybierz sposób w jaki chcesz się zapisać do zespołu:</p>
         <p>   
             <MatRadioGroup @bind-Value="@subgroupType" TValue="string" Style="align-self:center;">
                 <MatRadioButton Value="@("individual")" Label="Indywidualnie" TValue="string"></MatRadioButton>
@@ -36,23 +34,26 @@
         </p>
 
         
-        <div id="@subgroupType" class="block-right">
+        <div id="@subgroupType">
             <p>Wybierz grupę roboczą: </p>
             <p>
-                <MatSelectItem Label="Grupa" class="edit-field" @bind-Value="subgroupSelect" Items="@subgroupSelectItems"></MatSelectItem>
+                <MatSelectItem Outlined="true" Label="Grupa" class="edit-field" @bind-Value="subgroupSelect" Items="@subgroupSelectItems"></MatSelectItem>
             </p>
             <br />
-            <p>Jeżeli twojej grupy nie ma na liście wpisz ją poniżej: @subgroupName</p>
+            <p>Jeżeli twojej grupy nie ma na liście wpisz ją poniżej:</p>
             <p>
-                <MatStringField class="edit-field" @bind-Value="@subgroupName" Label="Nazwa grupy"></MatStringField>
+                <MatTextField Outlined="true" class="edit-field" @bind-Value="@subgroupName" Label="Nazwa grupy"></MatTextField>
                 <ValidationMessage For="@(() => subgroupName)" style="font-size:12px;" />
             </p>
 
         </div>
-        <MatButton OnClick="joinSubgroup" Style="height: 80px; width:120%; margin:60px; font-size: var(--font-size-large);" Raised="true">Zapisz się na zajęcia</MatButton>
-        
+        <div class="block-button">
+        <MatButton OnClick="joinSubgroup" Style="height: 80px; width:120%; font-size: var(--font-size-large);" Raised="true">Zapisz się na zajęcia</MatButton>
+        </div>
     </div>
 </div>
+
+
 @code {
     protected override async Task OnInitializedAsync()
     {
@@ -63,6 +64,12 @@
         {
             subgroupSelectItems.Add(group.Name);
         }
+        var groupDetails = await AppHttpClient.Get<SubjectGroupGetDetailsDto>("SubjectGroup/" + intGroupId + "/GetSubjectGroupDetails");
+        groupSubjectName = groupDetails.SubjectName;
+        groupType = groupDetails.GroupType;
+        groupName = groupDetails.Name;
+        groupTeacher = groupDetails.TeacherName;
+
     }
     public async void joinSubgroup()
     {
@@ -76,14 +83,14 @@
                     SubgroupName = null
                 };
             await AppHttpClient.Post("SubjectSubgroup", subgroup);
-            Toaster.Add("Poprawnie stworzono grupę", MatToastType.Success, "Sukces", "", config => { });
-            NavigationManager.NavigateTo("/login");
+            Toaster.Add("Poprawnie stworzono grupę", MatToastType.Success, "Sukces");
+            NavigationManager.NavigateTo("/teams");
         }
         else
         {
             if((subgroupName == null || subgroupName == "") && (subgroupSelect == "" || subgroupSelect == null))
             {
-                Toaster.Add("Podaj nazwe grupy", MatToastType.Danger, "Błąd", "", config =>{});
+                Toaster.Add("Podaj nazwe grupy", MatToastType.Danger, "Błąd");
                 return;
             }
             else if(subgroupSelect == "" || subgroupSelect == null)
@@ -95,8 +102,8 @@
                         SubgroupName = subgroupName
                     };
                 await AppHttpClient.Post("SubjectSubgroup", subgroup);
-                Toaster.Add("Poprawnie stworzono grupę", MatToastType.Success, "Sukces", "", config => { });
-                NavigationManager.NavigateTo("/login");
+                Toaster.Add("Poprawnie stworzono grupę", MatToastType.Success, "Sukces");
+                NavigationManager.NavigateTo("/teams");
             }
             else
             {
@@ -105,17 +112,17 @@
                 int subgroupId = subgroup.Id;
 
                 await AppHttpClient.Post("SubjectSubgroup/AddUserToSubgroup", subgroupId);
-                Toaster.Add("Poprawnie dołączono do grupy", MatToastType.Success, "Sukces", "", config => { });
-                NavigationManager.NavigateTo("/login");
+                Toaster.Add("Poprawnie dołączono do grupy", MatToastType.Success, "Sukces");
+                NavigationManager.NavigateTo("/teams");
             }
         }
     }
     [Parameter]
     public string groupId { get; set; }
-    string groupSubjectName = "Bazy danych",
-           groupType = "Laboratorium",
-           groupName = "L05",
-           groupTeacher = "mgr inż. Piotr Woźniak";
+    string groupSubjectName,
+           groupType,
+           groupName,
+           groupTeacher;
     string subgroupType = "individual";
     string? subgroupName;
     string subgroupSelect = "";

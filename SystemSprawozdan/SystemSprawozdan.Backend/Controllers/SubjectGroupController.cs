@@ -25,5 +25,12 @@ namespace SystemSprawozdan.Backend.Controllers
             var subjectGroup = _subjectGorupServices.GetSubjectGroup(subjectId, isUser);
             return Ok(subjectGroup);
         }
+
+        [HttpGet("{groupId}/GetSubjectGroupDetails")]
+        public ActionResult GetSubjectGroupDetails(int groupId)
+        {
+            var subjectGroupDetails = _subjectGorupServices.GetSubjectGroupDetails(groupId);
+            return Ok(subjectGroupDetails);
+        }
     }
 }
