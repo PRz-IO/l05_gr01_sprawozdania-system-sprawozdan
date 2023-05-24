@@ -20,25 +20,15 @@ namespace SystemSprawozdan.Backend.Services
         private readonly ApiDbContext _dbContext;
         private readonly IUserContextService _userContextService;
         private readonly IMapper _mapper;
-        private readonly IAuthorizationService _authorizationService;
-        public ReportTopicService(ApiDbContext dbContext, IUserContextService userContextService, IMapper mapper, IAuthorizationService authorizationService)
+        public ReportTopicService(ApiDbContext dbContext, IUserContextService userContextService, IMapper mapper)
         {
             _dbContext = dbContext;
             _userContextService = userContextService;
             _mapper = mapper;
-            _authorizationService = authorizationService;
         }
         
         public IEnumerable<ReportTopicGetDto> GetReports(bool? toCheck)
         {
-            var authorizationResult = _authorizationService.AuthorizeAsync(
-                _userContextService.User,
-                null,
-                new TeacherResourceOperationRequirement(TeacherResourceOperation.Read)).Result;
-
-            if (!authorizationResult.Succeeded)
-                throw new ForbidException();
-
             var teacherId = _userContextService.GetUserId;
 
             var reportsFromDb = _dbContext.ReportTopic
@@ -48,11 +38,9 @@ namespace SystemSprawozdan.Backend.Services
                 .Where(reportTopic => reportTopic.SubjectGroup.TeacherId == teacherId);
 
             if (toCheck != null)
-            {
                 reportsFromDb = reportsFromDb.Where(reportTopic =>
                     reportTopic.StudentReports.Any(studentReport => studentReport.ToCheck == toCheck));
-            }
-            
+
             var reportsFromDbList = reportsFromDb.OrderBy(reportTopic => reportTopic.Deadline).ToList();
             
             var reportsDto = _mapper.Map<List<ReportTopicGetDto>>(reportsFromDbList);
@@ -62,14 +50,6 @@ namespace SystemSprawozdan.Backend.Services
 
         public ReportTopicGetDto GetReportById(int reportTopicId)
         {
-            var authorizationResult = _authorizationService.AuthorizeAsync(
-                _userContextService.User,
-                null,
-                new TeacherResourceOperationRequirement(TeacherResourceOperation.Read)).Result;
-
-            if (!authorizationResult.Succeeded)
-                throw new ForbidException();
-
             var teacherId = _userContextService.GetUserId;
 
             var reportFromDb = _dbContext.ReportTopic
