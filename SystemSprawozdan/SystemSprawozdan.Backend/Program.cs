@@ -84,6 +84,7 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IStudentReportFileService, StudentReportFileService>();
 builder.Services.AddScoped<IReportCommentService, ReportCommentService>();
 builder.Services.AddScoped<ISubjectService, SubjectService>();
+builder.Services.AddScoped<IMajorService, MajorService>();
 
 var app = builder.Build();
 
