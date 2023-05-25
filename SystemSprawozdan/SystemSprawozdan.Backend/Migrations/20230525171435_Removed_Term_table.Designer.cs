@@ -12,8 +12,8 @@ using SystemSprawozdan.Backend.Data;
 namespace SystemSprawozdan.Backend.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    [Migration("20230524052857_Migration-ez")]
-    partial class Migrationez
+    [Migration("20230525171435_Removed_Term_table")]
+    partial class Removed_Term_table
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -261,14 +261,12 @@ namespace SystemSprawozdan.Backend.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("TermId")
+                    b.Property<int>("Term")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
                     b.HasIndex("MajorId");
-
-                    b.HasIndex("TermId");
 
                     b.ToTable("Subject");
                 });
@@ -373,25 +371,6 @@ namespace SystemSprawozdan.Backend.Migrations
                     b.ToTable("Teacher");
                 });
 
-            modelBuilder.Entity("SystemSprawozdan.Backend.Data.Models.DbModels.Term", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseSerialColumn(b.Property<int>("Id"));
-
-                    b.Property<DateOnly>("StartedAt")
-                        .HasColumnType("date");
-
-                    b.Property<int>("TermNumber")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Term");
-                });
-
             modelBuilder.Entity("StudentSubjectSubgroup", b =>
                 {
                     b.HasOne("SystemSprawozdan.Backend.Data.Models.DbModels.Student", null)
@@ -477,15 +456,7 @@ namespace SystemSprawozdan.Backend.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SystemSprawozdan.Backend.Data.Models.DbModels.Term", "Term")
-                        .WithMany("Subjects")
-                        .HasForeignKey("TermId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Major");
-
-                    b.Navigation("Term");
                 });
 
             modelBuilder.Entity("SystemSprawozdan.Backend.Data.Models.DbModels.SubjectGroup", b =>
@@ -562,11 +533,6 @@ namespace SystemSprawozdan.Backend.Migrations
                     b.Navigation("ReportComments");
 
                     b.Navigation("SubjectGroups");
-                });
-
-            modelBuilder.Entity("SystemSprawozdan.Backend.Data.Models.DbModels.Term", b =>
-                {
-                    b.Navigation("Subjects");
                 });
 #pragma warning restore 612, 618
         }

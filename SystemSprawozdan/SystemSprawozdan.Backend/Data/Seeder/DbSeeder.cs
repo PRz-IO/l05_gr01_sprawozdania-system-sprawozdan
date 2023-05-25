@@ -36,12 +36,6 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                     _dbContext.SaveChanges();
                 }
 
-                if (!_dbContext.Term.Any())
-                {
-                    _dbContext.Term.AddRange(GetTerms());
-                    _dbContext.SaveChanges();
-                }
-
                 if (!_dbContext.Subject.Any())
                 {
                     _dbContext.Subject.AddRange(GetSubjects());
@@ -131,76 +125,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
             return majors;
         }
 
-        private List<Term> GetTerms()
-        {
-            var terms = new List<Term>()
-            {
-                new Term()
-                {
-                    //Id = 1,
-                    TermNumber = 1,
-                    StartedAt = DateOnly.Parse("01-10-2021")
-                },
-
-                new Term()
-                {
-                    //Id = 2,
-                    TermNumber = 2,
-                    StartedAt = DateOnly.Parse("25-03-2022")
-                },
-
-                new Term()
-                {
-                    //Id = 3,
-                    TermNumber = 3,
-                    StartedAt = DateOnly.Parse("01-10-2022")
-                },
-
-                new Term()
-                {
-                    //Id = 4,
-                    TermNumber = 4,
-                    StartedAt = DateOnly.Parse("27-03-2023")
-                },
-
-                new Term()
-                {
-                    //Id = 5,
-                    TermNumber = 5,
-                    StartedAt = DateOnly.Parse("01-10-2023")
-                },
-
-                new Term()
-                {
-                    //Id = 6,
-                    TermNumber = 1,
-                    StartedAt = DateOnly.Parse("1-10-2020")
-                },
-
-                new Term()
-                {
-                    //Id = 7,
-                    TermNumber = 1,
-                    StartedAt = DateOnly.Parse("22-03-2021")
-                },
-
-                new Term()
-                {
-                    //Id = 8,
-                    TermNumber = 2,
-                    StartedAt = DateOnly.Parse("01-10-2022")
-                },
-
-                new Term()
-                {
-                    //Id = 9,
-                    TermNumber = 3,
-                    StartedAt = DateOnly.Parse("24-03-2023")
-                },
-            };
-
-            return terms;
-        }
+     
 
         private List<Subject> GetSubjects()
         {
@@ -212,7 +137,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                     Name = "Gnębienie studentów",
                     Description = "Przedmiot powstał tylko i wyłącznie w celu gnębienia studentów. Polega na uprzykrzaniu życia studentom. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eros lorem, pulvinar eu elit porta, vestibulum ultricies risus. Vestibulum aliquam accumsan sapien, a aliquet tellus consectetur vitae. In blandit velit a nunc tempus pellentesque. Maecenas aliquet consectetur dui sed sodales. Suspendisse potenti. Vestibulum ante ipsum primis in faucibus orci luctus.",
                     MajorId = 1,
-                    TermId = 1
+                    Term = 1
                 },
 
                 new Subject()
@@ -221,7 +146,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                     Name = "Gnębienie studentów",
                     Description = "Przedmiot powstał tylko i wyłącznie w celu gnębienia studentów. Polega na uprzykrzaniu życia studentom. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eros lorem, pulvinar eu elit porta, vestibulum ultricies risus. Vestibulum aliquam accumsan sapien, a aliquet tellus consectetur vitae. In blandit velit a nunc tempus pellentesque. Maecenas aliquet consectetur dui sed sodales. Suspendisse potenti. Vestibulum ante ipsum primis in faucibus orci luctus.",
                     MajorId = 2,
-                    TermId = 1
+                    Term = 2
                 },
 
                 new Subject()
@@ -230,7 +155,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                     Name = "Bazy danych",
                     Description = "Bazy danych to bardzo przydatny przedmiot, tralalala, turururu, blablabla. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eros lorem, pulvinar eu elit porta, vestibulum ultricies risus. Vestibulum aliquam accumsan sapien, a aliquet tellus consectetur vitae. In blandit velit a nunc tempus pellentesque. Maecenas aliquet consectetur dui sed sodales. Suspendisse potenti. Vestibulum ante ipsum primis in faucibus orci luctus. LUBIE PIEROGI RUSKIE",
                     MajorId = 1,
-                    TermId = 4
+                    Term = 3
                 },
 
                 new Subject()
@@ -239,7 +164,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                     Name = "Sieci komputerowe 1",
                     Description = "Sieci komputerowe 1 to przedmiot z którego egzamin, to zabójcze wydarzenie. Występują liczne ofiary śmiertelne po przeprowadzeniu takowego egzaminu. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eros lorem, pulvinar eu elit porta, vestibulum ultricies risus. Vestibulum aliquam accumsan sapien, a aliquet tellus consectetur vitae. In blandit velit a nunc tempus pellentesque. Maecenas aliquet consectetur dui sed sodales. Suspendisse potenti. Vestibulum ante ipsum primis in faucibus orci luctus. ",
                     MajorId = 1,
-                    TermId = 4
+                    Term = 4
                 },
 
                 new Subject()
@@ -248,7 +173,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                     Name = "Sieci komputerowe 2",
                     Description = "Sieci komputerowe 2 to przedmiot który pokazuje wytrwałość. Nie wiem co ja już piszę XD! Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eros lorem, pulvinar eu elit porta, vestibulum ultricies risus. Vestibulum aliquam accumsan sapien, a aliquet tellus consectetur vitae. In blandit velit a nunc tempus pellentesque. Maecenas aliquet consectetur dui sed sodales. Suspendisse potenti. Vestibulum ante ipsum primis in faucibus orci luctus. ",
                     MajorId = 1,
-                    TermId = 5
+                    Term = 5
                 }
             };
 
