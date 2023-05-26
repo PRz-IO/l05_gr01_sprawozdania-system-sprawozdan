@@ -1,6 +1,4 @@
 ﻿@page "/send/{ReportTopicId}"
-@using System.Net.Http.Headers;
-@using SystemSprawozdan.Frontend.Pages.Student.Reports.Components
 @inject IAppHttpClient AppHttpClient
 
 <PageTitle>Wyślij sprawozdanie</PageTitle>
@@ -14,7 +12,7 @@
         padding-bottom: 6vh;
     }
     
-    .report-topic-name{
+    .report-topic-info{
         display: flex;
         justify-content: center;
         margin-bottom: 3vh;
@@ -37,9 +35,9 @@
         background-repeat: no-repeat;
     }
     
-    .file-input:hover{
-        background-color: rgba(64,153,229,0.49);
-    }
+    /*.file-input:hover{*/
+    /*    background-color: rgba(64,153,229,0.49);*/
+    /*}*/
     
     input::file-selector-button{
         opacity: 0;
@@ -52,11 +50,11 @@
         margin-bottom: 24px;
     }
     
-    .files-list{
-        height: 28%;
-        overflow-y: scroll;
-        border-radius: 15px;
-    }
+    /*.files-list{*/
+    /*    height: 28%;*/
+    /*    overflow-y: scroll;*/
+    /*    border-radius: 15px;*/
+    /*}*/
     
     .right-column{
         display: flex;
@@ -78,7 +76,7 @@
     }
 </style>
 
-    <span class="report-topic-name">@TopicName</span>
+    <span class="report-topic-name">@ReportTopic.ReportTopicName</span>
     <div class="main-container">
         <div class="left-column">
             <span style="position: absolute; left: 50%; top: 50%; font-size: 2rem; transform: translate(-50%, -50%);">Umieść pliki</span>
@@ -89,23 +87,23 @@
             }
             <pre>@status</pre>
             
-            <div class="files-list">
+            <div class="file-list">
                 @if (_files.Count > 0)
                 {
-                    <FilesList FilesToBeSent="_files" RemoveFile="RemoveFileFromList"></FilesList>
+                    <FileList FilesToSend="_files" OnRemoveFile="RemoveFileFromList"/>
                 }
             </div>
         </div>
         
         <div class="right-column">
-            <p class="deadline">Termin oddania: @Deadline</p>
+            <p class="deadline">Termin oddania: @ReportTopic.ReportTopicDeadline.ToString("g")</p>
             <MatTextField TValue="string" @bind-Value="Note" Label="Komentarz dla prowadzącego:" Outlined="true" TextArea="true" Style="height: 50%;"/>
             <div class="radio-buttons__and-description">
                 <p class="radio-button-description">Sposób oddania:</p>
                 <div class="radio-buttons">
-                    <MatRadioGroup @bind-Value="@IsIndividual" TValue="string" Style="display: flex">
-                        <MatRadioButton Value="@("true")" TValue="string">Indywidualnie</MatRadioButton>
-                        <MatRadioButton Value="@("false")" TValue="string">Grupowo</MatRadioButton>
+                    <MatRadioGroup @bind-Value="@IsIndividualBool" TValue="bool" Style="display: flex">
+                        <MatRadioButton Value="@true" TValue="bool">Indywidualnie</MatRadioButton>
+                        <MatRadioButton Value="@false" TValue="bool">Grupowo</MatRadioButton>
                     </MatRadioGroup>
                 </div>
             </div>
@@ -132,9 +130,7 @@
     public bool IsIndividualBool {get; set; }
     public string Note { get; set; } = string.Empty;
     public string Token { get; set; }
-    public Uri reportTopicGetEndpointUri { get; set; }
-    public string Deadline { get; set; }
-    public string TopicName { get; set; }
+    public ReportTopicGetDto ReportTopic { get; set; }
 
 
     private readonly int _maxAllowedFiles = 100;
@@ -207,23 +203,13 @@
     
     protected override async Task OnInitializedAsync()
     {
-        var loginData = new LoginUserDto()
-        {
-            Login = "169571",
-            Password = "Hasło123"
-        };
-        Token = await AppHttpClient.Post("Account/login", loginData);
-
-        reportTopicGetEndpointUri =  new Uri($"https://localhost:7184/api/ReportTopic/selective/?reportTopicId={ReportTopicId}");
-        var reportTopicGetDto = await AppHttpClient.Get<ReportTopicGetDto>(reportTopicGetEndpointUri.ToString());
-        Deadline = reportTopicGetDto.ReportTopicDeadline.ToString("g");
-        TopicName = reportTopicGetDto.ReportTopicName;
+        var reportTopicGetUrl = $"ReportTopic/selective?reportTopicId={ReportTopicId}";
+        ReportTopic = await AppHttpClient.Get<ReportTopicGetDto>(reportTopicGetUrl);
     }
 
-    public void RemoveFileFromList(string name)
+    public void RemoveFileFromList(IBrowserFile file)
     {
-        var fileObjectToRemove = _files.Find(f => f.Name == name);
-        _files.Remove(fileObjectToRemove);
+        _files.Remove(file);
     }
 
 }

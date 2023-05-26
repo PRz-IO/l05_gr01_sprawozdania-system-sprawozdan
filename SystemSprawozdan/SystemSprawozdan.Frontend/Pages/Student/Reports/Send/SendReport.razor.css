@@ -6,17 +6,21 @@
     height: 100%;
 }
 
-.report-topic-name{
+.report-topic-info{
     display: flex;
     justify-content: center;
     margin-bottom: 3vh;
-    font-size: 2rem;
+    font-size: var(--font-size-medium);
     margin-top: 3vh;
 }
 
 .left-column{
     width: 32%;
     position: relative;
+}
+
+.input-file{
+    min-height: 30%;
 }
 
 .right-column{

@@ -6,6 +6,7 @@ using Toolbelt.Blazor.Extensions.DependencyInjection;
 using SystemSprawozdan.Frontend;
 using SystemSprawozdan.Frontend.Providers;
 using SystemSprawozdan.Frontend.Services;
+using SystemSprawozdan.Frontend.Services.StudentServices;
 using SystemSprawozdan.Frontend.Services.TeacherServices;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -39,6 +40,7 @@ builder.Services.AddMatToaster(config =>
 
 builder.Services.AddScoped<IAppHttpClient, AppHttpClient>();
 builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<IReportHttpService, ReportHttpService>();
+builder.Services.AddScoped<ITReportHttpService, TReportHttpService>();
+builder.Services.AddScoped<ISReportHttpService, SReportHttpService>();
 
 await builder.Build().RunAsync();

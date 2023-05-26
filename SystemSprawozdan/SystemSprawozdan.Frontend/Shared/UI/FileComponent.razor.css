@@ -29,5 +29,6 @@
 }
 
 .file__icon{
+    display: flex;
     font-size: 1.4em;
 }

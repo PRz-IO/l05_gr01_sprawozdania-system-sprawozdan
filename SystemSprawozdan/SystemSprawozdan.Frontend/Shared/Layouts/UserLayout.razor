@@ -49,15 +49,11 @@
         }
     }
 
-    protected override Task OnInitializedAsync()
+    protected override void OnAfterRender(bool firstRender)
     {
         var task = Task.Run(Logout);
         task.Wait(50);
-        return base.OnInitializedAsync();
-    }
-
-    protected override void OnAfterRender(bool firstRender)
-    {
+        
         if (firstRender)
         {
             Index = GetActiveIndex();
