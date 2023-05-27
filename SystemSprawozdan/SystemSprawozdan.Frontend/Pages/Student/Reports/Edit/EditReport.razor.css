@@ -6,6 +6,7 @@
 }
 
 .report-topic-info{
+    width: 100%;
     padding: 10px;
     text-align: center;
     font-size: var(--font-size-medium);
@@ -18,7 +19,8 @@
 .main-container{
     display: flex;
     justify-content: space-evenly;
-    height: 80%;
+    height: 100%;
+    max-height: 74.5vh;
 }
 
 .left-column{
@@ -31,23 +33,19 @@
 
 .input-file{
     min-height: 30%;
-    height: 100%;
+    flex: 1 1 auto;
 }
 
 .file-list{
-    height: min-content;
-}
-
-.file-list{
-    height: 100%;
+    flex: 0 1 auto;
     overflow-y: auto;
 }
 
 .right-column{
     display: flex;
     flex-direction: column;
-    width: 40%;
     justify-content: space-between;
+    width: 40%;
 }
 
 .mark-text{

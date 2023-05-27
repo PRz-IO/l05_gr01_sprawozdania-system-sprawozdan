@@ -5,20 +5,18 @@
     </div>
     @for (int i = 1; i <= NumberOfInputFiles; i++)
     {
-        <InputFile class="file-input__input" @key="@i" OnChange="OnInputFileChange" multiple style="@GetInputFileStyle(i)"></InputFile>
+        <InputFile class="file-input__input" @key="@i" OnChange="OnInputFileChange" multiple style="@GetInputFileStyle(i)"/>
     }
 </div>
 <style>
     .file-input__input{
+        cursor: pointer;
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
         color: transparent;
-    }
-    input::file-selector-button{
-        opacity: 0;
     }
 </style>
 
@@ -28,16 +26,16 @@
     public int NumberOfInputFiles = 1;
     string GetInputFileStyle(int index)
     {
-        return index == NumberOfInputFiles ? "" : "display: none";
+        return index == NumberOfInputFiles ? "" : "display: none;";
     }
     [Parameter]
-    public EventCallback<List<IBrowserFile>> OnFileAdd { get; set; }
+    public EventCallback<List<IBrowserFile>> OnFilesAdded { get; set; }
 
     public async Task OnInputFileChange(InputFileChangeEventArgs e)
     {
         NumberOfInputFiles++;
         var files = e.GetMultipleFiles(MaxAllowedFiles).ToList();
-        OnFileAdd.InvokeAsync(files);
+        OnFilesAdded.InvokeAsync(files);
     }
 
 }

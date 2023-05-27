@@ -18,18 +18,18 @@
     public List<StudentReportFileGetDto> ExistingFiles { get; set; } = new();
 
     [Parameter]
-    public EventCallback<IBrowserFile> OnRemoveFile { get; set; }
+    public EventCallback<IBrowserFile> OnFileRemoved { get; set; }
 
     [Parameter]
-    public EventCallback<StudentReportFileGetDto> OnDownloadFile { get; set; }
+    public EventCallback<StudentReportFileGetDto> OnFileDownloaded { get; set; }
 
     private void InvokeDownloadFile(StudentReportFileGetDto file)
     {
-        OnDownloadFile.InvokeAsync(file);
+        OnFileDownloaded.InvokeAsync(file);
     }
 
     private void InvokeRemoveFile(IBrowserFile file)
     {
-        OnRemoveFile.InvokeAsync(file);
+        OnFileRemoved.InvokeAsync(file);
     }
 }

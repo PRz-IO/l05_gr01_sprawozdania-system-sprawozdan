@@ -10,6 +10,7 @@ public interface ISReportHttpService
     Task<StudentReportGetDto> GetStudentReport(int studentReportId);
     Task UploadFilesForStudentReport(int studentReportId, List<IBrowserFile> filesToSend);
     Task DownloadFilesFromStudentReport(StudentReportFileGetDto file);
+    Task<int> PostStudentReport(StudentReportPostDto report);
     Task PutStudentReport(int studentReportId, StudentReportPutDto report);
     Task<ReportTopicGetDto> GetReportTopic(int reportTopicId);
     Task<List<StudentReportFileGetDto>> GetStudentReportFiles(int studentReportId);
@@ -32,6 +33,12 @@ public class SReportHttpService : ISReportHttpService
     public async Task<List<StudentReportFileGetDto>> GetStudentReportFiles(int studentReportId)
     {
         return await _httpClient.Get<List<StudentReportFileGetDto>>($"StudentReportFile/{studentReportId}");
+    }
+
+    public async Task<int> PostStudentReport(StudentReportPostDto report)
+    {
+        var response = await _httpClient.Post("StudentReport", report);
+        return int.Parse(response);
     }
 
     public async Task PutStudentReport(int studentReportId, StudentReportPutDto report)

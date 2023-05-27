@@ -4,6 +4,6 @@ namespace SystemSprawozdan.Shared.Dto
 {
     public class StudentReportPutDto
     {
-        public string? ReportCommentFromStudent { get; set; }
+        public string? StudentReport { get; set; }
     }
 }
