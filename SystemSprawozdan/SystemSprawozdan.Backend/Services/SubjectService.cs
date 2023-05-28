@@ -76,7 +76,6 @@ namespace SystemSprawozdan.Backend.Services
             _dbContext.SaveChanges();
 
             return subjectToAdd;
-
         }
     }
 }
