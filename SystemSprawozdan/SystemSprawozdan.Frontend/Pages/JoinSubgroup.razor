@@ -1,4 +1,4 @@
-﻿@page "/join-subgroup/{groupId}"
+﻿@page "/join-subgroup/{groupId:int?}"
 
 @inject IAppHttpClient AppHttpClient
 @inject IMatToaster Toaster
@@ -58,13 +58,12 @@
     protected override async Task OnInitializedAsync()
     {
         subgroupSelectItems.Add("");
-        int intGroupId = Int32.Parse(groupId);
-        var groups = await AppHttpClient.Get<List<SubjectSubgroupGetDto>>("SubjectSubgroup/" + intGroupId + "/GetSubgroups");
+        var groups = await AppHttpClient.Get<List<SubjectSubgroupGetDto>>("SubjectSubgroup/" + groupId + "/GetSubgroups");
         foreach (var group in groups)
         {
             subgroupSelectItems.Add(group.Name);
         }
-        var groupDetails = await AppHttpClient.Get<SubjectGroupGetDetailsDto>("SubjectGroup/" + intGroupId + "/GetSubjectGroupDetails");
+        var groupDetails = await AppHttpClient.Get<SubjectGroupGetDetailsDto>("SubjectGroup/" + groupId + "/GetSubjectGroupDetails");
         groupSubjectName = groupDetails.SubjectName;
         groupType = groupDetails.GroupType;
         groupName = groupDetails.Name;
@@ -73,14 +72,13 @@
     }
     public async void joinSubgroup()
     {
-        int intGroupId = Int32.Parse(groupId);
         if(subgroupType == "individual")
         {
             var subgroup = new SubjectSubgroupPostDto
                 {
-                    SubjectGroupId = intGroupId,
+                    SubjectGroupId = groupId,
                     isIndividual = true,
-                    SubgroupName = null
+                    SubgroupName = ""
                 };
             await AppHttpClient.Post("SubjectSubgroup", subgroup);
             Toaster.Add("Poprawnie stworzono grupę", MatToastType.Success, "Sukces");
@@ -97,7 +95,7 @@
             {
                 var subgroup = new SubjectSubgroupPostDto
                     {
-                        SubjectGroupId = intGroupId,
+                        SubjectGroupId = groupId,
                         isIndividual = false, 
                         SubgroupName = subgroupName
                     };
@@ -107,7 +105,7 @@
             }
             else
             {
-                var groups = await AppHttpClient.Get<List<SubjectSubgroupGetDto>>("SubjectSubgroup/" + intGroupId + "/GetSubgroups");
+                var groups = await AppHttpClient.Get<List<SubjectSubgroupGetDto>>("SubjectSubgroup/" + groupId + "/GetSubgroups");
                 var subgroup = groups.FirstOrDefault(group => group.Name == subgroupSelect);
                 int subgroupId = subgroup.Id;
 
@@ -118,7 +116,7 @@
         }
     }
     [Parameter]
-    public string groupId { get; set; }
+    public int groupId { get; set; }
     string groupSubjectName,
            groupType,
            groupName,
