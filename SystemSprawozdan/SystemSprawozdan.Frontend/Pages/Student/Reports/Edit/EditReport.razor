@@ -14,7 +14,7 @@
             <div class="input-file">
                 <FileInputComponent OnFilesAdded="HandleNewFiles"/>
             </div>
-            @if (FilesToSend.Count != 0)
+            @if ((FilesToSend.Count + SubmittedFilesList.Count) != 0)
             {
                 <div class="file-list">
                     <FileList ExistingFiles="SubmittedFilesList" FilesToSend="FilesToSend" OnFileDownloaded="DownloadFile" OnFileRemoved="HandleRemoveFile"/>
