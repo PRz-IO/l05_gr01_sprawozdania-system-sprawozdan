@@ -9,6 +9,7 @@
         public int Term { get; set; }
 
         public Major Major { get; set; }
+        public Term? TermObject { get; set; }
         public ICollection<SubjectGroup> SubjectGroups { get; set; }
     }
 }

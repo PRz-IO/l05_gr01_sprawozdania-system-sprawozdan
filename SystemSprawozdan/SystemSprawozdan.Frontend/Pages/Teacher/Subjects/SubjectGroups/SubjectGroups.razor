@@ -1,0 +1,13 @@
+﻿@page "/teacher/subjects/{SubjectGroup:int}"
+<h3>Grupy zajęciowe do przedmiotu o ID równym @SubjectGroup:</h3>
+<h3>L05</h3>
+<h3>L02</h3>
+<h3>L01</h3>
+
+
+@code {
+
+    [Parameter]
+    public int SubjectGroup { get; set; }
+
+}

@@ -63,7 +63,7 @@ namespace SystemSprawozdan.Backend.Services
 
         public Subject AddSubject(SubjectPostDto subjectPostDto)
         {
-            var major = _dbContext.Major.FirstOrDefault(major => major.Name == subjectPostDto.MajorName);
+            var major = _dbContext.Major.FirstOrDefault(major => major.MajorCode == subjectPostDto.MajorCode);
             var subjectToAdd = new Subject
             {
                 Name = subjectPostDto.Name,
