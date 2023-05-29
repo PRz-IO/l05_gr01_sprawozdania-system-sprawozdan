@@ -1,4 +1,4 @@
-@page "/student/reports/{ReportTopicId:int?}/{StudentReportId:int?}"
+@page "/student/reports/{ReportTopicId:int}/{StudentReportId:int}"
 @inject NavigationManager NavigationManager
 @inject IMatToaster MatToaster
 @inject ISReportHttpService ReportHttpService
@@ -75,12 +75,12 @@
         {
             SendReportComment();
             SendReportFiles();
-            MatToaster.Add("Udało się wysłać sprawozdanie!", MatToastType.Success, "Sukces");
+            MatToaster.Add("Udało się poprawić sprawozdanie!", MatToastType.Success, "Sukces");
             NavigationManager.NavigateTo($"/student/reports/{ReportTopicId}/{StudentReportId}");
         }
         catch (Exception e)
         {
-            MatToaster.Add("Nie udało się wysłać sprawozdania!", MatToastType.Danger, "Error");
+            MatToaster.Add("Nie udało się poprawić sprawozdania!", MatToastType.Danger, "Błąd");
         }
     }
 

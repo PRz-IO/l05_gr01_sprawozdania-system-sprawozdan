@@ -1,4 +1,4 @@
-﻿@page "/student/reports/{ReportTopicId:int?}"
+﻿@page "/student/reports/{ReportTopicId:int}"
 @inject NavigationManager NavigationManager
 @inject IMatToaster MatToaster
 @inject ISReportHttpService ReportHttpService
@@ -78,7 +78,7 @@
         }
         catch (Exception e)
         {
-            MatToaster.Add("Nie udało się wysłać sprawozdania!", MatToastType.Danger, "Error");
+            MatToaster.Add("Nie udało się wysłać sprawozdania!", MatToastType.Danger, "Błąd");
         }
     }
 }
