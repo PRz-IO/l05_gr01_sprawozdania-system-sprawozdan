@@ -7,7 +7,8 @@ namespace SystemSprawozdan.Backend.Data.Models.DbModels
         public int Id { get; set; }
         public DateTime SentAt { get; set; }
         public DateTime LastModified { get; set; }
-        public string? Note { get; set; }
+        public string? StudentNote { get; set; }
+        public string? TeacherNote { get; set; }
         public int ReportTopicId { get; set; }
         public int SubjectSubgroupId { get; set; }
         public bool ToCheck { get; set; } = true;

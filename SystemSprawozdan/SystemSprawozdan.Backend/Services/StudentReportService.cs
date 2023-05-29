@@ -1,8 +1,5 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authorization;
-using SystemSprawozdan.Backend.Authorization;
 using SystemSprawozdan.Backend.Data;
 using SystemSprawozdan.Backend.Data.Models.DbModels;
 using SystemSprawozdan.Backend.Exceptions;
@@ -34,58 +31,30 @@ namespace SystemSprawozdan.Backend.Services
         public StudentReport PostStudentReport(StudentReportPostDto postStudentReportDto)
         {
             var loginUserId = _userContextService.GetUserId;
-            var reportTopicIdInteger = (postStudentReportDto.ReportTopicId);
-            var isIndividualBoolean = (postStudentReportDto.IsIndividual);
 
             var subjectGroup = _dbContext
                 .SubjectGroup.FirstOrDefault(subjectGroup =>
                     subjectGroup.reportTopics.Any(reportTopic =>
-                        reportTopic.Id == reportTopicIdInteger
+                        reportTopic.Id == postStudentReportDto.ReportTopicId
                     )
                 );
 
-            var subjectSubgroup = new SubjectSubgroup();
+            var subjectSubgroup = _dbContext.SubjectSubgroup.FirstOrDefault(subGroup =>
+                subGroup.SubjectGroup.Id == subjectGroup.Id &&
+                subGroup.Students.Any(student => student.Id == loginUserId) && subGroup.IsIndividual == postStudentReportDto.IsIndividual
+            );
             
-            if (isIndividualBoolean == false) 
+            if (subjectSubgroup is null)
             {
-                subjectSubgroup = _dbContext.SubjectSubgroup.FirstOrDefault(subGroup =>
-                    subGroup.SubjectGroupId == subjectGroup.Id &&
-                    subGroup.Students.Any(student => student.Id == loginUserId) && subGroup.IsIndividual == false
-                );
-
-                if (subjectSubgroup is null)
-                {
-                    subjectSubgroup = _dbContext.SubjectSubgroup.FirstOrDefault(subGroup =>
-                        subGroup.SubjectGroupId == subjectGroup.Id &&
-                        subGroup.Students.Any(student => student.Id == loginUserId) && subGroup.IsIndividual == true
-                    );    
-                }
-            }
-
-            if (isIndividualBoolean == true) 
-            {
-                subjectSubgroup = _dbContext.SubjectSubgroup.FirstOrDefault(subGroup =>
-                    subGroup.SubjectGroup.Id == subjectGroup.Id &&
-                    subGroup.Students.Any(student => student.Id == loginUserId) && subGroup.IsIndividual == true
-                );
-            }
-
-            string? noteToSend;
-            if (postStudentReportDto.Note != null)
-            {
-                noteToSend = DateTime.Now.ToString() + ":\n" + postStudentReportDto.Note;
-            }
-            else
-            {
-                noteToSend = null;
+                throw new BadRequestException($"You don't belong to this subject group!");
             }
 
             var newStudentReport = new StudentReport()
             {
                 SentAt = DateTime.UtcNow,
                 LastModified = DateTime.UtcNow,
-                Note = noteToSend,
-                ReportTopicId = reportTopicIdInteger,
+                StudentNote = postStudentReportDto.StudentNote,
+                ReportTopicId = postStudentReportDto.ReportTopicId,
                 SubjectSubgroupId = subjectSubgroup.Id
             };
             _dbContext.StudentReport.Add(newStudentReport);
@@ -99,24 +68,13 @@ namespace SystemSprawozdan.Backend.Services
         public void PutStudentReport(int studentReportId, StudentReportPutDto putStudentReportDto)
         {
             var reportToEdit = _dbContext.StudentReport.FirstOrDefault(report => report.Id == studentReportId);
-            string previousComment = reportToEdit.Note;
-            string commentToInsert;
-            var currentDateTime = DateTime.Now.ToString();
-            
-            if(putStudentReportDto.ReportCommentFromStudent != null)
-            {
-                if (previousComment != null)
-                {
-                    commentToInsert = previousComment + "\n\n" + currentDateTime + ":\n" + putStudentReportDto.ReportCommentFromStudent;
-                    reportToEdit.Note = commentToInsert;
 
-                }
-                else
-                {
-                    commentToInsert = currentDateTime + ":\n" + putStudentReportDto.ReportCommentFromStudent;
-                    reportToEdit.Note = commentToInsert;
-                }
+            if (reportToEdit is null)
+            {
+                throw new NotFoundException($"You don't have report with id {studentReportId}");
             }
+            
+            reportToEdit.StudentNote = putStudentReportDto.StudentNote;
             reportToEdit.LastModified = DateTime.UtcNow;
             _dbContext.SaveChanges();
         }
@@ -125,14 +83,7 @@ namespace SystemSprawozdan.Backend.Services
         public StudentReportGetDto GetStudentReport(int studentReportId)
         {
             var studentReport = _dbContext.StudentReport.FirstOrDefault(report => report.Id == studentReportId);
-            var studentReportDto = new StudentReportGetDto
-            {
-                LastModified = studentReport.LastModified,
-                Note = studentReport.Note,
-                Mark = studentReport.Mark,
-                ToCheck = studentReport.ToCheck,
-                SentAt = studentReport.SentAt
-            };
+            var studentReportDto = _mapper.Map<StudentReportGetDto>(studentReport);
 
             return studentReportDto;
         }

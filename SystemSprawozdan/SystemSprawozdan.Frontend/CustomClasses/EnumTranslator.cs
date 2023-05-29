@@ -2,7 +2,7 @@
 
 namespace SystemSprawozdan.Frontend.CustomClasses;
 
-public static class EnumTranslations
+public static class EnumTranslator
 {
     public static Dictionary<UserRoleEnum, string> UserRole = new()
     {
