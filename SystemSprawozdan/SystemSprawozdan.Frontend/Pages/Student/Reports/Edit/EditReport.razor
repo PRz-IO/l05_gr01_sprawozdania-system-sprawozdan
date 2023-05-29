@@ -6,9 +6,7 @@
 <PageTitle>Edytuj sprawozdanie</PageTitle>
 
 <div class="body-container">
-    <div class="report-topic-info">
-        <b>@ReportTopic?.SubjectName: </b><span class="report-topic-info__topic-and-group-type">"@ReportTopic?.ReportTopicName" - @ReportTopic?.SubjectGroupType</span>
-    </div>
+    <ReportDetailsHeader ReportTopic="@ReportTopic"/>
     <div class="main-container">
         <div class="left-column">
             <div class="input-file">

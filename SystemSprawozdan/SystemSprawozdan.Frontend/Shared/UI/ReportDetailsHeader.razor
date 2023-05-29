@@ -1,0 +1,8 @@
+﻿<div class="report-topic-info">
+    <b>@ReportTopic?.SubjectName: </b><span class="report-topic-info__topic-and-group-type">"@ReportTopic?.ReportTopicName" - @ReportTopic?.SubjectGroupType</span>
+</div>
+
+@code {
+    [Parameter]
+    public ReportTopicGetDto ReportTopic { get; set; }
+}
