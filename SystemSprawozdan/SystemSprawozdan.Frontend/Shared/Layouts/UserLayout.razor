@@ -21,7 +21,7 @@
 @code
 {
     public int PageIndex { get; set; }
-    public string PageTitle { get; set; }
+    public string PageTitle { get; set; } = "E-SPRAWOZDANIA";
 
     public readonly IEnumerable<TabBarData<string>> TabBarData = new TabBarData<string>[]
     {
@@ -63,7 +63,7 @@
             if (uri.Contains(data.Value))
                 return TabBarData.IndexOf(data);
         }
-        return 1;
+        return 0;
     }
 
     public async void NavigateTo(string link)

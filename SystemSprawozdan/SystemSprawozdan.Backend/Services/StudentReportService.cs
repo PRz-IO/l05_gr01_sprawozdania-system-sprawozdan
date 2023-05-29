@@ -74,7 +74,7 @@ namespace SystemSprawozdan.Backend.Services
                 throw new NotFoundException($"You don't have report with id {studentReportId}");
             }
             
-            reportToEdit.StudentNote = putStudentReportDto.StudentReport;
+            reportToEdit.StudentNote = putStudentReportDto.StudentNote;
             reportToEdit.LastModified = DateTime.UtcNow;
             _dbContext.SaveChanges();
         }
