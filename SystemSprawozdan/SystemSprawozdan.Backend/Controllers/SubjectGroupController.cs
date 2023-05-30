@@ -40,9 +40,9 @@ namespace SystemSprawozdan.Backend.Controllers
             var studentsFromGroup = _subjectGorupServices.GetSubjectGroupStudents(groupId);
             return Ok(studentsFromGroup);
         }
-        [HttpPut("{studentId}/RemoveStudentFromGroup")]
+        [HttpDelete("{groupId}/RemoveStudentFromGroup/{studentId}")]
         [Authorize(Roles = nameof(UserRoleEnum.Teacher))]
-        public ActionResult RemoveStudentFromGroup([FromRoute] int studentId, [FromBody] int groupId)
+        public ActionResult RemoveStudentFromGroup([FromRoute] int studentId, [FromRoute] int groupId)
         {
             _subjectGorupServices.DeleteStudentFromGroup(studentId, groupId);
             return Ok();

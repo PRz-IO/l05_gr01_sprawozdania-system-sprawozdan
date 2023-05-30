@@ -20,7 +20,7 @@ namespace SystemSprawozdan.Backend.Services
     {
         List<SubjectGroupGetDto> GetSubjectGroup(int subjectId, bool isUser);
         SubjectGroupGetDetailsDto GetSubjectGroupDetails(int groupId);
-        List<SubjectGroupGetStudentsDto> GetSubjectGroupStudents(int groupId);
+        List<StudentBasicGetDto> GetSubjectGroupStudents(int groupId);
         void DeleteStudentFromGroup(int studentId, int groupId);
     }
 
@@ -71,13 +71,13 @@ namespace SystemSprawozdan.Backend.Services
             details.TeacherName = TeacherName;
             return details;
         }
-        public List<SubjectGroupGetStudentsDto> GetSubjectGroupStudents(int groupId)
+        public List<StudentBasicGetDto> GetSubjectGroupStudents(int groupId)
         {
             if (!(_dbContext.SubjectGroup.Any(group => group.Id == groupId)))
             {
                 throw new NotFoundException("Wrong group id!");
             }
-            var studentsFromGroup = new List<SubjectGroupGetStudentsDto>();
+            var studentsFromGroup = new List<StudentBasicGetDto>();
 
             var subgroups = _dbContext.SubjectSubgroup
                 .Include(subjectSubgroup => subjectSubgroup.Students)
@@ -88,9 +88,10 @@ namespace SystemSprawozdan.Backend.Services
                 var students = subgroup.Students;
                 foreach(var student in students)
                 {
-                    studentsFromGroup.Add(new SubjectGroupGetStudentsDto
+                    studentsFromGroup.Add(new StudentBasicGetDto
                     {
-                        Index = student.Id,
+                        Id = student.Id,
+                        Login = student.Login,
                         Name = student.Name,
                         Surname = student.Surname
                     });
@@ -119,12 +120,9 @@ namespace SystemSprawozdan.Backend.Services
                 _dbContext.SubjectSubgroup.Update(subgroup);
                 if(subgroup.Students.Count == 0)
                 {
-                    var groups = _dbContext.SubjectGroup.Where(c => c.Id == groupId).ToList();
-                    foreach (var group in groups)
-                    {
-                        group.subjectSubgroups.Remove(subgroup);
-                        _dbContext.SubjectGroup.Update(group);
-                    }
+                    var group = _dbContext.SubjectGroup.FirstOrDefault(group => group.Id == groupId);
+                    group.subjectSubgroups.Remove(subgroup);
+                    _dbContext.SubjectGroup.Update(group);
                 }
             }
             _dbContext.SaveChanges();
