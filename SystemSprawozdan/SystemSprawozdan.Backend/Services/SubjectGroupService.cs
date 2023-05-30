@@ -73,6 +73,10 @@ namespace SystemSprawozdan.Backend.Services
         }
         public List<SubjectGroupGetStudentsDto> GetSubjectGroupStudents(int groupId)
         {
+            if (!(_dbContext.SubjectGroup.Any(group => group.Id == groupId)))
+            {
+                throw new NotFoundException("Wrong group id!");
+            }
             var studentsFromGroup = new List<SubjectGroupGetStudentsDto>();
 
             var subgroups = _dbContext.SubjectSubgroup
@@ -96,6 +100,14 @@ namespace SystemSprawozdan.Backend.Services
         }
         public void DeleteStudentFromGroup(int studentId, int groupId)
         {
+            if (!(_dbContext.SubjectGroup.Any(group => group.Id == groupId)))
+            {
+                throw new NotFoundException("Wrong group id!");
+            }
+            if (!(_dbContext.Student.Any(student => student.Id == studentId)))
+            {
+                throw new NotFoundException("Wrong student id!");
+            }
             var subgroups = _dbContext.SubjectSubgroup
                 .Include(subjectSubgroup => subjectSubgroup.Students)
                 .Where(subgroup => subgroup.SubjectGroupId == groupId)
