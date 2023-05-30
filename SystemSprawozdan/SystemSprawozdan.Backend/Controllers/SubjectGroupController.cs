@@ -32,5 +32,21 @@ namespace SystemSprawozdan.Backend.Controllers
             var subjectGroupDetails = _subjectGorupServices.GetSubjectGroupDetails(groupId);
             return Ok(subjectGroupDetails);
         }
+
+        [HttpGet("{groupId}/GetStudentsFromGroup")]
+        [Authorize(Roles = nameof(UserRoleEnum.Teacher))]
+        public ActionResult GetStudentsFromGroup([FromRoute] int groupId)
+        {
+            var studentsFromGroup = _subjectGorupServices.GetSubjectGroupStudents(groupId);
+            return Ok(studentsFromGroup);
+        }
+        [HttpPut("{studentId}/RemoveStudentFromGroup")]
+        [Authorize(Roles = nameof(UserRoleEnum.Teacher))]
+        public ActionResult RemoveStudentFromGroup([FromRoute] int studentId, [FromBody] int groupId)
+        {
+            _subjectGorupServices.DeleteStudentFromGroup(studentId, groupId);
+            return Ok();
+        }
+
     }
 }

@@ -12,6 +12,7 @@ using MimeKit.Cryptography;
 using Microsoft.AspNetCore.Mvc;
 using SystemSprawozdan.Backend.Authorization;
 using SystemSprawozdan.Backend.Exceptions;
+using SystemSprawozdan.Shared.Dto.SubjectGroup;
 
 namespace SystemSprawozdan.Backend.Services
 {
@@ -19,6 +20,8 @@ namespace SystemSprawozdan.Backend.Services
     {
         List<SubjectGroupGetDto> GetSubjectGroup(int subjectId, bool isUser);
         SubjectGroupGetDetailsDto GetSubjectGroupDetails(int groupId);
+        List<SubjectGroupGetStudentsDto> GetSubjectGroupStudents(int groupId);
+        void DeleteStudentFromGroup(int studentId, int groupId);
     }
 
     public class SubjectGroupService : ISubjectGroupService
@@ -67,6 +70,52 @@ namespace SystemSprawozdan.Backend.Services
             var TeacherName = Teacher.Degree + " " + Teacher.Name + " " + Teacher.Surname;
             details.TeacherName = TeacherName;
             return details;
+        }
+        public List<SubjectGroupGetStudentsDto> GetSubjectGroupStudents(int groupId)
+        {
+            var studentsFromGroup = new List<SubjectGroupGetStudentsDto>();
+
+            var subgroups = _dbContext.SubjectSubgroup
+                .Include(subjectSubgroup => subjectSubgroup.Students)
+                .Where(subgroup => subgroup.SubjectGroupId == groupId)
+                .ToList();
+            foreach (var subgroup in subgroups)
+            {
+                var students = subgroup.Students;
+                foreach(var student in students)
+                {
+                    studentsFromGroup.Add(new SubjectGroupGetStudentsDto
+                    {
+                        Index = student.Id,
+                        Name = student.Name,
+                        Surname = student.Surname
+                    });
+                }
+            }
+                return studentsFromGroup;
+        }
+        public void DeleteStudentFromGroup(int studentId, int groupId)
+        {
+            var subgroups = _dbContext.SubjectSubgroup
+                .Include(subjectSubgroup => subjectSubgroup.Students)
+                .Where(subgroup => subgroup.SubjectGroupId == groupId)
+                .ToList();
+            var student = _dbContext.Student.FirstOrDefault(student => student.Id == studentId);
+            foreach (var subgroup in subgroups)
+            {
+                subgroup.Students.Remove(student);
+                _dbContext.SubjectSubgroup.Update(subgroup);
+                if(subgroup.Students.Count == 0)
+                {
+                    var groups = _dbContext.SubjectGroup.Where(c => c.Id == groupId).ToList();
+                    foreach (var group in groups)
+                    {
+                        group.subjectSubgroups.Remove(subgroup);
+                        _dbContext.SubjectGroup.Update(group);
+                    }
+                }
+            }
+            _dbContext.SaveChanges();
         }
     }
 }
