@@ -83,7 +83,7 @@ namespace SystemSprawozdan.Backend.Services
                 .Include(reportTopic => reportTopic.SubjectGroup)
                 .ThenInclude(subjectGroup => subjectGroup.Subject)
                 .ThenInclude(subject => subject.Major)  
-                .FirstOrDefault(reportTopic => reportTopic.SubjectGroup.TeacherId == teacherId && reportTopic.Id == reportTopicId);
+                .FirstOrDefault(reportTopic => reportTopic.Id == reportTopicId);
 
             if (reportFromDb is null)
                 throw new NotFoundException($"Not found report topic with Id equals {reportTopicId}!");

@@ -1,7 +1,8 @@
-﻿<div class="user-pad">
+﻿@inject NavigationManager NavigationManager
+<div class="user-pad">
 	<div class="options @DropListClass()">
 		<ul class="options-list">
-			<li class="option">
+			<li class="option" @onclick="()=>Logout()">
 				<MatIcon Style="font-size: 1.8rem;" Icon="@MatIconNames.Meeting_room" />
 				<span>Wyloguj</span>
 			</li>
@@ -34,4 +35,9 @@
 	{
 		IsUserPadActive = !IsUserPadActive;
 	}
+
+	public void Logout()
+	{
+		NavigationManager.NavigateTo("/login");
+	} 
 }

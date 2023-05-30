@@ -1,0 +1,39 @@
+﻿<div class="file @NewFileClass()">
+    <div class="file__label">
+        <i class="bi bi-file-earmark @GetFileIcon() file__icon"></i>
+        <div class="file__name" title="@FileName">@FileName</div>
+    </div>
+    <span class="file__icon pointer">
+        <MatIcon Icon="@GetActionIcon()" Style="font-size: inherit" @onclick="() => ActionEmitter.InvokeAsync()"/>
+    </span>
+</div>
+
+@code {
+
+    [Parameter]
+    public string FileName { get; set; }
+
+    [Parameter]
+    public string ContentType { get; set; } = "";
+
+    [Parameter]
+    public bool IsNewFile { get; set; }
+
+    [Parameter]
+    public EventCallback ActionEmitter { get; set; }
+
+    public string NewFileClass()
+    {
+        return IsNewFile ? "file--new" : "";
+    }
+
+    public string GetActionIcon()
+    {
+        return IsNewFile ? MatIconNames.Close : MatIconNames.Save_alt;
+    }
+
+    public string GetFileIcon()
+    {
+        return $"bi-filetype-{FileName.Split('.').Last()}";
+    }
+}

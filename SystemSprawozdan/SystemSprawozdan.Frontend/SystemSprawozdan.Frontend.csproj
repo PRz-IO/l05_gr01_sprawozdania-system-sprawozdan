@@ -36,8 +36,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Pages\Teacher\Subjects\Components\" />
-    <Folder Include="Services\StudentServices\" />
     <Folder Include="wwwroot\Icons\" />
   </ItemGroup>
 

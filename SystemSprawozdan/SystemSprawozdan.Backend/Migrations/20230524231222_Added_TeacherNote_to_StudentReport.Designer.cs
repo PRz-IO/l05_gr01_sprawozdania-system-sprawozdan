@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SystemSprawozdan.Backend.Data;
@@ -11,9 +12,11 @@ using SystemSprawozdan.Backend.Data;
 namespace SystemSprawozdan.Backend.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    partial class ApiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230524231222_Added_TeacherNote_to_StudentReport")]
+    partial class Added_TeacherNote_to_StudentReport
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -261,17 +264,14 @@ namespace SystemSprawozdan.Backend.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("Term")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("TermObjectId")
+                    b.Property<int>("TermId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
                     b.HasIndex("MajorId");
 
-                    b.HasIndex("TermObjectId");
+                    b.HasIndex("TermId");
 
                     b.ToTable("Subject");
                 });
@@ -480,13 +480,15 @@ namespace SystemSprawozdan.Backend.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SystemSprawozdan.Backend.Data.Models.DbModels.Term", "TermObject")
+                    b.HasOne("SystemSprawozdan.Backend.Data.Models.DbModels.Term", "Term")
                         .WithMany("Subjects")
-                        .HasForeignKey("TermObjectId");
+                        .HasForeignKey("TermId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Major");
 
-                    b.Navigation("TermObject");
+                    b.Navigation("Term");
                 });
 
             modelBuilder.Entity("SystemSprawozdan.Backend.Data.Models.DbModels.SubjectGroup", b =>

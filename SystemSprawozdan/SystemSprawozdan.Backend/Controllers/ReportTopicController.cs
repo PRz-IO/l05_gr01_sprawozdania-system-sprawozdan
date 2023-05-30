@@ -30,7 +30,6 @@ namespace SystemSprawozdan.Backend.Controllers
         
         //DONE: KUSZO: Trzeba stworzyc GETa, ktory wyswietla pojedynczy temat sprawozdania, ktory jest przypisany do danego prowadzacego, ktory jest zalogowany
         [HttpGet("{reportTopicId}")]
-        [Authorize(Roles = nameof(UserRoleEnum.Teacher))]
         public ActionResult<ReportTopicGetDto> GetReport([FromRoute] int reportTopicId)
         {
             var result = _reportTopicService.GetReportById(reportTopicId);
