@@ -1,0 +1,77 @@
+﻿@inject ITReportHttpService ReportHttpService
+@inject IMatToaster MatToaster
+@inject NavigationManager NavigationManager
+
+<div class="report-container">
+    <div class="report-head">
+        <ReportDetailsHeader ReportTopic="@ReportTopic"/>
+        <ReportAuthor Subgroup="@StudentReport?.SubjectSubgroup" IsIndividualAuthor="@StudentReport?.IsIndividual"/>
+    </div>
+    <div class="report">
+        <div class="report__student-side">
+            <div class="report__dates">
+                <div class="report__sent-at">Odesłane: @StudentReport.SentAt</div>
+                <div class="report__sent-at">Ostatnia modyfikacja: @StudentReport.LastModified</div>
+            </div>
+            <MatTextField Style="height: 50%" Label="Komenatrz od studenta" Value="@StudentReport.StudentNote" TextArea="@true" ReadOnly="@true" Disabled="@true" Outlined="@true"/>
+            <div class="report__files">
+                <FileList ExistingFiles="@StudentFiles" OnFileDownloaded="@HandleDownloadedFile"/>
+            </div>
+        </div>
+        <div class="report__teacher-side">
+            <div class="report__form">
+                <MatSelect Label="Ocena"
+                           TValue="int?"
+                           Value="@((int?)StudentReport.Mark)"
+                           ValueChanged="@((v) => StudentReport.Mark = (MarkEnum?)v)"
+                           FullWidth="@true"
+                           Outlined="@true">
+                    <MatOption TValue="int?" Value="@(null)"></MatOption>
+                    @foreach (MarkEnum mark in Enum.GetValues(typeof(MarkEnum)))
+                    {
+                        <MatOption TValue="int?" Value="@((int?)mark)">@EnumTranslator.Mark[mark]</MatOption>
+                    }
+                </MatSelect>
+                <MatTextField Label="Komentarz dla studenta" Style="width: 100%; height: 100%" @bind-Value="@StudentReport.TeacherNote" TextArea="@true" Outlined="@true"/>
+            </div>
+            <MatButton Style="width: 100%; height: 50px;" Label="Zapisz" OnClick="RateReport" Raised="@true"/>
+        </div>
+    </div>
+</div>
+
+
+@code {
+    [Parameter]
+    public int? StudentReportId { get; set; }
+    [Parameter]
+    public int? ReportTopicId { get; set; }
+
+    public StudentReportGetDto StudentReport { get; set; }
+    public ReportTopicGetDto ReportTopic { get; set; }
+    public List<StudentReportFileGetDto> StudentFiles { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        ReportTopic = await ReportHttpService.GetReportTopicById(ReportTopicId??1);
+        StudentReport = await ReportHttpService.GetStudentReportDetails(StudentReportId??1);
+        StudentFiles = await ReportHttpService.GetStudentReportFiles(StudentReportId??1);
+    }
+
+    private void HandleDownloadedFile(StudentReportFileGetDto file)
+    {
+        ReportHttpService.DownloadFileFromStudentReport(file);
+    }
+
+    private async void RateReport()
+    {
+        var ratedReport = new StudentReportAsTeacherPutDto()
+        {
+            Mark = StudentReport.Mark,
+            TeacherNote = StudentReport.TeacherNote
+        };
+        await ReportHttpService.PutStudentReport(StudentReportId??1, ratedReport);
+        MatToaster.Add("Zatwierdzono zmiany!", MatToastType.Success, "Sukces");
+        NavigationManager.NavigateTo($"Teacher/reports/{ReportTopicId}");
+    }
+
+}

@@ -91,7 +91,7 @@
     {
         if (string.IsNullOrEmpty(StudentReport.StudentNote)) return;
 
-        var reportToSend = new StudentReportPutDto { StudentNote = StudentReport.StudentNote };
+        var reportToSend = new StudentReportAsStudentPutDto { StudentNote = StudentReport.StudentNote };
         await ReportHttpService.PutStudentReport(StudentReportId, reportToSend);
     }
 

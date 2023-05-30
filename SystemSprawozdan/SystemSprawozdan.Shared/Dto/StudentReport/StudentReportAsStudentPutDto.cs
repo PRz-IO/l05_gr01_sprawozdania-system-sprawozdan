@@ -1,6 +1,6 @@
 ﻿namespace SystemSprawozdan.Shared.Dto
 {
-    public class StudentReportPutDto
+    public class StudentReportAsStudentPutDto
     {
         public string? StudentNote { get; set; }
     }

@@ -10,7 +10,9 @@ namespace SystemSprawozdan.Backend.Services
     public interface IStudentReportService
     {
         StudentReport PostStudentReport(StudentReportPostDto postStudentReportDto);
-        void PutStudentReport(int studentReportId, StudentReportPutDto putStudentReportDto);
+        void PutStudentReport(int studentReportId, StudentReportAsStudentPutDto studentReportAsStudentPutDto);
+        void studentReportAsTeacherPutDto(int studentReportId,
+            StudentReportAsTeacherPutDto studentReportAsTeacherPutDto);
         StudentReportGetDto GetStudentReport(int studentReportId);
         List<StudentReportGetDto> GetStudentReportsByTopicId(int reportTopicId, bool? isIndividual, bool? isMarked);
     }
@@ -65,7 +67,7 @@ namespace SystemSprawozdan.Backend.Services
             return result;
         }
 
-        public void PutStudentReport(int studentReportId, StudentReportPutDto putStudentReportDto)
+        public void PutStudentReport(int studentReportId, StudentReportAsStudentPutDto studentReportAsStudentPutDto)
         {
             var reportToEdit = _dbContext.StudentReport.FirstOrDefault(report => report.Id == studentReportId);
 
@@ -74,15 +76,32 @@ namespace SystemSprawozdan.Backend.Services
                 throw new NotFoundException($"You don't have report with id {studentReportId}");
             }
             
-            reportToEdit.StudentNote = putStudentReportDto.StudentNote;
+            reportToEdit.StudentNote = studentReportAsStudentPutDto.StudentNote;
             reportToEdit.LastModified = DateTime.UtcNow;
+            _dbContext.SaveChanges();
+        }
+
+        public void studentReportAsTeacherPutDto(int studentReportId, StudentReportAsTeacherPutDto studentReportAsTeacherPutDto)
+        {
+            var reportToEdit = _dbContext.StudentReport.FirstOrDefault(report => report.Id == studentReportId);
+
+            if (reportToEdit is null)
+            {
+                throw new NotFoundException($"You don't have report with id {studentReportId}");
+            }
+            
+            reportToEdit.TeacherNote = studentReportAsTeacherPutDto.TeacherNote;
+            reportToEdit.Mark = studentReportAsTeacherPutDto.Mark;
             _dbContext.SaveChanges();
         }
         
         
         public StudentReportGetDto GetStudentReport(int studentReportId)
         {
-            var studentReport = _dbContext.StudentReport.FirstOrDefault(report => report.Id == studentReportId);
+            var studentReport = _dbContext.StudentReport
+                .Include(report => report.SubjectSubgroup)
+                .ThenInclude(subgroup => subgroup.Students)
+                .FirstOrDefault(report => report.Id == studentReportId);
             var studentReportDto = _mapper.Map<StudentReportGetDto>(studentReport);
 
             return studentReportDto;
