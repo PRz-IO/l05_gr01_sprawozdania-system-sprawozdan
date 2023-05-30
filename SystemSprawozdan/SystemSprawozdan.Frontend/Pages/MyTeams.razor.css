@@ -1,0 +1,28 @@
+﻿p {
+    width: 100%;
+    height: 20%;
+}
+
+.table__header-cell--small {
+    width: 10%;
+}
+
+.table__header-cell--normal {
+    width: 15%;
+}
+
+.table__header-cell--big {
+    width: 100%;
+}
+
+.table__no-data {
+    padding: 10px 25px;
+}
+
+.table__row-icon {
+    display: flex;
+    padding: 5px;
+    background-color: var(--primary-color);
+    border-radius: 5px;
+    color: var(--panel-background-color);
+}

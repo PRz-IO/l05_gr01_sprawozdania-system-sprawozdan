@@ -1,0 +1,136 @@
+﻿@page "/teams"
+@inject NavigationManager NavigationManager
+@inject IAppHttpClient AppHttpClient
+@inject IMatToaster Toaster
+
+<div class="navigation panel">
+     <TabBar TValue="string" ValueChanged="@NavigateTo" Data="@TabBarData" ActiveIndex="teams" FlexDirection="row" />
+</div>
+<div style="overflow:auto">
+   @if (Subject is null)
+    {  
+        <LoadingBar IsLoading="true"/>
+    }
+    else if (Subject.Count == 0)
+    {
+        <div class="table__no-data">Brak grup do wyświetlenia</div>
+    }
+    else if (Subject.Count != 0)
+   {
+        <MatAccordion Multi="true">
+            @for (var counter = 0; counter < Subject.Count(); counter++)
+            {
+                var counterCapture = counter;
+                <MatExpansionPanel>
+                    <MatExpansionPanelSummary>
+                        <MatExpansionPanelHeader>@Subject[counterCapture].Name</MatExpansionPanelHeader>
+                    </MatExpansionPanelSummary>
+                    <MatExpansionPanelDetails>
+                        @if (SubjectGroup[counterCapture].Count() != 0)
+                        {
+                            <MatTable Items="@SubjectGroup[counterCapture]" ShowPaging="false">
+                                <MatTableHeader>
+                                    <th class="table__header-cell--small">Rok</th>
+                                    <th class="table__header-cell--normal">Rodzaj</th>
+                                    <th class="table__header-cell--small">Grupa</th>
+                                    <th class="table__header-cell--big">Prowadzący</th>
+                                    <th></th>
+                                </MatTableHeader>
+                            <MatTableRow >
+                                <td>@context.MajorCode</td>
+                                <td>@context.GroupType</td>
+                                <td>@context.Name</td>
+                                <td>@context.TeacherDegree @context.TeacherName @context.TeacherSurname</td>
+                                <td><div class="table__row-icon"><MatIcon Icon="@MatIconNames.Arrow_forward" Style="height: 100%" Class="pointer" @onclick="() => HandleSelectedSubject(context.Id)" /></div></td>
+                            </MatTableRow>
+                        </MatTable>
+                        }
+                        else{
+                            <p>Brak dostępnych grup</p>
+                        }
+                    </MatExpansionPanelDetails>
+                </MatExpansionPanel>
+            }
+        </MatAccordion>
+    }
+</div>
+@code {
+    public List<SubjectGetDto> Subject = new();
+    public EventCallback<string> SelectedSubjectName { get; set; }
+    public List<List<SubjectGroupGetDto>> SubjectGroup = new List<List<SubjectGroupGetDto>>();
+
+    public async void HandleSelectedSubject(int groupId)
+    {
+        NavigationManager.NavigateTo("/join-subgroup/"+ groupId);
+    }
+
+    protected override async Task OnInitializedAsync() {
+        var subjects = await AppHttpClient.Get<List<SubjectGetDto>>("Subject");
+        foreach (var subject in subjects)
+        {
+            Subject.Add(subject);
+        }
+        for (int counter = 0; counter < Subject.Count(); counter++)
+        {
+            var subjectGroups = await AppHttpClient.Get<List<SubjectGroupGetDto>>("SubjectGroup/" + counter + "?isUser=false");
+
+            List<SubjectGroupGetDto> asd = new();
+
+            foreach (var subjectGroup in subjectGroups)
+            {
+               asd.Add(subjectGroup);
+            }
+
+            SubjectGroup.Add(asd);
+        }
+    }
+           
+    //Top menu
+    public int teams { get; set; }
+
+    public int activeIndex()
+    {
+        var uri = NavigationManager.Uri;
+        foreach (var data in TabBarData)
+        {
+            if (uri.Contains(data.Value))
+                return TabBarData.IndexOf(data);
+        }
+        return 1;
+    }
+
+    public void NavigateTo(string link)
+    {
+        teams = TabBarData.FindIndex(el => el.Value.Equals(link));
+        StateHasChanged();
+        NavigationManager.NavigateTo(link);
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            teams = activeIndex();
+            StateHasChanged();
+        }
+    }
+
+    public IEnumerable<TabBarData<string>> TabBarData { get; set; } = new TabBarData<string>[]
+    {
+        new()
+        {
+            Text = "Dostępne zespoły",
+            Value = "/teams"
+        },
+        new()
+        {
+            Text = "Moje zespoły",
+            Value = "/myTeams"
+        },
+    };
+   
+    
+
+
+
+}
