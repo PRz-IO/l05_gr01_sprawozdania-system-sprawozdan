@@ -12,7 +12,6 @@ using MimeKit.Cryptography;
 using Microsoft.AspNetCore.Mvc;
 using SystemSprawozdan.Backend.Authorization;
 using SystemSprawozdan.Backend.Exceptions;
-using SystemSprawozdan.Shared.Dto.SubjectGroup;
 
 namespace SystemSprawozdan.Backend.Services
 {
