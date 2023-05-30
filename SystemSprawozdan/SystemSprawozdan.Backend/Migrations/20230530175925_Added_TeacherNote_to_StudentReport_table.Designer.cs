@@ -12,8 +12,8 @@ using SystemSprawozdan.Backend.Data;
 namespace SystemSprawozdan.Backend.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    [Migration("20230524231222_Added_TeacherNote_to_StudentReport")]
-    partial class Added_TeacherNote_to_StudentReport
+    [Migration("20230530175925_Added_TeacherNote_to_StudentReport_table")]
+    partial class Added_TeacherNote_to_StudentReport_table
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -264,14 +264,17 @@ namespace SystemSprawozdan.Backend.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("TermId")
+                    b.Property<int>("Term")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("TermObjectId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
                     b.HasIndex("MajorId");
 
-                    b.HasIndex("TermId");
+                    b.HasIndex("TermObjectId");
 
                     b.ToTable("Subject");
                 });
@@ -480,15 +483,13 @@ namespace SystemSprawozdan.Backend.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SystemSprawozdan.Backend.Data.Models.DbModels.Term", "Term")
+                    b.HasOne("SystemSprawozdan.Backend.Data.Models.DbModels.Term", "TermObject")
                         .WithMany("Subjects")
-                        .HasForeignKey("TermId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("TermObjectId");
 
                     b.Navigation("Major");
 
-                    b.Navigation("Term");
+                    b.Navigation("TermObject");
                 });
 
             modelBuilder.Entity("SystemSprawozdan.Backend.Data.Models.DbModels.SubjectGroup", b =>

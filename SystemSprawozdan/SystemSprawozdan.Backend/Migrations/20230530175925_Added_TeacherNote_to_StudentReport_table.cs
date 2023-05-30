@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace SystemSprawozdan.Backend.Migrations
 {
     /// <inheritdoc />
-    public partial class Removed_Term_table : Migration
+    public partial class Added_TeacherNote_to_StudentReport_table : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -80,6 +80,20 @@ namespace SystemSprawozdan.Backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Term",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                    TermNumber = table.Column<int>(type: "integer", nullable: false),
+                    StartedAt = table.Column<DateOnly>(type: "date", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Term", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Subject",
                 columns: table => new
                 {
@@ -88,7 +102,8 @@ namespace SystemSprawozdan.Backend.Migrations
                     Name = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: true),
                     MajorId = table.Column<int>(type: "integer", nullable: false),
-                    Term = table.Column<int>(type: "integer", nullable: false)
+                    Term = table.Column<int>(type: "integer", nullable: false),
+                    TermObjectId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -99,6 +114,11 @@ namespace SystemSprawozdan.Backend.Migrations
                         principalTable: "Major",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Subject_Term_TermObjectId",
+                        column: x => x.TermObjectId,
+                        principalTable: "Term",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -179,7 +199,8 @@ namespace SystemSprawozdan.Backend.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     SentAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     LastModified = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Note = table.Column<string>(type: "text", nullable: true),
+                    StudentNote = table.Column<string>(type: "text", nullable: true),
+                    TeacherNote = table.Column<string>(type: "text", nullable: true),
                     ReportTopicId = table.Column<int>(type: "integer", nullable: false),
                     SubjectSubgroupId = table.Column<int>(type: "integer", nullable: false),
                     ToCheck = table.Column<bool>(type: "boolean", nullable: false),
@@ -325,6 +346,11 @@ namespace SystemSprawozdan.Backend.Migrations
                 column: "MajorId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Subject_TermObjectId",
+                table: "Subject",
+                column: "TermObjectId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_SubjectGroup_SubjectId",
                 table: "SubjectGroup",
                 column: "SubjectId");
@@ -378,6 +404,9 @@ namespace SystemSprawozdan.Backend.Migrations
 
             migrationBuilder.DropTable(
                 name: "Major");
+
+            migrationBuilder.DropTable(
+                name: "Term");
         }
     }
 }

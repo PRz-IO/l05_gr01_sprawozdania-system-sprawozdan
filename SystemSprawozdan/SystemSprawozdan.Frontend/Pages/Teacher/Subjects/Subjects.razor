@@ -18,7 +18,7 @@
     </MatTableRow>
 </MatTable>
 
-<MatDialog @bind-IsOpen="dialogIsOpen" SurfaceStyle="background-color: white">
+<MatDialog @bind-IsOpen="_dialogIsOpen" SurfaceStyle="background-color: white">
     <MatDialogTitle>Uzupełnij dane</MatDialogTitle>
     <MatDialogContent style="display: flex; flex-direction: column; justify-content: space-evenly; height: 50vh;">
         <MatSelectValue Label="Kierunek" @bind-Value="@SubjectToSendDto.MajorCode" Items="@MajorsDtos" ValueSelector="dto => dto.MajorCode">
@@ -34,7 +34,7 @@
         <MatSelectItem ValidationDisabled="false" Label="Semestr" Items="Numbers" @bind-Value="SubjectToSendDto.Term"></MatSelectItem>
         
         <div class="dialog-buttons">
-            <MatButton OnClick="@(e => { dialogIsOpen = false; })">Anuluj</MatButton>
+            <MatButton OnClick="@(e => { _dialogIsOpen = false; })">Anuluj</MatButton>
             <MatButton OnClick="AddNewSubject" >Ok</MatButton>
         </div>
         
@@ -46,8 +46,8 @@
     public List<TeacherSubjectGetDto> TeacherSubjectGetDtos = new();
     public List<MajorGetDto> MajorsDtos = new();
     public SubjectPostDto SubjectToSendDto = new();
-    public int[] Numbers = new[] { 1, 2, 3, 4, 5, 6, 7, 8 };
-    bool dialogIsOpen = false;
+    public int[] Numbers = { 1, 2, 3, 4, 5, 6, 7, 8 };
+    private bool _dialogIsOpen = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -59,16 +59,17 @@
     {
         var getMajorsUri = new Uri("https://localhost:7184/api/Major");
         MajorsDtos = await AppHttpClient.Get<List<MajorGetDto>>(getMajorsUri.ToString());
-        dialogIsOpen = true;
+        _dialogIsOpen = true;
     }
 
     public async Task AddNewSubject()
     {
         var SubjectPostUri = new Uri("https://localhost:7184/api/Subject");
-        dialogIsOpen = false;
+        _dialogIsOpen = false;
         if (SubjectToSendDto.Name == null || SubjectToSendDto.Term == null || SubjectToSendDto.MajorCode == null)
         {
-            MatToaster.Add("Nie wypełniono wymaganych pól! Nie udało się dodać przedmiotu!", MatToastType.Danger, "Error");
+            MatToaster.Add("Nie udało się dodać przedmiotu!", MatToastType.Danger, "Błąd!");
+            MatToaster.Add("Nie wypełniono wymaganych pól!", MatToastType.Danger, "Błąd!");
             return;
         }
         var result = AppHttpClient.Post(SubjectPostUri.ToString(), SubjectToSendDto);
