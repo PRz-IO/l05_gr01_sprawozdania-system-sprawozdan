@@ -1,0 +1,47 @@
+﻿.report-container{
+    width: 100%;
+    height: 90%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 10px;
+}
+.report-head{
+    height: 20%;
+    width: 100%;
+}
+
+.report{
+    width: 100%;
+    height: 80%;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.report__student-side{
+    width: 40%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.report__teacher-side{
+    width: 40%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.report__form{
+    height: 50%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.report__files{
+    overflow-y: auto;
+}

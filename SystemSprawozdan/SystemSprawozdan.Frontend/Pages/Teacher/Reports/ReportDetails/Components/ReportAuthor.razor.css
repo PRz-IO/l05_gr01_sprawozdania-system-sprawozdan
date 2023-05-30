@@ -1,0 +1,22 @@
+﻿.report-author{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--background-color);
+    color: var(--font-color-basic);
+    border-radius: 10px;
+    border: 4px solid var(--font-color-header);
+}
+
+.report-author__label{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    padding: 10px;
+}
+
+b{
+    color: var(--font-color-header);
+}
