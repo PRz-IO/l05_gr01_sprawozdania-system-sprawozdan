@@ -62,7 +62,7 @@
     public List<List<SubjectGroupGetDto>> SubjectGroup = new List<List<SubjectGroupGetDto>>();
     public async void HandleSelectedSubject(int groupId)
     {
-        NavigationManager.NavigateTo("/join-subgroup/" + groupId);
+        NavigationManager.NavigateTo("student/teams/" + groupId);
     }
 
     protected override Task OnInitializedAsync()
