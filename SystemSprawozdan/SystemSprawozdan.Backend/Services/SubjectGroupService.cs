@@ -19,6 +19,8 @@ namespace SystemSprawozdan.Backend.Services
     {
         List<SubjectGroupGetDto> GetSubjectGroup(int subjectId, bool isUser);
         SubjectGroupGetDetailsDto GetSubjectGroupDetails(int groupId);
+        List<StudentBasicGetDto> GetSubjectGroupStudents(int groupId);
+        void DeleteStudentFromGroup(int studentId, int groupId);
     }
 
     public class SubjectGroupService : ISubjectGroupService
@@ -67,6 +69,62 @@ namespace SystemSprawozdan.Backend.Services
             var TeacherName = Teacher.Degree + " " + Teacher.Name + " " + Teacher.Surname;
             details.TeacherName = TeacherName;
             return details;
+        }
+        public List<StudentBasicGetDto> GetSubjectGroupStudents(int groupId)
+        {
+            if (!(_dbContext.SubjectGroup.Any(group => group.Id == groupId)))
+            {
+                throw new NotFoundException("Wrong group Id!");
+            }
+            var studentsFromGroup = new List<StudentBasicGetDto>();
+
+            var subgroups = _dbContext.SubjectSubgroup
+                .Include(subjectSubgroup => subjectSubgroup.Students)
+                .Where(subgroup => subgroup.SubjectGroupId == groupId)
+                .ToList();
+            foreach (var subgroup in subgroups)
+            {
+                var students = subgroup.Students;
+                foreach(var student in students)
+                {
+                    studentsFromGroup.Add(new StudentBasicGetDto
+                    {
+                        Id = student.Id,
+                        Login = student.Login,
+                        Name = student.Name,
+                        Surname = student.Surname
+                    });
+                }
+            }
+                return studentsFromGroup;
+        }
+        public void DeleteStudentFromGroup(int studentId, int groupId)
+        {
+            if (!(_dbContext.SubjectGroup.Any(group => group.Id == groupId)))
+            {
+                throw new NotFoundException("Wrong group Id!");
+            }
+            if (!(_dbContext.Student.Any(student => student.Id == studentId)))
+            {
+                throw new NotFoundException("Wrong student Id!");
+            }
+            var subgroups = _dbContext.SubjectSubgroup
+                .Include(subjectSubgroup => subjectSubgroup.Students)
+                .Where(subgroup => subgroup.SubjectGroupId == groupId)
+                .ToList();
+            var student = _dbContext.Student.FirstOrDefault(student => student.Id == studentId);
+            foreach (var subgroup in subgroups)
+            {
+                subgroup.Students.Remove(student);
+                _dbContext.SubjectSubgroup.Update(subgroup);
+                if(subgroup.Students.Count == 0)
+                {
+                    var group = _dbContext.SubjectGroup.FirstOrDefault(group => group.Id == groupId);
+                    group.subjectSubgroups.Remove(subgroup);
+                    _dbContext.SubjectGroup.Update(group);
+                }
+            }
+            _dbContext.SaveChanges();
         }
     }
 }
