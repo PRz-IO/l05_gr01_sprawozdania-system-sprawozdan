@@ -74,7 +74,7 @@ namespace SystemSprawozdan.Backend.Services
         {
             if (!(_dbContext.SubjectGroup.Any(group => group.Id == groupId)))
             {
-                throw new NotFoundException("Wrong group id!");
+                throw new NotFoundException("Wrong group Id!");
             }
             var studentsFromGroup = new List<StudentBasicGetDto>();
 
@@ -102,11 +102,11 @@ namespace SystemSprawozdan.Backend.Services
         {
             if (!(_dbContext.SubjectGroup.Any(group => group.Id == groupId)))
             {
-                throw new NotFoundException("Wrong group id!");
+                throw new NotFoundException("Wrong group Id!");
             }
             if (!(_dbContext.Student.Any(student => student.Id == studentId)))
             {
-                throw new NotFoundException("Wrong student id!");
+                throw new NotFoundException("Wrong student Id!");
             }
             var subgroups = _dbContext.SubjectSubgroup
                 .Include(subjectSubgroup => subjectSubgroup.Students)
