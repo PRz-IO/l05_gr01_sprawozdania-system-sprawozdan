@@ -93,7 +93,7 @@ namespace SystemSprawozdan.Backend.Services
                 .Include(subjectSubgroup => subjectSubgroup.Students)
                 .FirstOrDefault(subgroup => subgroup.Id == subgroupId && subgroup.IsIndividual == false);
             var user = _dbContext.Student.FirstOrDefault(student => student.Id == userId);
-            
+
             subgroup.Students.Add(user);
             _dbContext.SubjectSubgroup.Update(subgroup);
 
