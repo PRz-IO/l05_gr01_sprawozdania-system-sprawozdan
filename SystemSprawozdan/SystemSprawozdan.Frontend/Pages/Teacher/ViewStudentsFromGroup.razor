@@ -1,0 +1,81 @@
+﻿@page "/teacher/view-students/{GroupId:int}"
+
+@inject IAppHttpClient AppHttpClient
+@inject IMatToaster Toaster
+@inject NavigationManager NavigationManager
+<TitleBar Text="@Title"></TitleBar>
+<MatTable Striped="true" Items="@students" class="mat-elevation-z5" ShowPaging="false">
+    <MatTableHeader>
+        <th class="table-header">Nr albumu</th>
+        <th class="table-header">Imię</th>
+        <th class="table-header">Nazwisko</th>
+        <th class="table-header"> </th>
+    </MatTableHeader>
+    <MatTableRow>
+        <td>@context.Id</td>
+        <td>@context.Name</td>
+        <td>@context.Surname</td>
+        <td><MatButton OnClick="@(e => { dialogIsOpen = true; studentToDelete = context.Id; })"><MatIcon Icon="@MatIconNames.Delete_forever"></MatIcon></MatButton></td>
+    </MatTableRow>
+</MatTable>
+
+<MatDialog @bind-IsOpen="@dialogIsOpen">
+    <MatDialogTitle>Uwaga</MatDialogTitle>
+    <MatDialogContent>
+        <p>Na pewno chcesz usunąć studenta z grupy?</p>
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton OnClick="@DeleteStudent">Tak</MatButton>
+        <MatButton OnClick="@(e => { dialogIsOpen = false; })">Nie</MatButton>
+    </MatDialogActions>
+</MatDialog>
+
+@code {
+    [Parameter]
+    public int GroupId { get; set; }
+    public int? studentToDelete = null;
+    
+    bool dialogIsOpen = false;
+    void DeleteStudent()
+    {
+        if(studentToDelete == 0 || studentToDelete == null)
+        {
+            Toaster.Add("Coś poszło nie tak", MatToastType.Danger, "Błąd");
+        }
+        else
+        {
+            //usuwanie
+            Toaster.Add("Student został usunięty z grupy", MatToastType.Success, "Sukces");
+            dialogIsOpen = false;
+            NavigationManager.NavigateTo("/teacher/view-students/" + GroupId);
+        }
+    }
+    //do usuniecia - czeka na merge backu
+    public class Student
+    {
+        public int Id{ get; set; }
+        public string Name{ get; set; }
+        public string Surname{ get; set; }
+
+        public Student(int id, string name, string surname)
+        {
+            Id = id;
+            Name = name;
+            Surname = surname;
+        }
+    }
+    Student[] students = new[]
+    {
+    new Student(1, "Grzegorz", "Latawiec"),
+    new Student(2, "Mateusz", "Ziętek"),
+    new Student(3, "Jakub", "Kusal"),
+    };
+
+    SubjectGroupGetDetailsDto SubjectGroup;
+    public string? Title;
+    protected override async Task OnInitializedAsync()
+    {
+        SubjectGroup = await AppHttpClient.Get<SubjectGroupGetDetailsDto>($"SubjectGroup/{GroupId}/GetSubjectGroupDetails");
+        Title = SubjectGroup.SubjectName + "/" + SubjectGroup.Name;
+    }
+}
