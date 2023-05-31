@@ -1,34 +1,44 @@
-﻿.main-container{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-    align-content: flex-start;
+﻿.body-container{
     height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 0 5% 5%;
 }
 
-.report-topic-name{
+.main-container{
     display: flex;
-    justify-content: center;
-    margin-bottom: 3vh;
-    font-size: 2rem;
-    margin-top: 3vh;
+    justify-content: space-evenly;
+    height: 100%;
+    max-height: 74.5vh;
 }
 
 .left-column{
-    width: 32%;
-    position: relative;
+    width: 40%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.input-file{
+    min-height: 30%;
+    flex: 1 1 auto;
+}
+
+.file-list{
+    flex: 0 1 auto;
+    overflow-y: auto;
 }
 
 .right-column{
     display: flex;
     flex-direction: column;
-    width: 32%;
+    width: 40%;
     justify-content: space-between;
 }
 
 .deadline{
-    font-size: 1.5rem;
-    margin: 0;
+    font-size: var(--font-size-medium);
 }
 .radio-buttons{
     display: flex;
@@ -37,4 +47,3 @@
 .radio-button-description{
     margin-bottom: 0;
 }
-

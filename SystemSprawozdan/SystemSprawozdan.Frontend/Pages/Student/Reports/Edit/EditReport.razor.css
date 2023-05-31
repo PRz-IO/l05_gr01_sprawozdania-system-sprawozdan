@@ -1,1 +1,43 @@
-﻿
+﻿.body-container{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 0 5% 5%;
+}
+
+.main-container{
+    display: flex;
+    justify-content: space-evenly;
+    height: 100%;
+    max-height: 74.5vh;
+}
+
+.left-column{
+    width: 40%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.input-file{
+    min-height: 30%;
+    flex: 1 1 auto;
+}
+
+.file-list{
+    flex: 0 1 auto;
+    overflow-y: auto;
+}
+
+.right-column{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 40%;
+}
+
+.mark-text{
+    font-size: 1.1rem;
+    margin: 0;
+}

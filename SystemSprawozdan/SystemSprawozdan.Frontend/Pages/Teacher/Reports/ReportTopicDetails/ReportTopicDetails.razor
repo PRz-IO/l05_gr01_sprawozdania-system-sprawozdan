@@ -1,4 +1,4 @@
-﻿@inject IReportHttpService ReportHttpService
+﻿@inject ITReportHttpService ITReportHttpService
 
 <HeaderReportTopicDetails ReportTopic="@ReportTopic"/>
 
@@ -38,7 +38,7 @@
 
     public async Task GetReportTopicData(int reportTopicId)
     {
-        ReportTopic = await ReportHttpService.GetReportTopicById(reportTopicId);
+        ReportTopic = await ITReportHttpService.GetReportTopicById(reportTopicId);
         await GetStudentReports(ReportTopic.Id);
     }
 
@@ -46,8 +46,8 @@
     {
         IndividualReports = null;
         GroupReports = null;
-        IndividualReports = await ReportHttpService.GetStudentReportsByReportTopicId(reportTopicId, true, IsMarked);
-        GroupReports = await ReportHttpService.GetStudentReportsByReportTopicId(reportTopicId, false, IsMarked);
+        IndividualReports = await ITReportHttpService.GetStudentReportsByReportTopicId(reportTopicId, true, IsMarked);
+        GroupReports = await ITReportHttpService.GetStudentReportsByReportTopicId(reportTopicId, false, IsMarked);
         StateHasChanged();
     }
 

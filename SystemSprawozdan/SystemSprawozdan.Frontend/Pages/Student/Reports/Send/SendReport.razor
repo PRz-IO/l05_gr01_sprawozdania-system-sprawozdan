@@ -1,229 +1,82 @@
-﻿@page "/send/{ReportTopicId}"
-@using System.Net.Http.Headers;
-@using SystemSprawozdan.Frontend.Pages.Student.Reports.Components
-@inject IAppHttpClient AppHttpClient
+﻿@page "/student/reports/{ReportTopicId:int}"
+@inject NavigationManager NavigationManager
+@inject IMatToaster MatToaster
+@inject ISReportHttpService ReportHttpService
 
 <PageTitle>Wyślij sprawozdanie</PageTitle>
-<style>
-    .main-container{
-        display: flex;
-        flex-direction: row;
-        justify-content: space-evenly;
-        align-content: flex-start;
-        height: 100%;
-        padding-bottom: 6vh;
-    }
-    
-    .report-topic-name{
-        display: flex;
-        justify-content: center;
-        margin-bottom: 3vh;
-        font-size: 2rem;
-        margin-top: 3vh;
-    }
-    
-    .left-column{
-        width: 32%;
-        position: relative;
-    }
-    
-    .file-input{
-        cursor: pointer;
-        transition: background-color 400ms;
-        border: dashed var(--primary-color) 4px;
-        border-radius: 46px;
-        background-size: 25%;
-        background-position: center;
-        background-repeat: no-repeat;
-    }
-    
-    .file-input:hover{
-        background-color: rgba(64,153,229,0.49);
-    }
-    
-    input::file-selector-button{
-        opacity: 0;
-    }
-    
-    input[type="file"]{
-        width: 100%;
-        height: 65%;
-        color: transparent;
-        margin-bottom: 24px;
-    }
-    
-    .files-list{
-        height: 28%;
-        overflow-y: scroll;
-        border-radius: 15px;
-    }
-    
-    .right-column{
-        display: flex;
-        flex-direction: column;
-        width: 32%;
-        justify-content: space-between;
-    }
-    
-    .deadline{
-        font-size: 1.5rem;
-        margin: 0;
-    }
-    .radio-buttons{
-        display: flex;
-    }
-    
-    .radio-button-description{
-        margin-bottom: 0;
-    }
-</style>
 
-    <span class="report-topic-name">@TopicName</span>
+<div class="body-container">
+    <ReportDetailsHeader ReportTopic="@ReportTopic"/>
     <div class="main-container">
         <div class="left-column">
-            <span style="position: absolute; left: 50%; top: 50%; font-size: 2rem; transform: translate(-50%, -50%);">Umieść pliki</span>
-            <i class="bi bi-download file-icon" style="position: absolute; left: 50%; top: 30%; font-size: 7rem; transform: translate(-50%, -50%)"></i>
-            @for (int i = 0; i < numberOfInputFiles; i++)
-            {
-                <InputFile class="file-input" @key="i" OnChange="OnInputFileChange" multiple style="@GetInputFileStyle(i)"></InputFile>
-            }
-            <pre>@status</pre>
-            
-            <div class="files-list">
-                @if (_files.Count > 0)
-                {
-                    <FilesList FilesToBeSent="_files" RemoveFile="RemoveFileFromList"></FilesList>
-                }
+            <div class="input-file">
+                <FileInputComponent OnFilesAdded="HandleNewFiles"/>
             </div>
+
+            @if (FilesToSend.Count != 0)
+            {
+                <div class="file-list">
+                    <FileList FilesToSend="FilesToSend" OnFileRemoved="@HandleRemoveFile"/>
+                </div>
+            }
         </div>
-        
+
         <div class="right-column">
-            <p class="deadline">Termin oddania: @Deadline</p>
-            <MatTextField TValue="string" @bind-Value="Note" Label="Komentarz dla prowadzącego:" Outlined="true" TextArea="true" Style="height: 50%;"/>
+            <p class="deadline">Termin oddania: @ReportTopic.ReportTopicDeadline.ToString("g")</p>
+            <MatTextField TValue="string" @bind-Value="StudentReport.StudentNote" Label="Komentarz dla prowadzącego:" Outlined="true" TextArea="true" Style="height: 50%;"/>
             <div class="radio-buttons__and-description">
                 <p class="radio-button-description">Sposób oddania:</p>
                 <div class="radio-buttons">
-                    <MatRadioGroup @bind-Value="@IsIndividual" TValue="string" Style="display: flex">
-                        <MatRadioButton Value="@("true")" TValue="string">Indywidualnie</MatRadioButton>
-                        <MatRadioButton Value="@("false")" TValue="string">Grupowo</MatRadioButton>
+                    <MatRadioGroup @bind-Value="@StudentReport.IsIndividual" TValue="bool" Style="display: flex">
+                        <MatRadioButton Value="@true" TValue="bool">Indywidualnie</MatRadioButton>
+                        <MatRadioButton Value="@false" TValue="bool">Grupowo</MatRadioButton>
                     </MatRadioGroup>
                 </div>
             </div>
-    
-            <MatButton OnClick="@(() => sendReport())" Label="Prześlij" Unelevated="true" Class="send-button" Style="height: 12%"></MatButton>
+            <MatButton OnClick="@(() => CreateReport())" Label="Prześlij" Unelevated="true" Class="send-button" Style="height: 12%"></MatButton>
         </div>
     </div>
-
+</div>
 
 @code {
+
     [Parameter]
-    public string ReportTopicId { get; set; }
-    
-    string? status;
-    int numberOfInputFiles = 1;
+    public int? ReportTopicId { get; set; }
 
-    string GetInputFileStyle(int index)
-    {
-        return index == numberOfInputFiles - 1 ? "" : "display: none";
-    }
-    
-    
-    public string IsIndividual { get; set; } = "true";
-    public bool IsIndividualBool {get; set; }
-    public string Note { get; set; } = string.Empty;
-    public string Token { get; set; }
-    public Uri reportTopicGetEndpointUri { get; set; }
-    public string Deadline { get; set; }
-    public string TopicName { get; set; }
+    public StudentReportPostDto StudentReport { get; set; } = new();
 
+    public ReportTopicGetDto ReportTopic { get; set; } = new();
 
-    private readonly int _maxAllowedFiles = 100;
-    private readonly long _maxFileSize = 5368709120; // 5 Gigabytes
-    private List<IBrowserFile> _files = new();
-    MultipartFormDataContent filesMultipartFormDataContent = new();
+    public List<IBrowserFile> FilesToSend = new();
 
-    public async Task OnInputFileChange(InputFileChangeEventArgs e)
-    {
-        numberOfInputFiles++;
-        foreach (var file in e.GetMultipleFiles(_maxAllowedFiles))
-        {
-            _files.Add(file);
-        }
-    }
-    
-    
-    public async void sendReport()
-    {
-        var sendReportUri = $"https://localhost:7184/api/StudentReport";
-        IsIndividualBool = Boolean.Parse(IsIndividual);
-        var reportToSend = new StudentReportPostDto
-        {
-            IsIndividual = IsIndividualBool,
-            ReportTopicId = Int32.Parse(ReportTopicId),
-            Note = Note
-        };
-        var sentReportResponse = await AppHttpClient.Post(sendReportUri, reportToSend);
-        var createdStudentReportId = Int32.Parse(sentReportResponse);
-
-        if (_files is null)
-        {
-            return;
-        }
-        var sendFilesUri = new Uri ($"https://localhost:7184/api/StudentReportFile/{createdStudentReportId}");
-        foreach (var file in _files)
-        {
-            var fileContent = new StreamContent(file.OpenReadStream(_maxFileSize));
-            var fileContentType = file.ContentType;
-            var fileName = file.Name;
-            if (fileContentType == "")
-            {
-                var extension = fileName.Split('.').Last();
-                switch (extension)
-                {
-                    case "sql":
-                    {
-                        fileContent.Headers.ContentType = new MediaTypeHeaderValue("application/sql");
-                        break;
-                    }
-                    default:
-                    {
-                        fileContent.Headers.ContentType = new MediaTypeHeaderValue("");
-                        break;
-                    }
-                }
-            }
-            else
-            {
-                fileContent.Headers.ContentType = new MediaTypeHeaderValue(fileContentType);
-            }
-            filesMultipartFormDataContent.Add(
-                content: fileContent,
-                name: "\"files\"",
-                fileName: file.Name);
-        }
-        await AppHttpClient.PostFormData(sendFilesUri.ToString(), filesMultipartFormDataContent);
-    }
-    
-    
     protected override async Task OnInitializedAsync()
     {
-        var loginData = new LoginUserDto()
-        {
-            Login = "169571",
-            Password = "Hasło123"
-        };
-        Token = await AppHttpClient.Post("Account/login", loginData);
-
-        reportTopicGetEndpointUri =  new Uri($"https://localhost:7184/api/ReportTopic/selective/?reportTopicId={ReportTopicId}");
-        var reportTopicGetDto = await AppHttpClient.Get<ReportTopicGetDto>(reportTopicGetEndpointUri.ToString());
-        Deadline = reportTopicGetDto.ReportTopicDeadline.ToString("g");
-        TopicName = reportTopicGetDto.ReportTopicName;
+        StudentReport.ReportTopicId = ReportTopicId ?? 1;
+        ReportTopic = await ReportHttpService.GetReportTopic(ReportTopicId ?? 1);
     }
 
-    public void RemoveFileFromList(string name)
+    public void HandleNewFiles(List<IBrowserFile> files)
     {
-        var fileObjectToRemove = _files.Find(f => f.Name == name);
-        _files.Remove(fileObjectToRemove);
+        FilesToSend.AddRange(files);
     }
 
+    public void HandleRemoveFile(IBrowserFile file)
+    {
+        FilesToSend.Remove(file);
+    }
+
+    public async void CreateReport()
+    {
+        try
+        {
+            var reportId = await ReportHttpService.PostStudentReport(StudentReport);
+            await ReportHttpService.UploadFilesForStudentReport(reportId, FilesToSend);
+            MatToaster.Add("Udało się wysłać sprawozdanie!", MatToastType.Success, "Sukces");
+            NavigationManager.NavigateTo($"/student/reports/{ReportTopicId}/{reportId}");
+        }
+        catch (Exception e)
+        {
+            MatToaster.Add("Nie udało się wysłać sprawozdania!", MatToastType.Danger, "Błąd");
+        }
+    }
 }

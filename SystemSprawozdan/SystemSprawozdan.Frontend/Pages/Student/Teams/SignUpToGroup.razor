@@ -1,4 +1,4 @@
-﻿@page "/join-subgroup/{groupId:int?}"
+﻿@page "/student/teams/{GroupId:int}"
 
 @inject IAppHttpClient AppHttpClient
 @inject IMatToaster Toaster
@@ -8,24 +8,20 @@
 
 <style>
     .edit-field{
-        display:flex;
-        justify-content:center;
-        align-items:center;
         width: 100%;
     }
-
 </style>
 
 <div class="block">
     <div class="block-left">
         <h4>Dane zespołu: </h4>
-        <p><b>Przedmiot:</b> @groupSubjectName</p>
-        <p><b>Rodzaj:</b> @groupType</p>
-        <p><b>Grupa:</b> @groupName</p>
-        <p><b>Prowadzący:</b> @groupTeacher</p>
+        <p><b>Przedmiot:</b>@SubjectGroup?.SubjectName</p>
+        <p><b>Rodzaj:</b>@SubjectGroup?.GroupType</p>
+        <p><b>Grupa:</b>@SubjectGroup?.Name</p>
+        <p><b>Prowadzący:</b>@SubjectGroup?.TeacherName</p>
     </div>
     <div class="block-right">
-            <p>Wybierz sposób w jaki chcesz się zapisać do zespołu:</p>
+            <p style="text-wrap: normal">Wybierz sposób w jaki chcesz się zapisać do zespołu:</p>
         <p>   
             <MatRadioGroup @bind-Value="@subgroupType" TValue="string" Style="align-self:center;">
                 <MatRadioButton Value="@("individual")" Label="Indywidualnie" TValue="string"></MatRadioButton>
@@ -40,35 +36,36 @@
                 <MatSelectItem Outlined="true" Label="Grupa" class="edit-field" @bind-Value="subgroupSelect" Items="@subgroupSelectItems"></MatSelectItem>
             </p>
             <br />
-            <p>Jeżeli twojej grupy nie ma na liście wpisz ją poniżej:</p>
+            <p>Jeżeli twojej grupy nie ma na liście, wpisz ją poniżej:</p>
             <p>
                 <MatTextField Outlined="true" class="edit-field" @bind-Value="@subgroupName" Label="Nazwa grupy"></MatTextField>
-                <ValidationMessage For="@(() => subgroupName)" style="font-size:12px;" />
             </p>
 
         </div>
-        <div class="block-button">
-        <MatButton OnClick="joinSubgroup" Style="height: 80px; width:120%; font-size: var(--font-size-large);" Raised="true">Zapisz się na zajęcia</MatButton>
-        </div>
+        <MatButton OnClick="joinSubgroup" Style="height: 70px; width: 100%; font-size: var(--font-size-large);" Raised="true">Zapisz się na zajęcia</MatButton>
     </div>
 </div>
 
 
 @code {
+    [Parameter]
+    public int GroupId { get; set; }
+    public SubjectGroupGetDetailsDto SubjectGroup { get; set; }
+    
+    string subgroupType = "individual";
+    string? subgroupName;
+    string subgroupSelect = "";
+    public List<string> subgroupSelectItems = new List<string>();
+    
     protected override async Task OnInitializedAsync()
     {
         subgroupSelectItems.Add("");
-        var groups = await AppHttpClient.Get<List<SubjectSubgroupGetDto>>("SubjectSubgroup/" + groupId + "/GetSubgroups");
+        var groups = await AppHttpClient.Get<List<SubjectSubgroupGetDto>>($"SubjectSubgroup/{GroupId}/GetSubgroups");
         foreach (var group in groups)
         {
             subgroupSelectItems.Add(group.Name);
         }
-        var groupDetails = await AppHttpClient.Get<SubjectGroupGetDetailsDto>("SubjectGroup/" + groupId + "/GetSubjectGroupDetails");
-        groupSubjectName = groupDetails.SubjectName;
-        groupType = groupDetails.GroupType;
-        groupName = groupDetails.Name;
-        groupTeacher = groupDetails.TeacherName;
-
+        SubjectGroup = await AppHttpClient.Get<SubjectGroupGetDetailsDto>($"SubjectGroup/{GroupId}/GetSubjectGroupDetails");
     }
     public async void joinSubgroup()
     {
@@ -76,7 +73,7 @@
         {
             var subgroup = new SubjectSubgroupPostDto
                 {
-                    SubjectGroupId = groupId,
+                    SubjectGroupId = GroupId,
                     isIndividual = true,
                     SubgroupName = ""
                 };
@@ -95,7 +92,7 @@
             {
                 var subgroup = new SubjectSubgroupPostDto
                     {
-                        SubjectGroupId = groupId,
+                        SubjectGroupId = GroupId,
                         isIndividual = false, 
                         SubgroupName = subgroupName
                     };
@@ -105,7 +102,7 @@
             }
             else
             {
-                var groups = await AppHttpClient.Get<List<SubjectSubgroupGetDto>>("SubjectSubgroup/" + groupId + "/GetSubgroups");
+                var groups = await AppHttpClient.Get<List<SubjectSubgroupGetDto>>("SubjectSubgroup/" + GroupId + "/GetSubgroups");
                 var subgroup = groups.FirstOrDefault(group => group.Name == subgroupSelect);
                 int subgroupId = subgroup.Id;
 
@@ -115,14 +112,4 @@
             }
         }
     }
-    [Parameter]
-    public int groupId { get; set; }
-    string groupSubjectName,
-           groupType,
-           groupName,
-           groupTeacher;
-    string subgroupType = "individual";
-    string? subgroupName;
-    string subgroupSelect = "";
-    public List<string> subgroupSelectItems = new List<string>();
 }

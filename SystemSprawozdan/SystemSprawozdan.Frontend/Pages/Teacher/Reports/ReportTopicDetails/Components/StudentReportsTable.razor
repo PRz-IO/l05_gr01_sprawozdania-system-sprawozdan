@@ -40,7 +40,7 @@ else
             {
                 <td>@context.SubjectSubgroup.Name</td>
             }
-            <td>@(context.Mark is not null ? @EnumTranslations.Mark[context.Mark] : "") </td>
+            <td>@(context.Mark is not null ? EnumTranslator.Mark[context.Mark] : "") </td>
             <td><div class="table__row-icon"><MatIcon Icon="@MatIconNames.Arrow_forward" Style="height: 100%" Class="pointer" @onclick="() => HandleSelectedStudentReport(context)"/></div></td>
         </MatTableRow>
     </MatTable>

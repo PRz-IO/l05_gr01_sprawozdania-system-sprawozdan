@@ -1,4 +1,4 @@
-﻿@inject IReportHttpService ReportHttpService
+﻿@inject ITReportHttpService ITReportHttpService
 
 <TabBar Data="@TabBarData" @bind-Value="@ToCheck"/>
 <ReportTopicsTable ReportTopics="@ReportTopicGetDtos" SelectedReportTopicId="selectedReportTopicId => SelectedReportTopicId.InvokeAsync(selectedReportTopicId)"/>
@@ -21,7 +21,7 @@
     
     public async Task GetReportTopics(bool? toCheck)
     {
-        ReportTopicGetDtos = await ReportHttpService.GetReportTopics(toCheck);
+        ReportTopicGetDtos = await ITReportHttpService.GetReportTopics(toCheck);
         StateHasChanged();
     }
 

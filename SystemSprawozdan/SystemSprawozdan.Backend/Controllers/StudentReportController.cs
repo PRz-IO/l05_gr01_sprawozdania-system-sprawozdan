@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SystemSprawozdan.Backend.Data;
-using SystemSprawozdan.Backend.Data.Models.DbModels;
 using SystemSprawozdan.Backend.Services;
 using SystemSprawozdan.Shared.Dto;
 using SystemSprawozdan.Shared.Enums;
@@ -27,16 +26,23 @@ namespace SystemSprawozdan.Backend.Controllers
             return Ok(result.Id);
         }
 
-        [HttpPut("{studentReportId:int}")]
+        [HttpPut("{studentReportId:int}/AsStudent")]
         [Authorize(Roles = nameof(UserRoleEnum.Student))]
-        public ActionResult PutStudentReport([FromRoute] int studentReportId, [FromBody] StudentReportPutDto putStudentReportDto)
+        public ActionResult PutStudentReportAsStudent([FromRoute] int studentReportId, [FromBody] StudentReportAsStudentPutDto studentReportAsStudentPutDto)
         {
-             _studentReportService.PutStudentReport(studentReportId, putStudentReportDto);
+             _studentReportService.PutStudentReport(studentReportId, studentReportAsStudentPutDto);
+            return Ok();
+        }
+
+        [HttpPut("{studentReportId:int}/AsTeacher")]
+        [Authorize(Roles = nameof(UserRoleEnum.Teacher))]
+        public ActionResult PutStudentReportAsTeacher([FromRoute] int studentReportId, [FromBody] StudentReportAsTeacherPutDto studentReportAsTeacherPutDto)
+        {
+             _studentReportService.studentReportAsTeacherPutDto(studentReportId, studentReportAsTeacherPutDto);
             return Ok();
         }
 
         [HttpGet("fullReport/{studentReportId:int}")]
-        [Authorize(Roles = nameof(UserRoleEnum.Student))]
         public ActionResult<StudentReportGetDto> GetStudentReport([FromRoute] int studentReportId)
         {
             var result = _studentReportService.GetStudentReport(studentReportId);
