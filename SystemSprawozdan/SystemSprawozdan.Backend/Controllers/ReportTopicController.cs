@@ -35,20 +35,29 @@ namespace SystemSprawozdan.Backend.Controllers
             var result = _reportTopicService.GetReportById(reportTopicId);
             return Ok(result);
         }
-        
+
+
         //TODO: Olek: Trzeba stworzyć GETa, ktory wyswietla wszystkie tematy sprawozdan, które są przypisane do SubjectGroup, do której należy zalogowany użytkownik
+        [HttpGet("ForStudent")]
+        public IActionResult GetReportTopicsByUserId([FromQuery] bool isSubmitted)
+        {
+            var reportTopics = _reportTopicService.GetReportTopicForStudent(isSubmitted);
+            return Ok(reportTopics);
+        }
 
         //TODO: Olek: Trzeba stworzyć GETa, który wyświetla wszystkie tematy sprawozdan, które są oddane przez zalogowanego użytkownika
+        //[HttpGet("Submitted")]
+        //public IActionResult GetSubmittedReportsByStudentId()
+        //{
+        //    var submittedReports = _reportTopicService.GetSubmittedReportsByStudentId();
 
-        [HttpGet("selective")]
-        public ActionResult GetReportTopic([FromQuery] int? reportTopicId, int? studentReportId)
-        {
-            var reportTopic = _reportTopicService.GetReportTopic(reportTopicId, studentReportId);
+        //    if (submittedReports == null || submittedReports.Count == 0)
+        //    {
+        //        return NotFound("Brak oddanych sprawozdań dla podanego studenta.");
+        //    }
 
-            return Ok(reportTopic);
-
-            
-        }
+        //    return Ok(submittedReports);
+        //}
     }
     
 }

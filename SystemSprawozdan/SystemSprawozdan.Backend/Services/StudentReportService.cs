@@ -125,7 +125,7 @@ namespace SystemSprawozdan.Backend.Services
             if (isIndividual is not null)
                 reports = reports.Where(report => report.SubjectSubgroup.IsIndividual == isIndividual);
 
-            var reportsGetDto = _mapper.Map<List<StudentReportGetDto>>(reports.ToList());
+            var reportsGetDto = _mapper.Map<List<ReportTopicGetDto>>(reports.ToList());
             return reportsGetDto;
         }
     }
