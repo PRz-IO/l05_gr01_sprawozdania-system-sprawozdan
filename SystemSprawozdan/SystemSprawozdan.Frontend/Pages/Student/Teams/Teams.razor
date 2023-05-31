@@ -1,9 +1,9 @@
-﻿@page "/myTeams"
+﻿@page "/Student/teams"
 @inject NavigationManager NavigationManager
 @inject IAppHttpClient AppHttpClient
 
-<div class="navigation panel">
-     <TabBar TValue="string" ValueChanged="@NavigateTo" Data="@TabBarData" ActiveIndex="myTeams" FlexDirection="row" />
+<div>
+    <TabBar TValue="bool" @bind-Value="@isUserBelong" Data="@TabBarData" FlexDirection="row" />
 </div>
 <div style="overflow:auto">
     @if (Subject is null)
@@ -40,6 +40,10 @@
                                     <td>@context.GroupType</td>
                                     <td>@context.Name</td>
                                     <td>@context.TeacherDegree @context.TeacherName @context.TeacherSurname</td>
+                                    @if (!_isUserBelong)
+                                    {
+                                        <td><div class="table__row-icon"><MatIcon Icon="@MatIconNames.Arrow_forward" Style="height: 100%" Class="pointer" @onclick="() => HandleSelectedSubject(context.Id)" /></div></td>
+                                    }
                                 </MatTableRow>
                             </MatTable>
                         }
@@ -54,71 +58,57 @@
     }
 </div>
 @code {
-    public List<SubjectGetDto> Subject = new();
-    public EventCallback<string> SelectedSubjectName { get; set; }
+    public List<SubjectGetDto> Subject;
     public List<List<SubjectGroupGetDto>> SubjectGroup = new List<List<SubjectGroupGetDto>>();
-
-    protected override async Task OnInitializedAsync()
+    public async void HandleSelectedSubject(int groupId)
     {
-        var subjects = await AppHttpClient.Get<List<SubjectGetDto>>("Subject");
-        foreach (var subject in subjects)
-        {
-            Subject.Add(subject);
-        }
-        for (int counter = 0; counter < Subject.Count(); counter++)
-        {
-            var subjectGroups = await AppHttpClient.Get<List<SubjectGroupGetDto>>("SubjectGroup/" + counter + "?isUser=true");
-
-            List<SubjectGroupGetDto> asd = new();
-
-            foreach (var subjectGroup in subjectGroups)
-            {
-                asd.Add(subjectGroup);
-            }
-
-            SubjectGroup.Add(asd);
-        }
+        NavigationManager.NavigateTo("/join-subgroup/" + groupId);
     }
+
+    protected override Task OnInitializedAsync()
+    {
+        GetSubject();
+        return base.OnInitializedAsync();
+    }
+
+    public async Task GetSubject()
+    {
+        Subject = null;
+        SubjectGroup = new();
+        Subject = await AppHttpClient.Get<List<SubjectGetDto>>("Subject");
+        foreach (var subject in Subject)
+        {
+            var parameter = new HttpParameter("isUser", isUserBelong);
+            var subjectGroup = await AppHttpClient.Get<List<SubjectGroupGetDto>>("SubjectGroup/" + subject.Id, parameter);
+
+            SubjectGroup.Add(subjectGroup);
+        }
+        StateHasChanged();
+    }
+
     //Top menu
     public int myTeams { get; set; }
-    public int activeIndex()
+    public bool isUserBelong
     {
-        var uri = NavigationManager.Uri;
-        foreach (var data in TabBarData)
+        get => _isUserBelong; set
         {
-            if (uri.Contains(data.Value))
-                return TabBarData.IndexOf(data);
-        }
-        return 1;
-    }
-
-    public void NavigateTo(string link)
-    {
-        myTeams = TabBarData.FindIndex(el => el.Value.Equals(link));
-        StateHasChanged();
-        NavigationManager.NavigateTo(link);
-    }
-
-    protected override void OnAfterRender(bool firstRender)
-    {
-        if (firstRender)
-        {
-            myTeams = activeIndex();
-            StateHasChanged();
+            _isUserBelong = value;
+            GetSubject();
         }
     }
+    private bool _isUserBelong;
 
-    public IEnumerable<TabBarData<string>> TabBarData { get; set; } = new TabBarData<string>[]
+    public IEnumerable<TabBarData<bool>> TabBarData { get; set; } = new TabBarData<bool>[]
     {
         new()
         {
             Text = "Dostępne zespoły",
-            Value = "/teams"
+            Value = false
         },
         new()
         {
             Text = "Moje zespoły",
-            Value = "/myTeams"
+            Value = true
         },
     };
 }
