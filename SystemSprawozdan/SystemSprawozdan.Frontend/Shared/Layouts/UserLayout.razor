@@ -4,14 +4,15 @@
 @inject IJSRuntime JS
 
 <PageTitle>@PageTitle</PageTitle>
-<div class="left-side">
-    <UserPad/>
-    
-    <div class="navigation panel">
-        <TitleBar FontSize="18px"/>
-        <TabBar TValue="string" ValueChanged="@NavigateTo" Data="@TabBarData" ActiveIndex="@PageIndex" FlexDirection="column"/>
-    </div>
-</div>
+
+        <div class="left-side">
+            <UserPad/>
+        
+            <div class="navigation panel">
+                <TitleBar FontSize="18px"/>
+                <TabBar TValue="string" ValueChanged="@NavigateTo" Data="@TabBarData" ActiveIndex="@PageIndex" FlexDirection="column"/>
+            </div>
+        </div>
 
 <div class="right-side panel">
     <TitleBar Text="@PageTitle"/>

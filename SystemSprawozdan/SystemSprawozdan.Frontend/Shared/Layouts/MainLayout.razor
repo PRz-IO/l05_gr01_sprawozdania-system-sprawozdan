@@ -18,10 +18,18 @@
 						</AuthorizeView>
 					</Found>
 					<NotFound>
-						<div class="panel">
-							<PageTitle>Not found</PageTitle>
-							<p role="alert">Sorry, there's nothing at this address.</p>
-						</div>
+						<AuthorizeView>
+							<Authorized>
+								<LayoutView Layout="@typeof(UserLayout)">
+									<PageNotFound/>
+								</LayoutView>
+							</Authorized>
+							<NotAuthorized>
+								<LayoutView Layout="@typeof(AuthLayout)">
+									<PageNotFound/>
+								</LayoutView>
+							</NotAuthorized>
+						</AuthorizeView>
 					</NotFound>
 				</Router>
 			</CascadingAuthenticationState>

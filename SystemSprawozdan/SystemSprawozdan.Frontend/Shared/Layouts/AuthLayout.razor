@@ -1,14 +1,14 @@
 ﻿@inherits LayoutComponentBase
 @inject NavigationManager NavigationManager
 @attribute [AllowAnonymous]
+        <main>
+                <div class="auth panel">
+                    <TitleBar/>
+                    <TabBar TValue="string" ValueChanged="@NavigateTo" Data="@TabBarData" ActiveIndex="index"/>
+                    @Body
+                </div>
+            </main>
 
-<main>
-	<div class="auth panel">
-		<TitleBar />
-        <TabBar TValue="string" ValueChanged="@NavigateTo" Data="@TabBarData" ActiveIndex="index" />
-        @Body
-	</div>
-</main>
 
 @code
 {
