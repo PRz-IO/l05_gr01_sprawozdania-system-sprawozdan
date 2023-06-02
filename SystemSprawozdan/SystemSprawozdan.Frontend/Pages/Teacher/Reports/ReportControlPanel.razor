@@ -1,6 +1,6 @@
 ﻿@page "/teacher/reports"
-@page "/teacher/reports/{ReportTopicId:int?}"
-@page "/teacher/reports/{ReportTopicId:int?}/{StudentReportId:int?}"
+@page "/teacher/reports/{ReportTopicId:int}"
+@page "/teacher/reports/{ReportTopicId:int}/{StudentReportId:int}"
 
 @inject NavigationManager NavigationManager
 
@@ -13,7 +13,7 @@
         <ReportTopicDetails ReportTopicId="@ReportTopicId" SelectedStudentReportId="@HandleStudentReportId"/>
         break;
     case ReportsPagesEnum.StudentReportDetails:
-        <h1>StudentReportDetails @StudentReportId</h1>
+        <ReportDetails ReportTopicId="@ReportTopicId" StudentReportId="@StudentReportId"/>
         break;
 }
 
