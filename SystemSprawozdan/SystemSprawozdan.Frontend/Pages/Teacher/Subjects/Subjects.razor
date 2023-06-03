@@ -64,16 +64,19 @@
 
     public async Task AddNewSubject()
     {
-        var SubjectPostUri = new Uri("https://localhost:7184/api/Subject");
-        _dialogIsOpen = false;
         if (SubjectToSendDto.Name == null || SubjectToSendDto.Term == null || SubjectToSendDto.MajorCode == null)
         {
             MatToaster.Add("Nie udało się dodać przedmiotu!", MatToastType.Danger, "Błąd!");
             MatToaster.Add("Nie wypełniono wymaganych pól!", MatToastType.Danger, "Błąd!");
-            return;
         }
-        var result = AppHttpClient.Post(SubjectPostUri.ToString(), SubjectToSendDto);
-        MatToaster.Add("Dodano nowy przedmiot!", MatToastType.Success, "Sukces!");
+        else
+        {
+            _dialogIsOpen = false;
+            var SubjectPostUri = new Uri("https://localhost:7184/api/Subject");
+            var result = AppHttpClient.Post(SubjectPostUri.ToString(), SubjectToSendDto);
+            MatToaster.Add("Dodano nowy przedmiot!", MatToastType.Success, "Sukces!");
+        }
+        
     }
 
     public void GoToSubjectGroups(int subjectGroupId)
