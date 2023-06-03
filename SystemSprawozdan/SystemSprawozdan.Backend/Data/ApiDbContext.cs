@@ -6,8 +6,7 @@ namespace SystemSprawozdan.Backend.Data
     public class ApiDbContext : DbContext
     {
         public ApiDbContext(DbContextOptions<ApiDbContext> options) : base(options) { }
-
-        //TODO: Kuba: wstawić encje bazy danych
+        
         public DbSet<Student> Student { get; set; }
         public DbSet<Major> Major { get; set; }
         public DbSet<Term> Term { get; set; }
