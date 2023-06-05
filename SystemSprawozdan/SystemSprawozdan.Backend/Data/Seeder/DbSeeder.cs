@@ -36,12 +36,6 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                     _dbContext.SaveChanges();
                 }
 
-                if (!_dbContext.Term.Any())
-                {
-                    _dbContext.Term.AddRange(GetTerms());
-                    _dbContext.SaveChanges();
-                }
-
                 if (!_dbContext.Subject.Any())
                 {
                     _dbContext.Subject.AddRange(GetSubjects());
@@ -108,7 +102,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                     //Id = 1,
                     Name = "Informatyka",
                     StartedAt = DateOnly.Parse("01-10-2021"),
-                    MajorCode = "EF-DI"
+                    MajorCode = "2EF-DI"
                 },
 
                 new Major()
@@ -116,7 +110,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                     //Id = 2,
                     Name = "Automatyka i robotyka",
                     StartedAt = DateOnly.Parse("01-10-2021"),
-                    MajorCode = "EA-DI"
+                    MajorCode = "2EA-DI"
                 },
 
                 new Major()
@@ -124,83 +118,14 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                     //Id = 3,
                     Name = "Elektromobilność",
                     StartedAt = DateOnly.Parse("01-10-2020"),
-                    MajorCode = "EM-DI"
+                    MajorCode = "3EM-DI"
                 }
             };
 
             return majors;
         }
 
-        private List<Term> GetTerms()
-        {
-            var terms = new List<Term>()
-            {
-                new Term()
-                {
-                    //Id = 1,
-                    TermNumber = 1,
-                    StartedAt = DateOnly.Parse("01-10-2021")
-                },
-
-                new Term()
-                {
-                    //Id = 2,
-                    TermNumber = 2,
-                    StartedAt = DateOnly.Parse("25-03-2022")
-                },
-
-                new Term()
-                {
-                    //Id = 3,
-                    TermNumber = 3,
-                    StartedAt = DateOnly.Parse("01-10-2022")
-                },
-
-                new Term()
-                {
-                    //Id = 4,
-                    TermNumber = 4,
-                    StartedAt = DateOnly.Parse("27-03-2023")
-                },
-
-                new Term()
-                {
-                    //Id = 5,
-                    TermNumber = 5,
-                    StartedAt = DateOnly.Parse("01-10-2023")
-                },
-
-                new Term()
-                {
-                    //Id = 6,
-                    TermNumber = 1,
-                    StartedAt = DateOnly.Parse("1-10-2020")
-                },
-
-                new Term()
-                {
-                    //Id = 7,
-                    TermNumber = 1,
-                    StartedAt = DateOnly.Parse("22-03-2021")
-                },
-
-                new Term()
-                {
-                    //Id = 8,
-                    TermNumber = 2,
-                    StartedAt = DateOnly.Parse("01-10-2022")
-                },
-
-                new Term()
-                {
-                    //Id = 9,
-                    TermNumber = 3,
-                    StartedAt = DateOnly.Parse("24-03-2023")
-                },
-            };
-
-            return terms;
-        }
+     
 
         private List<Subject> GetSubjects()
         {
@@ -209,19 +134,19 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                 new Subject()
                 {
                     //Id = 1,
-                    Name = "Gnębienie studentów",
+                    Name = "Gnębienie studentów 1",
                     Description = "Przedmiot powstał tylko i wyłącznie w celu gnębienia studentów. Polega na uprzykrzaniu życia studentom. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eros lorem, pulvinar eu elit porta, vestibulum ultricies risus. Vestibulum aliquam accumsan sapien, a aliquet tellus consectetur vitae. In blandit velit a nunc tempus pellentesque. Maecenas aliquet consectetur dui sed sodales. Suspendisse potenti. Vestibulum ante ipsum primis in faucibus orci luctus.",
                     MajorId = 1,
-                    TermId = 1
+                    Term = 1
                 },
 
                 new Subject()
                 {
                     //Id = 2,
-                    Name = "Gnębienie studentów",
+                    Name = "Gnębienie studentów 2",
                     Description = "Przedmiot powstał tylko i wyłącznie w celu gnębienia studentów. Polega na uprzykrzaniu życia studentom. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eros lorem, pulvinar eu elit porta, vestibulum ultricies risus. Vestibulum aliquam accumsan sapien, a aliquet tellus consectetur vitae. In blandit velit a nunc tempus pellentesque. Maecenas aliquet consectetur dui sed sodales. Suspendisse potenti. Vestibulum ante ipsum primis in faucibus orci luctus.",
                     MajorId = 2,
-                    TermId = 1
+                    Term = 2
                 },
 
                 new Subject()
@@ -230,7 +155,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                     Name = "Bazy danych",
                     Description = "Bazy danych to bardzo przydatny przedmiot, tralalala, turururu, blablabla. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eros lorem, pulvinar eu elit porta, vestibulum ultricies risus. Vestibulum aliquam accumsan sapien, a aliquet tellus consectetur vitae. In blandit velit a nunc tempus pellentesque. Maecenas aliquet consectetur dui sed sodales. Suspendisse potenti. Vestibulum ante ipsum primis in faucibus orci luctus. LUBIE PIEROGI RUSKIE",
                     MajorId = 1,
-                    TermId = 4
+                    Term = 3
                 },
 
                 new Subject()
@@ -239,7 +164,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                     Name = "Sieci komputerowe 1",
                     Description = "Sieci komputerowe 1 to przedmiot z którego egzamin, to zabójcze wydarzenie. Występują liczne ofiary śmiertelne po przeprowadzeniu takowego egzaminu. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eros lorem, pulvinar eu elit porta, vestibulum ultricies risus. Vestibulum aliquam accumsan sapien, a aliquet tellus consectetur vitae. In blandit velit a nunc tempus pellentesque. Maecenas aliquet consectetur dui sed sodales. Suspendisse potenti. Vestibulum ante ipsum primis in faucibus orci luctus. ",
                     MajorId = 1,
-                    TermId = 4
+                    Term = 4
                 },
 
                 new Subject()
@@ -248,7 +173,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                     Name = "Sieci komputerowe 2",
                     Description = "Sieci komputerowe 2 to przedmiot który pokazuje wytrwałość. Nie wiem co ja już piszę XD! Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eros lorem, pulvinar eu elit porta, vestibulum ultricies risus. Vestibulum aliquam accumsan sapien, a aliquet tellus consectetur vitae. In blandit velit a nunc tempus pellentesque. Maecenas aliquet consectetur dui sed sodales. Suspendisse potenti. Vestibulum ante ipsum primis in faucibus orci luctus. ",
                     MajorId = 1,
-                    TermId = 5
+                    Term = 5
                 }
             };
 
@@ -264,7 +189,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                     //Id = 1,
                     Name = "L05",
                     GroupType = "Laboratorium",
-                    SubjectId = 1,
+                    SubjectId = 3, // Bazy danych
                     TeacherId = 1
                 },
 
@@ -273,7 +198,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                     //Id = 2,
                     Name = "L06",
                     GroupType = "Laboratorium",
-                    SubjectId = 1,
+                    SubjectId = 3, // Bazy danych
                     TeacherId = 1
                 },
 
@@ -282,7 +207,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                     //Id = 3,
                     Name = "L05",
                     GroupType = "Projekt",
-                    SubjectId = 3,
+                    SubjectId = 4, // Sieci komputerowe 1
                     TeacherId = 2
                 },
 
@@ -291,7 +216,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                     //Id = 4,
                     Name = "L06",
                     GroupType = "Projekt",
-                    SubjectId = 3,
+                    SubjectId = 4, // Sieci komputerowe 1
                     TeacherId = 2
                 },
 
@@ -300,7 +225,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                     //Id = 5,
                     Name = "L06",
                     GroupType = "Laboratorium",
-                    SubjectId = 3,
+                    SubjectId = 1, // Gnębienie studentów 1
                     TeacherId = 2
                 },
 
@@ -309,7 +234,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                     //Id = 6,
                     Name = "L05",
                     GroupType = "Laboratorium",
-                    SubjectId = 3,
+                    SubjectId = 1, // Gnębienie studentów 1
                     TeacherId = 2
                 },
 
@@ -318,7 +243,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                     //Id = 7,
                     Name = "L05",
                     GroupType = "Projekt",
-                    SubjectId = 3,
+                    SubjectId = 5, // Sieci komputerowe 2 
                     TeacherId = 2
                 },
             };
@@ -531,7 +456,6 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                 {
                     //Id = 1,
                     Name = "Wprowadzenie do Oracle",
-                    //Deadline = DateTime.Parse("20-04-2023 08:30:00 PM"),
                     Deadline = DateTime.UtcNow,
                     SubjectGroupId = 1
                 },
@@ -539,8 +463,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                 new ReportTopic()
                 {
                     //Id = 2,
-                    Name = "Wprowadzenie do Oracle",
-                    //Deadline = DateTime.Parse("22-04-2023 08:30:00 PM"),
+                    Name = "Funkcje i procedury w Oracle DataBase",
                     Deadline = DateTime.UtcNow,
                     SubjectGroupId = 2
                 },
@@ -548,8 +471,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                 new ReportTopic()
                 {
                     //Id = 3,
-                    Name = "Zaawansowane zapytania Oracle",
-                    //Deadline = DateTime.Parse("30-04-2023 11:00:00 PM"),
+                    Name = "Funkcje i procedury w Oracle DataBase",
                     Deadline = DateTime.UtcNow,
                     SubjectGroupId = 1
                 },
@@ -557,46 +479,41 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                 new ReportTopic()
                 {
                     //Id = 4,
-                    Name = "Zaawansowane zapytania Oracle",
-                    //Deadline = DateTime.Parse("29-04-2023 10:00:00 PM"),
+                    Name = "Adresacja IP (przedmiot sieci komputerowe 1)",
                     Deadline = DateTime.UtcNow,
-                    SubjectGroupId = 2
+                    SubjectGroupId = 3
                 },
 
                 new ReportTopic()
                 {
                     //Id = 5,
-                    Name = "Zajęcia nr 1 z gnębienia studentów",
-                    //Deadline = DateTime.Parse("19-05-2023 07:30:00 PM"),
+                    Name = "Adresacja IP (przedmiot sieci komputerowe 1)",
                     Deadline = DateTime.UtcNow,
-                    SubjectGroupId = 1
+                    SubjectGroupId = 4
                 },
 
                 new ReportTopic()
                 {
                     //Id = 6,
-                    Name = "Zajęcia nr 1 z gnębienia studentów",
-                    //Deadline = DateTime.Parse("17-04-2023 10:00:00 PM"),
+                    Name = "Zajęcia nr 1 z gnębienia studentów (przedmiot gnębienie studentów 1)",
                     Deadline = DateTime.UtcNow,
-                    SubjectGroupId = 2
+                    SubjectGroupId = 5
                 },
 
                 new ReportTopic()
                 {
                     //Id = 7,
-                    Name = "Zajęcia nr 2 z gnębienia studentów",
-                    //Deadline = DateTime.Parse("26-04-2023 04:00:00 PM"),
+                    Name = "Zajęcia nr 2 z gnębienia studentów (przedmiot gnębienie studentów 1)",
                     Deadline = DateTime.UtcNow,
-                    SubjectGroupId = 1
+                    SubjectGroupId = 6
                 },
 
                 new ReportTopic()
                 {
                     //Id = 8,
-                    Name = "Zajęcia nr 2 z gnębienia studentów",
-                    //Deadline = DateTime.Parse("28-04-2023 05:30:00 PM"),
+                    Name = "Sieciowe fiku-miku (przedmiot sieci komputerowe 2)",
                     Deadline = DateTime.UtcNow,
-                    SubjectGroupId = 2
+                    SubjectGroupId = 7
                 }
 
             };

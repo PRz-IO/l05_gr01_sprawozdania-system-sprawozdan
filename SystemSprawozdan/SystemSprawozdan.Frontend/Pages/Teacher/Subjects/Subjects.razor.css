@@ -1,0 +1,23 @@
+﻿.table-header{
+    display: flex;
+    justify-content: space-between;
+}
+
+.dialog-buttons{
+    display: flex;
+    justify-content: center;
+}
+
+.table-cell{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+.arrow-button{
+    display: flex;
+    padding: 5px;
+    background-color: var(--primary-color);
+    border-radius: 5px;
+    color: var(--panel-background-color);
+    cursor: pointer;
+}
