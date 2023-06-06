@@ -1,5 +1,6 @@
 ﻿@page "/Student/StudentInfo"
 @inject NavigationManager NavigationManager
+@inject IMatToaster Toaster
 @inject IAppHttpClient AppHttpClient
 
 <div class="block">
@@ -11,15 +12,34 @@
         <h4>    Email: @info.Email</h4>
     </div>
     <div class="block-right">
-        <h2>Zmiana hasła</h2>
-
+        <h2><b>Zmiana hasła:</b></h2>
+        <MatTextField @bind-Value="@newPassword" Required="true" Type="password" Label="Nowe hasło"></MatTextField>
+        <MatTextField @bind-Value="@newPasswordAgain" Required="true" Type="password" Label="Powtórz nowe hasło"></MatTextField>
+       
+        <MatButton OnClick="changePassword" Style="height: 70px; width: 100%; font-size: var(--font-size-large);" Raised="true">Zmień hasło</MatButton>
     </div>
 </div>
 
 @code {
+    public string newPassword;
+    public string newPasswordAgain;
     public UserInfoGetDto info = new();
     protected override async Task OnInitializedAsync()
     {
         info = await AppHttpClient.Get<UserInfoGetDto>("Account/userCredentials?isStudent=true");
+    }
+    public async void changePassword()
+    {
+        if(newPassword == null || newPasswordAgain == null)
+            Toaster.Add("Wypełnij oba pola", MatToastType.Danger, "Błąd");
+        else if (newPassword != newPasswordAgain)
+            Toaster.Add("Hasła nie są takie same", MatToastType.Danger, "Błąd");
+        else if(newPassword.Length < 8)
+            Toaster.Add("Hasło musi mieć co najmniej 8 znaków", MatToastType.Danger, "Błąd");
+        else
+        {
+            await AppHttpClient.Put("Account/changePassword?isStudent=true", newPassword);
+            Toaster.Add("Zmieniono hasło", MatToastType.Success, "Błąd");
+        }
     }
 }
