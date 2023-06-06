@@ -49,7 +49,17 @@ namespace SystemSprawozdan.Backend.Controllers
         }
 
         //TODO: Bartek: Trzeba zrobic GETa, który wyświetli podstawowe informacje o uzytkowniku
-
+        [HttpGet("studentCredentials")]
+        public ActionResult GetUserInfo()
+        {
+            var zmienna = _accountService.GetUserInfo();
+            return Ok(zmienna); 
+        }
         //TODO: Bartek: Trzeba zrobić PUTa, którym będzie mozna zresetowac haslo
+        [HttpPut("ChangePassword")]
+        public ActionResult ChangePassword([FromBody] string newPassword)
+        { 
+            return Ok();
+        }
     }
 }
