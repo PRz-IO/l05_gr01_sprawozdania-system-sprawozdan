@@ -1,0 +1,25 @@
+﻿@page "/Student/StudentInfo"
+@inject NavigationManager NavigationManager
+@inject IAppHttpClient AppHttpClient
+
+<div class="block">
+    <div class="block-left">
+        <h2><b>Twoje dane:</b></h2>
+        <h4>    Index: @info.Id</h4>
+        <h4>    Imie: @info.Name</h4>
+        <h4>    Nazwisko: @info.Surname</h4>
+        <h4>    Email: @info.Email</h4>
+    </div>
+    <div class="block-right">
+        <h2>Zmiana hasła</h2>
+
+    </div>
+</div>
+
+@code {
+    public UserInfoGetDto info = new();
+    protected override async Task OnInitializedAsync()
+    {
+        info = await AppHttpClient.Get<UserInfoGetDto>("Account/userCredentials?isStudent=true");
+    }
+}
