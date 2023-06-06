@@ -23,6 +23,7 @@ namespace SystemSprawozdan.Backend.Services
         void RegisterTeacherOrAdmin(RegisterTeacherOrAdminDto registerTeacherOrAdminDto);
         void RestoreUserPassword(RestoreUserPasswordDto restoreUserPasswordDto);
         UserInfoGetDto GetUserInfo(bool isStudent);
+
     }
 
     public class AccountService : IAccountService
@@ -255,8 +256,9 @@ namespace SystemSprawozdan.Backend.Services
 
             }
 
-
             return info;
         }
+
+
     }
 }

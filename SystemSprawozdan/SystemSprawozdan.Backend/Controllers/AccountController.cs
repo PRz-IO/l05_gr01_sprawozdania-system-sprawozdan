@@ -56,9 +56,10 @@ namespace SystemSprawozdan.Backend.Controllers
             return Ok(zmienna); 
         }
         //TODO: Bartek: Trzeba zrobić PUTa, którym będzie mozna zresetowac haslo
-        [HttpPut("ChangePassword")]
-        public ActionResult ChangePassword([FromBody] string newPassword)
-        { 
+        [HttpPut("changePassword")]
+        public ActionResult ChangePassword([FromBody] string newPassword, [FromQuery] bool isStudent)
+        {
+            _accountService.ChangePassword(newPassword, isStudent);
             return Ok();
         }
     }
