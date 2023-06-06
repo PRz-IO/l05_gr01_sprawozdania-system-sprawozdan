@@ -72,9 +72,10 @@
         else
         {
             _dialogIsOpen = false;
-            var SubjectPostUri = new Uri("https://localhost:7184/api/Subject");
-            var result = AppHttpClient.Post(SubjectPostUri.ToString(), SubjectToSendDto);
+            var subjectPostUri = new Uri("https://localhost:7184/api/Subject");
+            var createdSubjectId= await AppHttpClient.Post(subjectPostUri.ToString(), SubjectToSendDto);
             MatToaster.Add("Dodano nowy przedmiot!", MatToastType.Success, "Sukces!");
+            AppHttpClient.Post($"https://localhost:7184/api/SubjectGroup/placeholder/{createdSubjectId}", 1);
         }
         
     }
