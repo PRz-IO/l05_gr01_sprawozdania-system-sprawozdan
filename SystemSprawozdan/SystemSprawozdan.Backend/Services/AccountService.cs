@@ -22,7 +22,7 @@ namespace SystemSprawozdan.Backend.Services
         void RegisterStudent(RegisterStudentDto registerStudentDto);
         void RegisterTeacherOrAdmin(RegisterTeacherOrAdminDto registerTeacherOrAdminDto);
         void RestoreUserPassword(RestoreUserPasswordDto restoreUserPasswordDto);
-
+        UserInfoGetDto GetUserInfo(bool isStudent);
     }
 
     public class AccountService : IAccountService
@@ -214,6 +214,18 @@ namespace SystemSprawozdan.Backend.Services
         {
             if (result == PasswordVerificationResult.Failed)
                 throw new BadRequestException("Wrong username or password!");
+        }
+
+        public UserInfoGetDto GetUserInfo()
+        {
+            var userId = _userContextService.GetUserId;
+
+            UserInfoGetDto info = new();
+
+            
+
+
+            return info;
         }
     }
 }

@@ -48,11 +48,11 @@ namespace SystemSprawozdan.Backend.Controllers
             return Ok();
         }
 
-        //TODO: Bartek: Trzeba zrobic GETa, który wyświetli podstawowe informacje o uzytkowniku
+        //TODO: Bartek: Trzeba zrobic GETa, który wyświetli podstawowe informacje o uzytkowniku localhots:/studentCredentials?isStudent=true/false
         [HttpGet("studentCredentials")]
-        public ActionResult GetUserInfo()
+        public ActionResult GetUserInfo([FromQuery] bool isStudent)
         {
-            var zmienna = _accountService.GetUserInfo();
+            var zmienna = _accountService.GetUserInfo(isStudent);
             return Ok(zmienna); 
         }
         //TODO: Bartek: Trzeba zrobić PUTa, którym będzie mozna zresetowac haslo
