@@ -46,11 +46,11 @@ namespace SystemSprawozdan.Backend.Services
 
             if (isUserBelong)
                 subjectGroupsFromDb = subjectGroupsFromDb.Where(subjectGroup =>
-                    subjectGroup.subjectSubgroups.Any(subjectSubgroup =>
+                    subjectGroup.SubjectSubgroups.Any(subjectSubgroup =>
                         subjectSubgroup.Students.Any(student => student.Id == loginUserId)));
             else
                 subjectGroupsFromDb = subjectGroupsFromDb.Where(subjectGroup =>
-                    !subjectGroup.subjectSubgroups.Any(subjectSubgroup =>
+                    !subjectGroup.SubjectSubgroups.Any(subjectSubgroup =>
                         subjectSubgroup.Students.Any(student => student.Id == loginUserId)));
 
             var subjectGroups = subjectGroupsFromDb.ToList();
@@ -120,7 +120,7 @@ namespace SystemSprawozdan.Backend.Services
                 if(subgroup.Students.Count == 0)
                 {
                     var group = _dbContext.SubjectGroup.FirstOrDefault(group => group.Id == groupId);
-                    group.subjectSubgroups.Remove(subgroup);
+                    group.SubjectSubgroups.Remove(subgroup);
                     _dbContext.SubjectGroup.Update(group);
                 }
             }
