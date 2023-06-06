@@ -23,6 +23,7 @@ namespace SystemSprawozdan.Backend.Services
         void RegisterTeacherOrAdmin(RegisterTeacherOrAdminDto registerTeacherOrAdminDto);
         void RestoreUserPassword(RestoreUserPasswordDto restoreUserPasswordDto);
         UserInfoGetDto GetUserInfo(bool isStudent);
+        void ChangePassword(string newPassword, bool isStudent);
 
     }
 
@@ -259,6 +260,32 @@ namespace SystemSprawozdan.Backend.Services
             return info;
         }
 
+        public void ChangePassword(string newPassword, bool isStudent)
+        {
+            var userId = _userContextService.GetUserId;
+
+            if (isStudent == true)
+            {
+                var student = _dbContext.Student.FirstOrDefault(student => student.Id == userId);
+                if (student == null)
+                {
+                    throw new NotFoundException("User not found");
+                }
+                student.Password = _passwordHasherStudent.HashPassword(student, newPassword);
+                _dbContext.SaveChanges();
+            }
+            else
+            {
+                var teacher = _dbContext.Teacher.FirstOrDefault(teacher => teacher.Id == userId);
+                if (teacher == null)
+                {
+                    throw new NotFoundException("User not found");
+                }
+                teacher.Password = _passwordHasherTeacher.HashPassword(teacher, newPassword);
+                _dbContext.SaveChanges();
+
+            }
+        }
 
     }
 }
