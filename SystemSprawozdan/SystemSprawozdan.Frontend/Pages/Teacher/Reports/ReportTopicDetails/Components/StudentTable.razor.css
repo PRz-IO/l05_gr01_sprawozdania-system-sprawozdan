@@ -1,0 +1,12 @@
+﻿.table__header-cell{
+    width: 25%;
+}
+
+.table__header-cell-wider{
+    width: 50%;   
+}
+.table__label{
+    font-size: var(--font-size-large);
+    font-weight: var(--font-weight-bold);
+    padding: 10px 20px;
+}

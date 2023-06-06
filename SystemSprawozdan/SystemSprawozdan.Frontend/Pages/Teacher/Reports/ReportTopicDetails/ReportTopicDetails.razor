@@ -2,11 +2,12 @@
 
 <HeaderReportTopicDetails ReportTopic="@ReportTopic"/>
 
-<TabBar Data="@TabBarData" @bind-Value="@IsMarked"/>
+<TabBar Data="@TabBarData" @bind-Value="@ToCheck"/>
 
 <div class="reports">
     <StudentReportsTable StudentReports="@IndividualReports" SelectedStudentReportId="SelectedStudentReportId"/>
     <StudentReportsTable StudentReports="@GroupReports" IsIndividualReports="false" SelectedStudentReportId="SelectedStudentReportId"/>
+    <StudentTable Students="@StudentsWithoutReport"/>
 </div>
 
 @code {
@@ -21,33 +22,36 @@
     [Parameter]
     public EventCallback<int> SelectedStudentReportId { get; set; }
 
-    public bool? IsMarked
+    public bool? ToCheck
     {
-        get => _isMarked;
+        get => _toCheck;
         set
         {
-            _isMarked = value;
-            GetStudentReports(ReportTopic.Id);
+            _toCheck = value;
+            GetStudentReportsData(ReportTopic.Id);
         }
     }
-    private bool? _isMarked = null;
+    private bool? _toCheck = null;
 
     public ReportTopicGetDto? ReportTopic { get; set; } = new ReportTopicGetDto();
     public List<StudentReportGetDto>? IndividualReports { get; set; }
     public List<StudentReportGetDto>? GroupReports { get; set; }
+    public List<StudentBasicGetDto>? StudentsWithoutReport { get; set; }
 
     public async Task GetReportTopicData(int reportTopicId)
     {
         ReportTopic = await ITReportHttpService.GetReportTopicById(reportTopicId);
-        await GetStudentReports(ReportTopic.Id);
+        await GetStudentReportsData(ReportTopic.Id);
     }
 
-    public async Task GetStudentReports(int reportTopicId)
+    public async Task GetStudentReportsData(int reportTopicId)
     {
         IndividualReports = null;
         GroupReports = null;
-        IndividualReports = await ITReportHttpService.GetStudentReportsByReportTopicId(reportTopicId, true, IsMarked);
-        GroupReports = await ITReportHttpService.GetStudentReportsByReportTopicId(reportTopicId, false, IsMarked);
+        StudentsWithoutReport = null;
+        IndividualReports = await ITReportHttpService.GetStudentReportsByReportTopicId(reportTopicId, true, ToCheck);
+        GroupReports = await ITReportHttpService.GetStudentReportsByReportTopicId(reportTopicId, false, ToCheck);
+        StudentsWithoutReport = await ITReportHttpService.GetStudentWithoutReportByReportTopicId(reportTopicId);
         StateHasChanged();
     }
 
@@ -60,13 +64,13 @@
         },
         new()
         {
-            Text = "Nieocenione",
-            Value = false
+            Text = "Do sprawdzenia / Nieocenione",
+            Value = true
         },
         new()
         {
             Text = "Ocenione",
-            Value = true
+            Value = false
         },
     };
 
