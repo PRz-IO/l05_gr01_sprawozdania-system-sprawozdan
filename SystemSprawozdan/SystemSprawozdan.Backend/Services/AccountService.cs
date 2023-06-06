@@ -22,8 +22,8 @@ namespace SystemSprawozdan.Backend.Services
         void RegisterStudent(RegisterStudentDto registerStudentDto);
         void RegisterTeacherOrAdmin(RegisterTeacherOrAdminDto registerTeacherOrAdminDto);
         void RestoreUserPassword(RestoreUserPasswordDto restoreUserPasswordDto);
-        UserInfoGetDto GetUserInfo(bool isStudent);
-        void ChangePassword(string newPassword, bool isStudent);
+        UserInfoGetDto GetUserInfo();
+        void ChangePassword(string newPassword);
 
     }
 
@@ -218,19 +218,20 @@ namespace SystemSprawozdan.Backend.Services
                 throw new BadRequestException("Wrong username or password!");
         }
 
-        public UserInfoGetDto GetUserInfo(bool isStudent)
+        public UserInfoGetDto GetUserInfo()
         {
             var userId = _userContextService.GetUserId;
+            var role = _userContextService.GetUserRole;
 
             UserInfoGetDto info = new();
 
-            if (isStudent == true)
+            if (role == UserRoleEnum.Student)
             {
                 var student = _dbContext.Student.FirstOrDefault(student => student.Id == userId);
                 
                 if (student != null)
                 {
-                    info.Id = student.Id;
+                    info.Login = student.Login;
                     info.Name = student.Name;
                     info.Surname = student.Surname;
                     info.Email = student.Email;
@@ -245,7 +246,7 @@ namespace SystemSprawozdan.Backend.Services
 
                 if (teacher != null)
                 {
-                    info.Id = teacher.Id;
+                    info.Login = teacher.Login;
                     info.Name = teacher.Name;
                     info.Surname = teacher.Surname;
                     info.Email = teacher.Email;
@@ -260,11 +261,12 @@ namespace SystemSprawozdan.Backend.Services
             return info;
         }
 
-        public void ChangePassword(string newPassword, bool isStudent)
+        public void ChangePassword(string newPassword)
         {
             var userId = _userContextService.GetUserId;
+            var role = _userContextService.GetUserRole;
 
-            if (isStudent == true)
+            if (role == UserRoleEnum.Student)
             {
                 var student = _dbContext.Student.FirstOrDefault(student => student.Id == userId);
                 if (student == null)

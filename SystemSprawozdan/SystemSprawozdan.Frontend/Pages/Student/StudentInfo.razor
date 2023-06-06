@@ -7,15 +7,15 @@
 <div class="block">
     <div class="block-left">
         <h2><b>Twoje dane:</b></h2>
-        <h4><b>Index:</b> @info.Id</h4>
-        <h4><b>Imie:</b> @info.Name</h4>
-        <h4><b>Nazwisko:</b> @info.Surname</h4>
-        <h4><b>Email:</b> @info.Email</h4>
+        <h4><b>Login:</b> @User.Login</h4>
+        <h4><b>Imie:</b> @User.Name</h4>
+        <h4><b>Nazwisko:</b> @User.Surname</h4>
+        <h4><b>Email:</b> @User.Email</h4>
     </div>
     <div class="block-right">
         <h2><b>Zmiana hasła:</b></h2>
-        <MatTextField @bind-Value="@newPassword" Required="true" Type="password" Label="Nowe hasło"></MatTextField>
-        <MatTextField @bind-Value="@newPasswordAgain" Required="true" Type="password" Label="Powtórz nowe hasło"></MatTextField>
+        <MatTextField @bind-Value="@newPassword" Required="true" Type="password" Outlined="true" Label="Nowe hasło"></MatTextField>
+        <MatTextField @bind-Value="@newPasswordAgain" Required="true" Type="password" Outlined="true" Label="Powtórz nowe hasło"></MatTextField>
        
         <MatButton OnClick="changePassword" Outlined="true" Style="height: 70px; width: 100%; font-size: var(--font-size-large);" Raised="true">Zmień hasło</MatButton>
     </div>
@@ -24,10 +24,10 @@
 @code {
     public string newPassword;
     public string newPasswordAgain;
-    public UserInfoGetDto info = new();
+    public UserInfoGetDto User = new();
     protected override async Task OnInitializedAsync()
     {
-        info = await AppHttpClient.Get<UserInfoGetDto>("Account/userCredentials?isStudent=true");
+        User = await AppHttpClient.Get<UserInfoGetDto>("Account/userCredentials");
     }
     public async void changePassword()
     {
@@ -39,8 +39,8 @@
             Toaster.Add("Hasło musi mieć co najmniej 8 znaków", MatToastType.Danger, "Błąd");
         else
         {
-            await AppHttpClient.Put("Account/changePassword?isStudent=true", newPassword);
-            Toaster.Add("Zmieniono hasło", MatToastType.Success, "Błąd");
+            await AppHttpClient.Put("Account/changePassword", newPassword);
+            Toaster.Add("Zmieniono hasło", MatToastType.Success, "Sukces");
         }
     }
 }
