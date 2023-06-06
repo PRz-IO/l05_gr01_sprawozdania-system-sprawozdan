@@ -7,6 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Dto\User\UserGetInfoDto.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Dto\User\NewFile1.txt" />
+    <None Remove="Dto\User\UserGetInfoDto" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
   </ItemGroup>
 

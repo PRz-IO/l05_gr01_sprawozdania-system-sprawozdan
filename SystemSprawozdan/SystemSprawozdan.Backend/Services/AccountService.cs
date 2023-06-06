@@ -22,6 +22,7 @@ namespace SystemSprawozdan.Backend.Services
         void RegisterStudent(RegisterStudentDto registerStudentDto);
         void RegisterTeacherOrAdmin(RegisterTeacherOrAdminDto registerTeacherOrAdminDto);
         void RestoreUserPassword(RestoreUserPasswordDto restoreUserPasswordDto);
+
     }
 
     public class AccountService : IAccountService
