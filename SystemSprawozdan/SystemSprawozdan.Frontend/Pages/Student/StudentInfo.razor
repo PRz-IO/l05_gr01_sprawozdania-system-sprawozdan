@@ -1,22 +1,29 @@
-﻿@page "/Student/StudentInfo"
+﻿@page "/Student/personal-data"
 @inject NavigationManager NavigationManager
 @inject IMatToaster Toaster
 @inject IAppHttpClient AppHttpClient
 
+<style>
+    .xd{
+        width:100%;
+    }
+
+</style>
+
 <div class="block">
     <div class="block-left">
         <h2><b>Twoje dane:</b></h2>
-        <h4>    Index: @info.Id</h4>
-        <h4>    Imie: @info.Name</h4>
-        <h4>    Nazwisko: @info.Surname</h4>
-        <h4>    Email: @info.Email</h4>
+        <h4><b>Index:</b> @info.Id</h4>
+        <h4><b>Imie:</b> @info.Name</h4>
+        <h4><b>Nazwisko:</b> @info.Surname</h4>
+        <h4><b>Email:</b> @info.Email</h4>
     </div>
     <div class="block-right">
         <h2><b>Zmiana hasła:</b></h2>
-        <MatTextField @bind-Value="@newPassword" Required="true" Type="password" Label="Nowe hasło"></MatTextField>
-        <MatTextField @bind-Value="@newPasswordAgain" Required="true" Type="password" Label="Powtórz nowe hasło"></MatTextField>
+        <MatTextField Class="xd" @bind-Value="@newPassword" Required="true" Type="password" Label="Nowe hasło"></MatTextField>
+        <MatTextField Class="xd" @bind-Value="@newPasswordAgain" Required="true" Type="password" Label="Powtórz nowe hasło"></MatTextField>
        
-        <MatButton OnClick="changePassword" Style="height: 70px; width: 100%; font-size: var(--font-size-large);" Raised="true">Zmień hasło</MatButton>
+        <MatButton OnClick="changePassword" Outlined="true" Style="height: 70px; width: 100%; font-size: var(--font-size-large);" Raised="true">Zmień hasło</MatButton>
     </div>
 </div>
 
