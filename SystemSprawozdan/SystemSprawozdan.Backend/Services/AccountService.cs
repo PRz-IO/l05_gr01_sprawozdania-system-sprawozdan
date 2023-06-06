@@ -216,13 +216,44 @@ namespace SystemSprawozdan.Backend.Services
                 throw new BadRequestException("Wrong username or password!");
         }
 
-        public UserInfoGetDto GetUserInfo()
+        public UserInfoGetDto GetUserInfo(bool isStudent)
         {
             var userId = _userContextService.GetUserId;
 
             UserInfoGetDto info = new();
 
-            
+            if (isStudent == true)
+            {
+                var student = _dbContext.Student.FirstOrDefault(student => student.Id == userId);
+                
+                if (student != null)
+                {
+                    info.Id = student.Id;
+                    info.Name = student.Name;
+                    info.Surname = student.Surname;
+                    info.Email = student.Email;
+                }
+                else
+                    throw new NotFoundException("Couldn't find student with that id");
+
+            }
+            else
+            {
+                var teacher = _dbContext.Teacher.FirstOrDefault(teacher => teacher.Id == userId);
+
+                if (teacher != null)
+                {
+                    info.Id = teacher.Id;
+                    info.Name = teacher.Name;
+                    info.Surname = teacher.Surname;
+                    info.Email = teacher.Email;
+                    info.Degree = teacher.Degree;
+                    info.Position = teacher.Position;
+                }
+                else
+                    throw new NotFoundException("Couldn't find teacher with that id");
+
+            }
 
 
             return info;
