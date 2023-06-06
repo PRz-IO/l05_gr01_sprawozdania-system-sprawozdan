@@ -1,0 +1,62 @@
+﻿<div class="report-author">
+    @if (Subgroup is not null)
+    {
+        <div class="report-author__label">
+            @if (IsIndividualAuthor == true)
+            {
+                <span><b class="">Student: </b>@IndividualAuthor.Name @IndividualAuthor.Surname</span>
+                <span><b>Nr albumu: </b>@IndividualAuthor.Login</span>
+            }
+            else
+            {
+                <span><b class="">Grupa: </b>@Subgroup?.Name</span>
+                <MatButton @ref="@Button" OnClick="() => Menu.OpenAsync(Button.Ref)" Raised="@true">Studenci</MatButton>
+                <MatMenu @ref="@Menu">
+                    <MatList>
+                        @if (Subgroup.Students.ToList().Count != 0)
+                        {
+                            @foreach (var student in Subgroup?.Students.ToList())
+                            {
+                                <MatListItem>@student?.Login @student?.Name @student?.Surname</MatListItem>
+                            }
+                        }
+                        else
+                        {
+                            <MatListItem></MatListItem>
+                        }
+
+                    </MatList>
+                </MatMenu>
+            }
+        </div>
+    }
+    else
+    {
+        <LoadingBar IsLoading="true"/>
+    }
+</div>
+
+
+@code {
+
+    [Parameter]
+    public SubjectSubgroupBasicGetDto? Subgroup { get; set; }
+    
+    [Parameter]
+    public bool? IsIndividualAuthor { get; set; }
+
+    public StudentBasicGetDto IndividualAuthor { get; set; }
+
+    protected override void OnInitialized()
+    {
+        if (IsIndividualAuthor == true)
+        {
+            IndividualAuthor = Subgroup.Students.First();
+        }
+    }
+
+    public MatButton Button { get; set; }
+
+    public BaseMatMenu Menu { get; set; }
+
+}

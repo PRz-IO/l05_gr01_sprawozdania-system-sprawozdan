@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SystemSprawozdan.Backend.Data.Models.DbModels;
+using SystemSprawozdan.Backend.Data;
 using SystemSprawozdan.Backend.Services;
 using SystemSprawozdan.Shared.Dto;
+using SystemSprawozdan.Shared.Enums;
 
 namespace SystemSprawozdan.Backend.Controllers
 {
@@ -12,39 +13,57 @@ namespace SystemSprawozdan.Backend.Controllers
     public class StudentReportController : ControllerBase
     {
         private readonly IStudentReportService _studentReportService;
-
-        public StudentReportController(IStudentReportService studentReportService)
+        public StudentReportController(IStudentReportService studentReportService, ApiDbContext dbContext, IWebHostEnvironment env)
         {
             _studentReportService = studentReportService;
         }
 
         [HttpPost]
-        public ActionResult PostStudentReport([FromForm] StudentReportPostDto postStudentReportDto)
+        [Authorize(Roles = nameof(UserRoleEnum.Student))]
+        public ActionResult PostStudentReport([FromBody] StudentReportPostDto postStudentReportDto)
         {
-            _studentReportService.PostStudentReport(postStudentReportDto);
+            var result = _studentReportService.PostStudentReport(postStudentReportDto);
+            return Ok(result.Id);
+        }
+
+        [HttpPut("{studentReportId:int}/AsStudent")]
+        [Authorize(Roles = nameof(UserRoleEnum.Student))]
+        public ActionResult PutStudentReportAsStudent([FromRoute] int studentReportId, [FromBody] StudentReportAsStudentPutDto studentReportAsStudentPutDto)
+        {
+             _studentReportService.PutStudentReportAsStudent(studentReportId, studentReportAsStudentPutDto);
             return Ok();
         }
 
-        [HttpPut("{studentReportId}")]
-        public ActionResult PutStudentReport([FromRoute] int studentReportId, [FromForm] StudentReportPutDto putStudentReportDto)
+        [HttpPut("{studentReportId:int}/AsTeacher")]
+        [Authorize(Roles = nameof(UserRoleEnum.Teacher))]
+        public ActionResult PutStudentReportAsTeacher([FromRoute] int studentReportId, [FromBody] StudentReportAsTeacherPutDto studentReportAsTeacherPutDto)
         {
-            _studentReportService.PutStudentReport(studentReportId, putStudentReportDto);
+             _studentReportService.PutStudentReportAsTeacher(studentReportId, studentReportAsTeacherPutDto);
             return Ok();
         }
 
-        [HttpPost("files/{studentReportId:int?}")]
-        [RequestSizeLimit(524288000)] // 500Mb
-        public async Task<ActionResult<List<StudentReportFile>>> UploadFile([FromForm] List<IFormFile> files, int studentReportId = -1)
+        [HttpGet("fullReport/{studentReportId:int}")]
+        public ActionResult<StudentReportGetDto> GetStudentReport([FromRoute] int studentReportId)
         {
-            var result = await _studentReportService.UploadFile(studentReportId, files);
-            return Ok();
+            var result = _studentReportService.GetStudentReport(studentReportId);
+            return Ok(result);
         }
 
         //TODO: Paweł: Trzeba stworzyc GETa, ktory wyswietla wszystkie sprawozdania, ktore sa przypisane do danej grupy
         [HttpGet("/api/ReportTopic/{reportTopicId}/StudentReports")]
-        public ActionResult<IEnumerable<ReportTopicGetDto>> GetCollaborateReportsByTopicId([FromRoute] int reportTopicId, [FromQuery] bool? isIndividual, [FromQuery] bool? isMarked)
+        [Authorize(Roles = nameof(UserRoleEnum.Teacher))]
+        public ActionResult<IEnumerable<StudentReportGetDto>> GetCollaborateReportsByTopicId([FromRoute] int reportTopicId, [FromQuery] bool? isIndividual, [FromQuery] bool? toCheck)
         {
-            var result = _studentReportService.GetStudentReportsByTopicId(reportTopicId, isIndividual, isMarked);
+            var result = _studentReportService.GetStudentReportsByTopicId(reportTopicId, isIndividual, toCheck);
+            return Ok(result);
+        }
+
+        //TODO: Paweł: Trzeba stworzyc GETa, ktory wyswietla wszystkie sprawozdania, ktore sa przypisane do danej grupy
+        [HttpGet("/api/ReportTopic/{reportTopicId}/StudentReports/StudentsWithoutReport")]
+        [Authorize(Roles = nameof(UserRoleEnum.Teacher))]
+        public ActionResult<IEnumerable<StudentBasicGetDto>> GetStudentWithoutReportByTopicId([FromRoute] int reportTopicId)
+        {
+            var result = _studentReportService.GetStudentWithoutReportByTopicId(reportTopicId);
             return Ok(result);
         }
     }

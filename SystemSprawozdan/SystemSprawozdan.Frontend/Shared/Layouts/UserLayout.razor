@@ -1,25 +1,61 @@
 ﻿@inherits LayoutComponentBase
 @inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthStateProvider
+@inject IJSRuntime JS
 
+<PageTitle>@PageTitle</PageTitle>
 <div class="left-side">
     <UserPad/>
     
     <div class="navigation panel">
         <TitleBar FontSize="18px"/>
-        <TabBar TValue="string" ValueChanged="@NavigateTo" Data="@TabBarData" ActiveIndex="index" FlexDirection="column"/>
+        <TabBar TValue="string" ValueChanged="@NavigateTo" Data="@TabBarData" ActiveIndex="@PageIndex" FlexDirection="column"/>
     </div>
 </div>
 
 <div class="right-side panel">
-    <TitleBar/>
+    <TitleBar Text="@PageTitle"/>
     @Body
 </div>
 
 @code
 {
-    public int index { get; set; }
+    public int PageIndex { get; set; }
+    public string PageTitle { get; set; } = "E-SPRAWOZDANIA";
 
-    public int activeIndex()
+    public readonly IEnumerable<TabBarData<string>> TabBarData = new TabBarData<string>[]
+    {
+        new()
+        {
+            Text = "Sprawozdania",
+            Value = "reports"
+        },
+        new()
+        {
+            Text = "Przedmioty",
+            Value = "subjects"
+        },
+        new()
+        {
+            Text = "Twoje dane",
+            Value = "personal-data"
+        },
+    };
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        var task = Task.Run(Logout);
+        task.Wait(50);
+        
+        if (firstRender)
+        {
+            PageIndex = GetActiveIndex();
+            PageTitle = TabBarData.ElementAt(PageIndex).Text;
+            StateHasChanged();
+        }
+    }
+
+    public int GetActiveIndex()
     {
         var uri = NavigationManager.Uri;
         foreach (var data in TabBarData)
@@ -27,41 +63,26 @@
             if (uri.Contains(data.Value))
                 return TabBarData.IndexOf(data);
         }
-        return 1;
+        return 0;
     }
 
-    public void NavigateTo(string link)
+    public async void NavigateTo(string link)
     {
-        index = TabBarData.FindIndex(el => el.Value.Equals(link));
+        PageIndex = TabBarData.FindIndex(el => el.Value.Equals(link));
+        PageTitle = TabBarData.ElementAt(PageIndex).Text;
         StateHasChanged();
-        NavigationManager.NavigateTo(link);
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var userRole = authState.User.FindFirst(claim => claim.Type == ClaimTypes.Role).Value;
+        NavigationManager.NavigateTo($"{userRole}/{link}");
     }
-    
-    protected override void OnAfterRender(bool firstRender)
+
+    private async void Logout()
     {
-        if (firstRender)
+        var url = NavigationManager.Uri;
+        if (url.Contains("login") || url.Contains("register") || url.Contains("restore-password"))
         {
-            index = activeIndex();
-            StateHasChanged();
+            await JS.InvokeVoidAsync("localStorage.removeItem", "token");
+            await AuthStateProvider.GetAuthenticationStateAsync();
         }
     }
-
-    public IEnumerable<TabBarData<string>> TabBarData { get; set; } = new TabBarData<string>[]
-    {
-        new()
-        {
-            Text = "Sprawozdania",
-            Value = "/reports"
-        },
-        new()
-        {
-            Text = "Zespoły",
-            Value = "/teams"
-        },
-        new()
-        {
-            Text = "Twoje dane",
-            Value = "/personal-data"
-        },
-    };
 }

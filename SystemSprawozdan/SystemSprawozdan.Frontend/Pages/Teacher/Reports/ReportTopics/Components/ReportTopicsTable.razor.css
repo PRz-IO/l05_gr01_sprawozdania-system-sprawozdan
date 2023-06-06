@@ -1,0 +1,31 @@
+﻿.table__header-cell--small{
+    width: 5%;
+}
+
+.table__header-cell--normal{
+    width: 10%;
+}
+
+.table__header-cell--wider{
+    width: 15%;
+}
+
+.table__header-cell--big{
+    width: 20%;
+}
+
+.table__header-cell--extra{
+    width: 35%;
+}
+
+.table__no-data {
+    padding: 10px 25px;
+}
+
+.table__row-icon{
+    display: flex;
+    padding: 5px;
+    background-color: var(--primary-color);
+    border-radius: 5px;
+    color: var(--panel-background-color);
+}

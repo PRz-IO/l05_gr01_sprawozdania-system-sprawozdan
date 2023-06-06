@@ -17,4 +17,8 @@
 
 .table__row-icon{
     display: flex;
+    padding: 5px;
+    background-color: var(--primary-color);
+    border-radius: 5px;
+    color: var(--panel-background-color);
 }

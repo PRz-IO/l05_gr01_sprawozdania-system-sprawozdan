@@ -27,12 +27,12 @@ namespace SystemSprawozdan.Backend.Migrations
                     b.Property<int>("StudentsId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("SubjectSubgroupId")
+                    b.Property<int>("SubjectSubgroupsId")
                         .HasColumnType("integer");
 
-                    b.HasKey("StudentsId", "SubjectSubgroupId");
+                    b.HasKey("StudentsId", "SubjectSubgroupsId");
 
-                    b.HasIndex("SubjectSubgroupId");
+                    b.HasIndex("SubjectSubgroupsId");
 
                     b.ToTable("StudentSubjectSubgroup");
                 });
@@ -183,14 +183,11 @@ namespace SystemSprawozdan.Backend.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseSerialColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime?>("LastModified")
+                    b.Property<DateTime>("LastModified")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int?>("Mark")
                         .HasColumnType("integer");
-
-                    b.Property<string>("Note")
-                        .HasColumnType("text");
 
                     b.Property<int>("ReportTopicId")
                         .HasColumnType("integer");
@@ -198,8 +195,14 @@ namespace SystemSprawozdan.Backend.Migrations
                     b.Property<DateTime>("SentAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("StudentNote")
+                        .HasColumnType("text");
+
                     b.Property<int>("SubjectSubgroupId")
                         .HasColumnType("integer");
+
+                    b.Property<string>("TeacherNote")
+                        .HasColumnType("text");
 
                     b.Property<bool>("ToCheck")
                         .HasColumnType("boolean");
@@ -258,14 +261,17 @@ namespace SystemSprawozdan.Backend.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("TermId")
+                    b.Property<int>("Term")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("TermObjectId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
                     b.HasIndex("MajorId");
 
-                    b.HasIndex("TermId");
+                    b.HasIndex("TermObjectId");
 
                     b.ToTable("Subject");
                 });
@@ -313,6 +319,7 @@ namespace SystemSprawozdan.Backend.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("SubjectGroupId")
@@ -398,7 +405,7 @@ namespace SystemSprawozdan.Backend.Migrations
 
                     b.HasOne("SystemSprawozdan.Backend.Data.Models.DbModels.SubjectSubgroup", null)
                         .WithMany()
-                        .HasForeignKey("SubjectSubgroupId")
+                        .HasForeignKey("SubjectSubgroupsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -429,7 +436,7 @@ namespace SystemSprawozdan.Backend.Migrations
             modelBuilder.Entity("SystemSprawozdan.Backend.Data.Models.DbModels.ReportTopic", b =>
                 {
                     b.HasOne("SystemSprawozdan.Backend.Data.Models.DbModels.SubjectGroup", "SubjectGroup")
-                        .WithMany("reportTopics")
+                        .WithMany("ReportTopics")
                         .HasForeignKey("SubjectGroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -459,7 +466,7 @@ namespace SystemSprawozdan.Backend.Migrations
             modelBuilder.Entity("SystemSprawozdan.Backend.Data.Models.DbModels.StudentReportFile", b =>
                 {
                     b.HasOne("SystemSprawozdan.Backend.Data.Models.DbModels.StudentReport", "StudentReport")
-                        .WithMany("studentReportFiles")
+                        .WithMany("StudentReportFiles")
                         .HasForeignKey("StudentReportId");
 
                     b.Navigation("StudentReport");
@@ -473,15 +480,13 @@ namespace SystemSprawozdan.Backend.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SystemSprawozdan.Backend.Data.Models.DbModels.Term", "Term")
+                    b.HasOne("SystemSprawozdan.Backend.Data.Models.DbModels.Term", "TermObject")
                         .WithMany("Subjects")
-                        .HasForeignKey("TermId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("TermObjectId");
 
                     b.Navigation("Major");
 
-                    b.Navigation("Term");
+                    b.Navigation("TermObject");
                 });
 
             modelBuilder.Entity("SystemSprawozdan.Backend.Data.Models.DbModels.SubjectGroup", b =>
@@ -506,7 +511,7 @@ namespace SystemSprawozdan.Backend.Migrations
             modelBuilder.Entity("SystemSprawozdan.Backend.Data.Models.DbModels.SubjectSubgroup", b =>
                 {
                     b.HasOne("SystemSprawozdan.Backend.Data.Models.DbModels.SubjectGroup", "SubjectGroup")
-                        .WithMany("subjectSubgroups")
+                        .WithMany("SubjectSubgroups")
                         .HasForeignKey("SubjectGroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -533,7 +538,7 @@ namespace SystemSprawozdan.Backend.Migrations
                 {
                     b.Navigation("ReportComments");
 
-                    b.Navigation("studentReportFiles");
+                    b.Navigation("StudentReportFiles");
                 });
 
             modelBuilder.Entity("SystemSprawozdan.Backend.Data.Models.DbModels.Subject", b =>
@@ -543,9 +548,9 @@ namespace SystemSprawozdan.Backend.Migrations
 
             modelBuilder.Entity("SystemSprawozdan.Backend.Data.Models.DbModels.SubjectGroup", b =>
                 {
-                    b.Navigation("reportTopics");
+                    b.Navigation("ReportTopics");
 
-                    b.Navigation("subjectSubgroups");
+                    b.Navigation("SubjectSubgroups");
                 });
 
             modelBuilder.Entity("SystemSprawozdan.Backend.Data.Models.DbModels.SubjectSubgroup", b =>

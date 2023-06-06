@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SystemSprawozdan.Backend.Authorization;
 using SystemSprawozdan.Backend.Services;
 using SystemSprawozdan.Shared.Dto;
+using SystemSprawozdan.Shared.Enums;
 
 namespace SystemSprawozdan.Backend.Controllers
 {
@@ -18,10 +20,12 @@ namespace SystemSprawozdan.Backend.Controllers
         }
         //DONE: KUSZO: Trzeba stworzyc GETa, ktory wyswietla wszystkie tematy sprawozdan, ktore sa przypisane do danego prowadzacego, ktory jest zalogowany
         [HttpGet]
+        [Authorize(Roles = nameof(UserRoleEnum.Teacher))]
         public ActionResult<IEnumerable<ReportTopicGetDto>> GetReports([FromQuery] bool? toCheck)
         {
             var result = _reportTopicService.GetReports(toCheck);
             return Ok(result);
+            
         }
         
         //DONE: KUSZO: Trzeba stworzyc GETa, ktory wyswietla pojedynczy temat sprawozdania, ktory jest przypisany do danego prowadzacego, ktory jest zalogowany
@@ -31,28 +35,20 @@ namespace SystemSprawozdan.Backend.Controllers
             var result = _reportTopicService.GetReportById(reportTopicId);
             return Ok(result);
         }
-
-
+        
         //TODO: Olek: Trzeba stworzyć GETa, ktory wyswietla wszystkie tematy sprawozdan, które są przypisane do SubjectGroup, do której należy zalogowany użytkownik
-        [HttpGet("ForStudent")]
-        public IActionResult GetReportTopicsByUserId([FromQuery] bool isSubmitted)
-        {
-            var reportTopics = _reportTopicService.GetReportTopicForStudent(isSubmitted);
-            return Ok(reportTopics);
-        }
 
         //TODO: Olek: Trzeba stworzyć GETa, który wyświetla wszystkie tematy sprawozdan, które są oddane przez zalogowanego użytkownika
-        //[HttpGet("Submitted")]
-        //public IActionResult GetSubmittedReportsByStudentId()
-        //{
-        //    var submittedReports = _reportTopicService.GetSubmittedReportsByStudentId();
 
-        //    if (submittedReports == null || submittedReports.Count == 0)
-        //    {
-        //        return NotFound("Brak oddanych sprawozdań dla podanego studenta.");
-        //    }
+        [HttpGet("selective")]
+        public ActionResult GetReportTopic([FromQuery] int? reportTopicId, int? studentReportId)
+        {
+            var reportTopic = _reportTopicService.GetReportTopic(reportTopicId, studentReportId);
 
-        //    return Ok(submittedReports);
-        //}
+            return Ok(reportTopic);
+
+            
+        }
     }
+    
 }

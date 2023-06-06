@@ -1,0 +1,51 @@
+﻿@inject ITReportHttpService ITReportHttpService
+
+<TabBar Data="@TabBarData" @bind-Value="@ToCheck"/>
+<ReportTopicsTable ReportTopics="@ReportTopicGetDtos" SelectedReportTopicId="selectedReportTopicId => SelectedReportTopicId.InvokeAsync(selectedReportTopicId)"/>
+@code
+{
+    [Parameter]
+    public EventCallback<int> SelectedReportTopicId { get; set; }
+
+    private List<ReportTopicGetDto> ReportTopicGetDtos;
+    private bool? ToCheck
+    {
+        get => _toCheck;
+        set
+        {
+            _toCheck = value;
+            GetReportTopics(ToCheck);
+        }
+    }
+    private bool? _toCheck = null;
+    
+    public async Task GetReportTopics(bool? toCheck)
+    {
+        ReportTopicGetDtos = await ITReportHttpService.GetReportTopics(toCheck);
+        StateHasChanged();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetReportTopics(ToCheck);
+    }
+
+    public readonly List<TabBarData<bool?>> TabBarData = new()
+    {
+        new()
+        {
+            Text = "Wszystkie",
+            Value = null
+        },
+        new()
+        {
+            Text = "Do Sprawdzenia / Nieocenione",
+            Value = true
+        },
+        new()
+        {
+            Text = "Ocenione",
+            Value = false
+        },
+    };
+}

@@ -18,8 +18,10 @@
 						</AuthorizeView>
 					</Found>
 					<NotFound>
-						<PageTitle>Not found</PageTitle>
-						<p role="alert">Sorry, there's nothing at this address.</p>
+						<div class="panel">
+							<PageTitle>Not found</PageTitle>
+							<p role="alert">Sorry, there's nothing at this address.</p>
+						</div>
 					</NotFound>
 				</Router>
 			</CascadingAuthenticationState>
@@ -34,7 +36,7 @@
 		Primary = "var(--primary-color)",
 		Secondary = "var(--primary-color)",
 		Background = "var(--panel-background-color)",
-		Surface = "transparent"
+		Surface = "var(--panel-background-color)"
 	};
 }
 

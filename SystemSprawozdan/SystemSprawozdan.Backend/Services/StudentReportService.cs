@@ -1,7 +1,5 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authorization;
-using SystemSprawozdan.Backend.Authorization;
 using SystemSprawozdan.Backend.Data;
 using SystemSprawozdan.Backend.Data.Models.DbModels;
 using SystemSprawozdan.Backend.Exceptions;
@@ -11,169 +9,112 @@ namespace SystemSprawozdan.Backend.Services
 {
     public interface IStudentReportService
     {
-        void PostStudentReport(StudentReportPostDto postStudentReportDto);
-        void PutStudentReport(int studentReportId, StudentReportPutDto putStudentReportDto);
-        Task<List<StudentReportFile>> UploadFile(int? studentReportId, List<IFormFile> files);
-        List<ReportTopicGetDto> GetStudentReportsByTopicId(int reportTopicId, bool? isIndividual, bool? isMarked);
+        StudentReport PostStudentReport(StudentReportPostDto postStudentReportDto);
+        void PutStudentReportAsStudent(int studentReportId, StudentReportAsStudentPutDto studentReportAsStudentPutDto);
+        void PutStudentReportAsTeacher(int studentReportId,
+            StudentReportAsTeacherPutDto studentReportAsTeacherPutDto);
+        StudentReportGetDto GetStudentReport(int studentReportId);
+        List<StudentReportGetDto> GetStudentReportsByTopicId(int reportTopicId, bool? isIndividual, bool? toCheck);
+        List<StudentBasicGetDto> GetStudentWithoutReportByTopicId(int reportTopicId);
     }
 
     public class StudentReportService : IStudentReportService
     {
         private readonly ApiDbContext _dbContext;
         private readonly IUserContextService _userContextService;
-        private readonly IWebHostEnvironment _env;
         private readonly IMapper _mapper;
-        private readonly IAuthorizationService _authorizationService;
 
-        public StudentReportService(ApiDbContext dbContext, IUserContextService userContextService, IMapper mapper, IAuthorizationService authorizationService, IWebHostEnvironment env)
+        public StudentReportService(ApiDbContext dbContext, IUserContextService userContextService, IMapper mapper, IWebHostEnvironment env)
         {
             _dbContext = dbContext;
             _userContextService = userContextService;
-            _env = env;
             _mapper = mapper;
-            _authorizationService = authorizationService;
         }
 
-        public void PostStudentReport(StudentReportPostDto postStudentReportDto)
+        public StudentReport PostStudentReport(StudentReportPostDto postStudentReportDto)
         {
             var loginUserId = _userContextService.GetUserId;
-            var reportTopicIdInteger = int.Parse(postStudentReportDto.ReportTopicId);
-            var isIndividualBoolean = bool.Parse(postStudentReportDto.IsIndividual);
 
             var subjectGroup = _dbContext
                 .SubjectGroup.FirstOrDefault(subjectGroup =>
-                    subjectGroup.reportTopics.Any(reportTopic =>
-                        reportTopic.Id == reportTopicIdInteger
+                    subjectGroup.ReportTopics.Any(reportTopic =>
+                        reportTopic.Id == postStudentReportDto.ReportTopicId
                     )
                 );
 
-            var subjectSubgroup = new SubjectSubgroup();
+            var subjectSubgroup = _dbContext.SubjectSubgroup.FirstOrDefault(subGroup =>
+                subGroup.SubjectGroup.Id == subjectGroup.Id &&
+                subGroup.Students.Any(student => student.Id == loginUserId) && subGroup.IsIndividual == postStudentReportDto.IsIndividual
+            );
             
-            if (isIndividualBoolean == false) 
+            if (subjectSubgroup is null)
             {
-                subjectSubgroup = _dbContext.SubjectSubgroup.FirstOrDefault(subGroup =>
-                    subGroup.SubjectGroupId == subjectGroup.Id &&
-                    subGroup.Students.Any(student => student.Id == loginUserId) && subGroup.IsIndividual == false
-                );
-
-                if (subjectSubgroup is null)
-                {
-                    subjectSubgroup = _dbContext.SubjectSubgroup.FirstOrDefault(subGroup =>
-                        subGroup.SubjectGroupId == subjectGroup.Id &&
-                        subGroup.Students.Any(student => student.Id == loginUserId) && subGroup.IsIndividual == true
-                    );    
-                }
-            }
-
-            if (isIndividualBoolean == true) 
-            {
-                subjectSubgroup = _dbContext.SubjectSubgroup.FirstOrDefault(subGroup =>
-                    subGroup.SubjectGroup.Id == subjectGroup.Id &&
-                    subGroup.Students.Any(student => student.Id == loginUserId) && subGroup.IsIndividual == true
-                );
-            }
-
-            string? noteToSend;
-            if (postStudentReportDto.Note != null)
-            {
-                noteToSend = DateTime.Now.ToString() + ":\n" + postStudentReportDto.Note;
-            }
-            else
-            {
-                noteToSend = null;
+                throw new BadRequestException($"You don't belong to this subject group!");
             }
 
             var newStudentReport = new StudentReport()
             {
                 SentAt = DateTime.UtcNow,
                 LastModified = DateTime.UtcNow,
-                Note = noteToSend,
-                ReportTopicId = reportTopicIdInteger,
+                StudentNote = postStudentReportDto.StudentNote,
+                ReportTopicId = postStudentReportDto.ReportTopicId,
                 SubjectSubgroupId = subjectSubgroup.Id
             };
             _dbContext.StudentReport.Add(newStudentReport);
             _dbContext.SaveChanges();
+
+
+            var result = newStudentReport;
+            return result;
         }
-        
-        public void PutStudentReport(int studentReportId, StudentReportPutDto putStudentReportDto)
+
+        public void PutStudentReportAsStudent(int studentReportId, StudentReportAsStudentPutDto studentReportAsStudentPutDto)
         {
             var reportToEdit = _dbContext.StudentReport.FirstOrDefault(report => report.Id == studentReportId);
-            string previousComment = reportToEdit.Note;
-            string commentToInsert;
-            var currentDateTime = DateTime.Now.ToString();
-            
-            if(putStudentReportDto.ReportCommentFromStudent != null)
-            {
-                if (previousComment != null)
-                {
-                    commentToInsert = previousComment + "\n\n" + currentDateTime + ":\n" + putStudentReportDto.ReportCommentFromStudent;
-                    reportToEdit.Note = commentToInsert;
 
-                }
-                else
-                {
-                    commentToInsert = currentDateTime + ":\n" + putStudentReportDto.ReportCommentFromStudent;
-                    reportToEdit.Note = commentToInsert;
-                }
+            if (reportToEdit is null)
+            {
+                throw new NotFoundException($"You don't have report with id {studentReportId}");
             }
+            
+            reportToEdit.StudentNote = studentReportAsStudentPutDto.StudentNote;
             reportToEdit.LastModified = DateTime.UtcNow;
+            reportToEdit.ToCheck = true;
+            
             _dbContext.SaveChanges();
         }
 
-        public async Task<List<StudentReportFile>> UploadFile(int? studentReportId, List<IFormFile> files)
+        public void PutStudentReportAsTeacher(int studentReportId, StudentReportAsTeacherPutDto studentReportAsTeacherPutDto)
         {
-            var uploadResults = new List<StudentReportFile>();
-            foreach (var file in files)
+            var reportToEdit = _dbContext.StudentReport.FirstOrDefault(report => report.Id == studentReportId);
+
+            if (reportToEdit is null)
             {
-                var uploadResult = new StudentReportFile();
-                string trustedFileNameForFileStorage;
-                string originalFileName = file.FileName;
-                uploadResult.FileName = originalFileName;
-
-                trustedFileNameForFileStorage = Path.GetRandomFileName();
-                var pathToCheck = Path.Combine(_env.ContentRootPath, "Uploads");
-                if (!Directory.Exists(pathToCheck))
-                {
-                    var di = Directory.CreateDirectory(pathToCheck);
-                }
-                var path = Path.Combine(_env.ContentRootPath, "Uploads", trustedFileNameForFileStorage);
-
-                using FileStream fs = new(path, FileMode.Create);
-                await file.CopyToAsync(fs);
-
-                
-                
-                uploadResult.FileName = file.FileName;
-                uploadResult.StoredFileName = trustedFileNameForFileStorage;
-                uploadResult.ContentType = file.ContentType;
-                if (studentReportId == -1)
-                {
-                    var reportId = _dbContext.StudentReport.OrderByDescending(report => report.SentAt).FirstOrDefault().Id;
-                    uploadResult.StudentReportId = reportId;
-                }
-                else
-                {
-                    uploadResult.StudentReportId = studentReportId;
-                }
-                uploadResults.Add(uploadResult);
-                _dbContext.StudentReportFile.Add(uploadResult);
+                throw new NotFoundException($"You don't have report with id {studentReportId}");
             }
             
+            reportToEdit.TeacherNote = studentReportAsTeacherPutDto.TeacherNote;
+            reportToEdit.Mark = studentReportAsTeacherPutDto.Mark;
+            reportToEdit.ToCheck = false;
+            
             _dbContext.SaveChanges();
-            return uploadResults;
         }
-
-        public List<ReportTopicGetDto> GetStudentReportsByTopicId(int reportTopicId, bool? isIndividual, bool? isMarked)
+        
+        
+        public StudentReportGetDto GetStudentReport(int studentReportId)
         {
-            
-            var authorizationResult = _authorizationService.AuthorizeAsync(
-                _userContextService.User,
-                null,
-                new TeacherResourceOperationRequirement(TeacherResourceOperation.Read)).Result;
+            var studentReport = _dbContext.StudentReport
+                .Include(report => report.SubjectSubgroup)
+                .ThenInclude(subgroup => subgroup.Students)
+                .FirstOrDefault(report => report.Id == studentReportId);
+            var studentReportDto = _mapper.Map<StudentReportGetDto>(studentReport);
 
-            if (!authorizationResult.Succeeded)
-                throw new ForbidException();
-            
+            return studentReportDto;
+        }
+        
+        
+        public List<StudentReportGetDto> GetStudentReportsByTopicId(int reportTopicId, bool? isIndividual, bool? toCheck)
+        {
             var isReportTopicExist = _dbContext.ReportTopic.Any(reportTopic => reportTopic.Id == reportTopicId);
 
             if (!isReportTopicExist) throw new NotFoundException($"Report Topic with Id equals {reportTopicId} doesn't exist!");
@@ -183,14 +124,40 @@ namespace SystemSprawozdan.Backend.Services
                     .ThenInclude(subgroup => subgroup.Students)
                 .Where(report => report.ReportTopicId == reportTopicId);
 
-            if (isMarked is not null)
-                reports = reports.Where(report => isMarked == (report.Mark != null));
-
+            if (toCheck is not null)
+            {
+                if (toCheck == true)
+                {
+                    reports = reports.Where(report => toCheck == report.ToCheck || report.Mark == null);
+                }
+                else
+                {
+                    reports = reports.Where(report => toCheck == report.ToCheck && report.Mark != null);
+                }
+            }
+            
             if (isIndividual is not null)
                 reports = reports.Where(report => report.SubjectSubgroup.IsIndividual == isIndividual);
 
-            var reportsGetDto = _mapper.Map<List<ReportTopicGetDto>>(reports.ToList());
+            var reportsGetDto = _mapper.Map<List<StudentReportGetDto>>(reports.ToList());
             return reportsGetDto;
+        }
+
+        public List<StudentBasicGetDto> GetStudentWithoutReportByTopicId(int reportTopicId)
+        {
+            var studentsWithoutReport = _dbContext
+                .Student
+                .Where(student =>
+                    student.SubjectSubgroups.Any(subgroup => subgroup.SubjectGroup.ReportTopics.Any(reportTopic => reportTopic.Id == reportTopicId)) &&
+                    null == student.SubjectSubgroups.FirstOrDefault(subgroup => 
+                        subgroup.SubjectGroup.ReportTopics.Any(reportTopic => 
+                            reportTopic.Id == reportTopicId && 
+                            reportTopic.StudentReports.Any(studentReport => 
+                                studentReport.SubjectSubgroupId == subgroup.Id))))
+                .ToList();
+
+            var studentsWithoutReportDto = _mapper.Map<List<StudentBasicGetDto>>(studentsWithoutReport);
+            return studentsWithoutReportDto;
         }
     }
 }

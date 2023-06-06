@@ -1,0 +1,10 @@
+﻿.report-topic-info{
+    width: 100%;
+    padding: 10px;
+    text-align: center;
+    font-size: var(--font-size-medium);
+}
+
+.report-topic-info__topic-and-group-type{
+    color: var(--font-color-basic);
+}

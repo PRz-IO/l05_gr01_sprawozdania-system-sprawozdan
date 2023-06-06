@@ -10,7 +10,7 @@ namespace SystemSprawozdan.Backend.Data.Models.DbModels
 
         public Subject Subject { get; set; }
         public Teacher Teacher{ get; set; }
-        public ICollection<SubjectSubgroup> subjectSubgroups { get; set; }
-        public ICollection<ReportTopic> reportTopics { get; set; }
+        public ICollection<SubjectSubgroup> SubjectSubgroups { get; set; }
+        public ICollection<ReportTopic> ReportTopics { get; set; }
     }
 }

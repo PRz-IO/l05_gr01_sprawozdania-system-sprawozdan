@@ -1,0 +1,115 @@
+﻿@page "/student/teams/{GroupId:int}"
+
+@inject IAppHttpClient AppHttpClient
+@inject IMatToaster Toaster
+@inject NavigationManager NavigationManager
+
+<PageTitle>Dołącz do grupy</PageTitle>
+
+<style>
+    .edit-field{
+        width: 100%;
+    }
+</style>
+
+<div class="block">
+    <div class="block-left">
+        <h4>Dane zespołu: </h4>
+        <p><b>Przedmiot:</b>@SubjectGroup?.SubjectName</p>
+        <p><b>Rodzaj:</b>@SubjectGroup?.GroupType</p>
+        <p><b>Grupa:</b>@SubjectGroup?.Name</p>
+        <p><b>Prowadzący:</b>@SubjectGroup?.TeacherName</p>
+    </div>
+    <div class="block-right">
+            <p style="text-wrap: normal">Wybierz sposób w jaki chcesz się zapisać do zespołu:</p>
+        <p>   
+            <MatRadioGroup @bind-Value="@subgroupType" TValue="string" Style="align-self:center;">
+                <MatRadioButton Value="@("individual")" Label="Indywidualnie" TValue="string"></MatRadioButton>
+                <MatRadioButton Value="@("group")" Label="Grupowo" TValue="string"></MatRadioButton>
+            </MatRadioGroup>
+        </p>
+
+        
+        <div id="@subgroupType">
+            <p>Wybierz grupę roboczą: </p>
+            <p>
+                <MatSelectItem Outlined="true" Label="Grupa" class="edit-field" @bind-Value="subgroupSelect" Items="@subgroupSelectItems"></MatSelectItem>
+            </p>
+            <br />
+            <p>Jeżeli twojej grupy nie ma na liście, wpisz ją poniżej:</p>
+            <p>
+                <MatTextField Outlined="true" class="edit-field" @bind-Value="@subgroupName" Label="Nazwa grupy"></MatTextField>
+            </p>
+
+        </div>
+        <MatButton OnClick="joinSubgroup" Style="height: 70px; width: 100%; font-size: var(--font-size-large);" Raised="true">Zapisz się na zajęcia</MatButton>
+    </div>
+</div>
+
+
+@code {
+    [Parameter]
+    public int GroupId { get; set; }
+    public SubjectGroupGetDetailsDto SubjectGroup { get; set; }
+    
+    string subgroupType = "individual";
+    string? subgroupName;
+    string subgroupSelect = "";
+    public List<string> subgroupSelectItems = new List<string>();
+    
+    protected override async Task OnInitializedAsync()
+    {
+        subgroupSelectItems.Add("");
+        var groups = await AppHttpClient.Get<List<SubjectSubgroupGetDto>>($"SubjectSubgroup/{GroupId}/GetSubgroups");
+        foreach (var group in groups)
+        {
+            subgroupSelectItems.Add(group.Name);
+        }
+        SubjectGroup = await AppHttpClient.Get<SubjectGroupGetDetailsDto>($"SubjectGroup/{GroupId}/GetSubjectGroupDetails");
+    }
+    public async void joinSubgroup()
+    {
+        if(subgroupType == "individual")
+        {
+            var subgroup = new SubjectSubgroupPostDto
+                {
+                    SubjectGroupId = GroupId,
+                    isIndividual = true,
+                    SubgroupName = ""
+                };
+            await AppHttpClient.Post("SubjectSubgroup", subgroup);
+            Toaster.Add("Poprawnie stworzono grupę", MatToastType.Success, "Sukces");
+            NavigationManager.NavigateTo("/teams");
+        }
+        else
+        {
+            if((subgroupName == null || subgroupName == "") && (subgroupSelect == "" || subgroupSelect == null))
+            {
+                Toaster.Add("Podaj nazwe grupy", MatToastType.Danger, "Błąd");
+                return;
+            }
+            else if(subgroupSelect == "" || subgroupSelect == null)
+            {
+                var subgroup = new SubjectSubgroupPostDto
+                    {
+                        SubjectGroupId = GroupId,
+                        isIndividual = false, 
+                        SubgroupName = subgroupName
+                    };
+                await AppHttpClient.Post("SubjectSubgroup", subgroup);
+                Toaster.Add("Poprawnie stworzono grupę", MatToastType.Success, "Sukces");
+                NavigationManager.NavigateTo("/teams");
+            }
+            else
+            {
+                var groups = await AppHttpClient.Get<List<SubjectSubgroupGetDto>>("SubjectSubgroup/" + GroupId + "/GetSubgroups");
+                var subgroup = groups.FirstOrDefault(group => group.Name == subgroupSelect);
+                int subgroupId = subgroup.Id;
+
+                await AppHttpClient.Post("SubjectSubgroup/AddUserToSubgroup", subgroupId);
+                Toaster.Add("Poprawnie dołączono do grupy", MatToastType.Success, "Sukces");
+                NavigationManager.NavigateTo("/teams");
+            }
+        }
+    }
+}

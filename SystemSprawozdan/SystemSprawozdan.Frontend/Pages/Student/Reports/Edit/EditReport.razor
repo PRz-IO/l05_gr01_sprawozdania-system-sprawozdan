@@ -1,0 +1,98 @@
+@page "/student/reports/{ReportTopicId:int}/{StudentReportId:int}"
+@inject NavigationManager NavigationManager
+@inject IMatToaster MatToaster
+@inject ISReportHttpService ReportHttpService
+
+<PageTitle>Edytuj sprawozdanie</PageTitle>
+
+<div class="body-container">
+    <ReportDetailsHeader ReportTopic="@ReportTopic"/>
+    <div class="main-container">
+        <div class="left-column">
+            <div class="input-file">
+                <FileInputComponent OnFilesAdded="HandleNewFiles"/>
+            </div>
+            @if ((FilesToSend.Count + SubmittedFilesList.Count) != 0)
+            {
+                <div class="file-list">
+                    <FileList ExistingFiles="SubmittedFilesList" FilesToSend="FilesToSend" OnFileDownloaded="DownloadFile" OnFileRemoved="HandleRemoveFile"/>
+                </div>
+            }
+        </div>
+
+        <div class="right-column">
+            <p class="mark-text">Ocena: @(StudentReport.Mark is not null ? EnumTranslator.Mark[StudentReport.Mark] : "W trakcie oceniania...")</p>
+            <MatTextField TValue="string" @bind-Value="@StudentReport.StudentNote" Label="Komentarz dla prowadzącego:" Outlined="true" TextArea="true" Style="height: 30%;"/>
+            <MatTextField TValue="string" @bind-Value="@StudentReport.TeacherNote" Label="Informacje od prowadzącego:" Outlined="true" TextArea="true" ReadOnly="true" Disabled="true" Style="height: 30%;"/>
+            <MatButton OnClick="@(() => SendReport())" Label="Prześlij" Unelevated="true" Class="send-button" Style="height: 12%"></MatButton>
+        </div>
+    </div>
+</div>
+
+
+@code{
+
+    [Parameter]
+    public int StudentReportId { get; set; }
+
+    [Parameter]
+    public int ReportTopicId { get; set; }
+
+    public StudentReportGetDto StudentReport { get; set; } = new();
+    public ReportTopicGetDto ReportTopic { get; set; }
+
+    public List<IBrowserFile> FilesToSend = new();
+
+    public List<StudentReportFileGetDto> SubmittedFilesList = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        ReportTopic = await ReportHttpService.GetReportTopic(ReportTopicId);
+        StudentReport = await ReportHttpService.GetStudentReport(StudentReportId);
+        SubmittedFilesList = await ReportHttpService.GetStudentReportFiles(StudentReportId);
+    }
+
+    public async Task DownloadFile(StudentReportFileGetDto file)
+    {
+        await ReportHttpService.DownloadFilesFromStudentReport(file);
+    }
+
+    public void HandleRemoveFile(IBrowserFile file)
+    {
+        FilesToSend.Remove(file);
+    }
+
+    public void HandleNewFiles(List<IBrowserFile> files)
+    {
+        FilesToSend.AddRange(files);
+    }
+
+    public void SendReport()
+    {
+        try
+        {
+            SendReportComment();
+            SendReportFiles();
+            MatToaster.Add("Udało się poprawić sprawozdanie!", MatToastType.Success, "Sukces");
+            NavigationManager.NavigateTo($"/student/reports/{ReportTopicId}/{StudentReportId}");
+        }
+        catch (Exception e)
+        {
+            MatToaster.Add("Nie udało się poprawić sprawozdania!", MatToastType.Danger, "Błąd");
+        }
+    }
+
+    public async void SendReportFiles()
+    {
+        await ReportHttpService.UploadFilesForStudentReport(StudentReportId, FilesToSend);
+    }
+
+    public async void SendReportComment()
+    {
+        if (string.IsNullOrEmpty(StudentReport.StudentNote)) return;
+
+        var reportToSend = new StudentReportAsStudentPutDto { StudentNote = StudentReport.StudentNote };
+        await ReportHttpService.PutStudentReport(StudentReportId, reportToSend);
+    }
+
+}

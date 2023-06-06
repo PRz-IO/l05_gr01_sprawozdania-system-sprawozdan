@@ -25,27 +25,16 @@ namespace SystemSprawozdan.Backend.Services
     {
         private readonly ApiDbContext _dbContext;
         private readonly IUserContextService _userContextService;
-        private readonly IAuthorizationService _authorizationService;
-        public SubjectSubgroupService(ApiDbContext dbContext, 
-            IUserContextService userContextService,
-            IAuthorizationService authorizationService)
+        public SubjectSubgroupService(ApiDbContext dbContext, IUserContextService userContextService)
         {
             _dbContext = dbContext;
             _userContextService = userContextService;
-            _authorizationService = authorizationService;
         }
 
         //metodki
         public void CreateSubgroup(SubjectSubgroupPostDto createSubgroupDto)
         {
             var userId = _userContextService.GetUserId;
-
-            var authorizationResult = _authorizationService.
-                AuthorizeAsync(_userContextService.User, null, new UserResourceOperationRequirement(UserResourceOperation.Read)).Result;
-            if (!authorizationResult.Succeeded)
-            {
-                throw new ForbidException();
-            }
 
             var newSubgroup = new SubjectSubgroup()
             {
@@ -70,13 +59,6 @@ namespace SystemSprawozdan.Backend.Services
         }
         public List<SubjectSubgroupGetDto> GetSubgroups(int groupId)
         {
-            var authorizationResult = _authorizationService.
-                AuthorizeAsync(_userContextService.User, null, new UserResourceOperationRequirement(UserResourceOperation.Read)).Result;
-            if (!authorizationResult.Succeeded)
-            {
-                throw new ForbidException();
-            }
-
             if(!(_dbContext.SubjectGroup.Any(group => group.Id == groupId)))
             {
                 throw new NotFoundException("Wrong group id!");
@@ -102,13 +84,6 @@ namespace SystemSprawozdan.Backend.Services
         {
             var userId = _userContextService.GetUserId;
 
-            var authorizationResult = _authorizationService.
-                AuthorizeAsync(_userContextService.User, null, new UserResourceOperationRequirement(UserResourceOperation.Read)).Result;
-            if (!authorizationResult.Succeeded)
-            {
-                throw new ForbidException();
-            }
-
             if (!(_dbContext.SubjectSubgroup.Any(subgroup => subgroup.Id == subgroupId)))
             {
                 throw new NotFoundException("Wrong subgroup id!");
@@ -118,7 +93,7 @@ namespace SystemSprawozdan.Backend.Services
                 .Include(subjectSubgroup => subjectSubgroup.Students)
                 .FirstOrDefault(subgroup => subgroup.Id == subgroupId && subgroup.IsIndividual == false);
             var user = _dbContext.Student.FirstOrDefault(student => student.Id == userId);
-            
+
             subgroup.Students.Add(user);
             _dbContext.SubjectSubgroup.Update(subgroup);
 
