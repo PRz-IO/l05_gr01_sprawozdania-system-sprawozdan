@@ -7,6 +7,7 @@ namespace SystemSprawozdan.Backend.Services
     {
         ClaimsPrincipal User { get; }
         int? GetUserId { get; }
+        UserRoleEnum? GetUserRole { get; }
     }
 
     public class UserContextService : IUserContextService
