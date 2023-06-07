@@ -1,8 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Net.Http;
-using System.Net.Http.Json;
-using System.Threading.Tasks;
-using SystemSprawozdan.Shared.Dto;
+﻿using SystemSprawozdan.Frontend.CustomClasses;
+using SystemSprawozdan.Frontend.Services;
 using SystemSprawozdan.Shared.Dto.ReportTopic;
 
 public interface IReportTopicFrontendService
@@ -12,16 +9,16 @@ public interface IReportTopicFrontendService
 
 public class ReportTopicFrontendService: IReportTopicFrontendService
 {
-    private readonly HttpClient httpClient;
+    private readonly IAppHttpClient httpClient;
 
-    public ReportTopicFrontendService(HttpClient httpClient)
+    public ReportTopicFrontendService(IAppHttpClient httpClient)
     {
         this.httpClient = httpClient;
     }
 
     public async Task<List<ReportTopicForStudentGetDto>> GetReportTopicsForStudent(bool isSubmitted)
     {
-        string apiUrl = isSubmitted ? "api/ReportTopic/ForStudent?isSubmitted=true" : "api/ReportTopic/ForStudent";
-        return await httpClient.GetFromJsonAsync<List<ReportTopicForStudentGetDto>>(apiUrl);
+        var param = new HttpParameter(nameof(isSubmitted), isSubmitted);
+        return await httpClient.Get<List<ReportTopicForStudentGetDto>>("ReportTopic/ForStudent", param);
     }
 }
