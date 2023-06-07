@@ -1,0 +1,169 @@
+﻿@page "/Student/reports"
+@using SystemSprawozdan.Shared.Dto.ReportTopic 
+@using SystemSprawozdan.Shared.Enums
+@inject NavigationManager navigationManager
+@inject IReportTopicFrontendService reportTopicService
+
+
+<style>
+    .mat-table-header {
+        background-color: #f2f2f2;
+        font-weight: bold;
+        padding: 10px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+        width: 20%;
+    }
+
+    .mat-table-row {
+        padding: 10px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+        flex-grow: 1;
+    }
+    
+    .mat-table-header-submitted {
+        width: 16.66%;
+    }
+     
+    .green {
+        color: green;
+        font-weight: bold;
+    }
+    
+    .failed {
+        color: red;
+        font-weight: bold;
+    }
+    
+    .table__row-icon{
+        display: flex;
+        padding: 5px;
+        background-color: var(--primary-color);
+        border-radius: 5px;
+        color: var(--panel-background-color);
+    }
+    
+    .tableWrapper{
+        max-height: 75vh;
+        overflow-y: auto;
+    }
+    
+</style>
+
+<div style="margin-top: 20px; width: 100%;">
+    <MatTabGroup @bind-ActiveIndex="@tabIndex">
+        <MatTab Label="Przypisane">
+                    @if (assignedReportTopics != null)
+                    {
+                        <div class="tableWrapper"> 
+                            <MatTable Items="@assignedReportTopics"  AllowSelection="true" RowClass="tester" class="mat-elevation-z5" ShowPaging="false" PageSize="assignedReportTopics.Count">
+                                <MatTableHeader>
+                                    <th class="mat-table-header">Przedmiot</th>
+                                    <th class="mat-table-header">Rodzaj</th>
+                                    <th class="mat-table-header">Prowadzący</th>
+                                    <th class="mat-table-header">Zadanie</th>
+                                    <th class="mat-table-header">Termin</th>
+                                </MatTableHeader>
+                                <MatTableRow>
+                                    <td class="mat-table-row">@context.SubjectName</td>
+                                    <td class="mat-table-row">@context.GroupType</td>
+                                    <td class="mat-table-row">@context.Teacher.Degree @context.Teacher.Name @context.Teacher.Surname</td>
+                                    <td class="mat-table-row">@context.ReportTopicName</td>
+                                    <td class="mat-table-row">@context.Deadline</td>
+                                    <td><div class="table__row-icon"><MatIcon Icon="@MatIconNames.Arrow_forward" Style="height: 100%" Class="pointer" @onclick="() => NavigateToDetails(context)"/></div></td>
+                                </MatTableRow>
+                            </MatTable>
+                        </div>
+                    }
+                    else
+                    {
+                        <LoadingBar IsLoading="true"/>
+                    }
+                </MatTab>
+        <MatTab Label="Oddane">
+            @if (submittedReportTopics != null)
+            {
+                <div class="tableWrapper"> 
+                    <MatTable Items="@submittedReportTopics"  AllowSelection="true" RowClass="tester" class="mat-elevation-z5"  ShowPaging="false" PageSize="submittedReportTopics.Count">
+                        <MatTableHeader>
+                            <th class="mat-table-header-submitted">Przedmiot</th>
+                            <th class="mat-table-header-submitted">Rodzaj</th>
+                            <th class="mat-table-header-submitted">Prowadzący</th>
+                            <th class="mat-table-header-submitted">Zadanie</th>
+                            <th class="mat-table-header-submitted">Termin</th>
+                            <th class="mat-table-header-submitted">Ocena</th>
+                        </MatTableHeader>
+                        <MatTableRow>
+                            <td class="mat-table-row">@context.SubjectName</td>
+                                <td class="mat-table-row">@context.GroupType</td>
+                                <td class="mat-table-row">@context.Teacher.Degree @context.Teacher.Name @context.Teacher.Surname</td>
+                                <td class="mat-table-row">@context.ReportTopicName</td>
+                                <td class="mat-table-row">@context.Deadline</td>
+                            <td class="mat-table-row">
+                                @if (context.Mark.HasValue)
+                                {
+                                    var markTranslation = EnumTranslator.Mark.TryGetValue(context.Mark.Value, out var translatedMark)
+                                        ? translatedMark
+                                        : context.Mark.Value.ToString();
+                                    var markClass = GetMarkClass(context.Mark.Value);
+                                    <span class="@markClass">@markTranslation</span>
+                                }
+                            </td>
+                            <td><div class="table__row-icon"><MatIcon Icon="@MatIconNames.Arrow_forward" Style="height: 100%" Class="pointer" @onclick="() => NavigateToEditDetails(context)"/></div></td>
+                        </MatTableRow>
+                    </MatTable>
+                </div>
+            }
+            else
+            {
+                <LoadingBar IsLoading="true"/>
+            }
+        </MatTab>
+    </MatTabGroup>
+</div>
+
+@code {
+    private List<ReportTopicForStudentGetDto> assignedReportTopics;
+    private List<ReportTopicForStudentGetDto> submittedReportTopics;
+
+    private int tabIndex = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        assignedReportTopics = await reportTopicService.GetReportTopicsForStudent(false);
+        submittedReportTopics = await reportTopicService.GetReportTopicsForStudent(true);
+    }
+    
+    private string GetMarkClass(MarkEnum mark)
+    {
+        if (mark == MarkEnum.Failed || mark == MarkEnum.Two)
+        {
+            return "failed";
+        }
+
+        else
+        {
+            return "green";
+        }
+    }
+    
+    
+    
+    private void NavigateToDetails(ReportTopicForStudentGetDto reportTopic)
+    {
+        
+        navigationManager.NavigateTo($"/student/reports/{reportTopic.Id}");
+    }
+    
+    
+    
+    
+    private void NavigateToEditDetails(ReportTopicForStudentGetDto reportTopic)
+    {
+        
+        navigationManager.NavigateTo($"/student/reports/{(reportTopic.Id)+1}/{reportTopic.StudentReportId}");
+    }
+    
+   
+}

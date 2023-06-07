@@ -37,8 +37,13 @@ namespace SystemSprawozdan.Backend.Controllers
         }
         
         //TODO: Olek: Trzeba stworzyć GETa, ktory wyswietla wszystkie tematy sprawozdan, które są przypisane do SubjectGroup, do której należy zalogowany użytkownik
-
         //TODO: Olek: Trzeba stworzyć GETa, który wyświetla wszystkie tematy sprawozdan, które są oddane przez zalogowanego użytkownika
+        [HttpGet("ForStudent")]
+        public IActionResult GetReportTopicsByUserId([FromQuery] bool isSubmitted)
+        {
+            var reportTopics = _reportTopicService.GetReportTopicForStudent(isSubmitted);
+            return Ok(reportTopics);
+        }
 
         [HttpGet("selective")]
         public ActionResult GetReportTopic([FromQuery] int? reportTopicId, int? studentReportId)

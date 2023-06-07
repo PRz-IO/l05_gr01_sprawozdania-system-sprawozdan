@@ -11,5 +11,7 @@ namespace SystemSprawozdan.Shared.Dto.ReportTopic
         public string ReportTopicName { get; set; }
         public DateTime? Deadline { get; set; }
         public MarkEnum? Mark { get; set; }
+        
+        public int? StudentReportId { get; set; }
     }
 }

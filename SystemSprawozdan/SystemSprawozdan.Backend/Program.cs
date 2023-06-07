@@ -75,7 +75,7 @@ builder.Services.AddScoped<IValidator<RegisterStudentDto>, RegisterStudentDtoVal
 builder.Services.AddScoped<IValidator<RegisterTeacherOrAdminDto>, RegisterTeacherOrAdminDtoValidator>();
 
 
-builder.Services.AddScoped<IReportTopicService, ReportTopicService>();
+builder.Services.AddScoped<IReportTopicService, SystemSprawozdan.Backend.Services.ReportTopicService>();
 builder.Services.AddScoped<IStudentReportService, StudentReportService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ISubjectGroupService, SubjectGroupService>();
