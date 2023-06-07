@@ -10,11 +10,12 @@ namespace SystemSprawozdan.Backend.Services
     public interface IStudentReportService
     {
         StudentReport PostStudentReport(StudentReportPostDto postStudentReportDto);
-        void PutStudentReport(int studentReportId, StudentReportAsStudentPutDto studentReportAsStudentPutDto);
-        void studentReportAsTeacherPutDto(int studentReportId,
+        void PutStudentReportAsStudent(int studentReportId, StudentReportAsStudentPutDto studentReportAsStudentPutDto);
+        void PutStudentReportAsTeacher(int studentReportId,
             StudentReportAsTeacherPutDto studentReportAsTeacherPutDto);
         StudentReportGetDto GetStudentReport(int studentReportId);
-        List<StudentReportGetDto> GetStudentReportsByTopicId(int reportTopicId, bool? isIndividual, bool? isMarked);
+        List<StudentReportGetDto> GetStudentReportsByTopicId(int reportTopicId, bool? isIndividual, bool? toCheck);
+        List<StudentBasicGetDto> GetStudentWithoutReportByTopicId(int reportTopicId);
     }
 
     public class StudentReportService : IStudentReportService
@@ -36,7 +37,7 @@ namespace SystemSprawozdan.Backend.Services
 
             var subjectGroup = _dbContext
                 .SubjectGroup.FirstOrDefault(subjectGroup =>
-                    subjectGroup.reportTopics.Any(reportTopic =>
+                    subjectGroup.ReportTopics.Any(reportTopic =>
                         reportTopic.Id == postStudentReportDto.ReportTopicId
                     )
                 );
@@ -67,7 +68,7 @@ namespace SystemSprawozdan.Backend.Services
             return result;
         }
 
-        public void PutStudentReport(int studentReportId, StudentReportAsStudentPutDto studentReportAsStudentPutDto)
+        public void PutStudentReportAsStudent(int studentReportId, StudentReportAsStudentPutDto studentReportAsStudentPutDto)
         {
             var reportToEdit = _dbContext.StudentReport.FirstOrDefault(report => report.Id == studentReportId);
 
@@ -78,10 +79,12 @@ namespace SystemSprawozdan.Backend.Services
             
             reportToEdit.StudentNote = studentReportAsStudentPutDto.StudentNote;
             reportToEdit.LastModified = DateTime.UtcNow;
+            reportToEdit.ToCheck = true;
+            
             _dbContext.SaveChanges();
         }
 
-        public void studentReportAsTeacherPutDto(int studentReportId, StudentReportAsTeacherPutDto studentReportAsTeacherPutDto)
+        public void PutStudentReportAsTeacher(int studentReportId, StudentReportAsTeacherPutDto studentReportAsTeacherPutDto)
         {
             var reportToEdit = _dbContext.StudentReport.FirstOrDefault(report => report.Id == studentReportId);
 
@@ -92,6 +95,8 @@ namespace SystemSprawozdan.Backend.Services
             
             reportToEdit.TeacherNote = studentReportAsTeacherPutDto.TeacherNote;
             reportToEdit.Mark = studentReportAsTeacherPutDto.Mark;
+            reportToEdit.ToCheck = false;
+            
             _dbContext.SaveChanges();
         }
         
@@ -108,7 +113,7 @@ namespace SystemSprawozdan.Backend.Services
         }
         
         
-        public List<StudentReportGetDto> GetStudentReportsByTopicId(int reportTopicId, bool? isIndividual, bool? isMarked)
+        public List<StudentReportGetDto> GetStudentReportsByTopicId(int reportTopicId, bool? isIndividual, bool? toCheck)
         {
             var isReportTopicExist = _dbContext.ReportTopic.Any(reportTopic => reportTopic.Id == reportTopicId);
 
@@ -119,14 +124,40 @@ namespace SystemSprawozdan.Backend.Services
                     .ThenInclude(subgroup => subgroup.Students)
                 .Where(report => report.ReportTopicId == reportTopicId);
 
-            if (isMarked is not null)
-                reports = reports.Where(report => isMarked == (report.Mark != null));
-
+            if (toCheck is not null)
+            {
+                if (toCheck == true)
+                {
+                    reports = reports.Where(report => toCheck == report.ToCheck || report.Mark == null);
+                }
+                else
+                {
+                    reports = reports.Where(report => toCheck == report.ToCheck && report.Mark != null);
+                }
+            }
+            
             if (isIndividual is not null)
                 reports = reports.Where(report => report.SubjectSubgroup.IsIndividual == isIndividual);
 
             var reportsGetDto = _mapper.Map<List<StudentReportGetDto>>(reports.ToList());
             return reportsGetDto;
+        }
+
+        public List<StudentBasicGetDto> GetStudentWithoutReportByTopicId(int reportTopicId)
+        {
+            var studentsWithoutReport = _dbContext
+                .Student
+                .Where(student =>
+                    student.SubjectSubgroups.Any(subgroup => subgroup.SubjectGroup.ReportTopics.Any(reportTopic => reportTopic.Id == reportTopicId)) &&
+                    null == student.SubjectSubgroups.FirstOrDefault(subgroup => 
+                        subgroup.SubjectGroup.ReportTopics.Any(reportTopic => 
+                            reportTopic.Id == reportTopicId && 
+                            reportTopic.StudentReports.Any(studentReport => 
+                                studentReport.SubjectSubgroupId == subgroup.Id))))
+                .ToList();
+
+            var studentsWithoutReportDto = _mapper.Map<List<StudentBasicGetDto>>(studentsWithoutReport);
+            return studentsWithoutReportDto;
         }
     }
 }
