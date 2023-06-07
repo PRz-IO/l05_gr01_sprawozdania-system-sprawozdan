@@ -48,16 +48,15 @@
     public SubjectPostDto SubjectToSendDto = new();
     public int[] Numbers = { 1, 2, 3, 4, 5, 6, 7, 8 };
     private bool _dialogIsOpen = false;
-
+    Uri getTeacherSubjectsUri = new Uri("https://localhost:7184/api/Subject/forTeacher");
+    Uri getMajorsUri = new Uri("https://localhost:7184/api/Major");
     protected override async Task OnInitializedAsync()
     {
-        var getTeacherSubjectsUri = new Uri("https://localhost:7184/api/Subject/forTeacher");
         TeacherSubjectGetDtos = await AppHttpClient.Get<List<TeacherSubjectGetDto>>(getTeacherSubjectsUri.ToString());
     }
 
     public async Task OpenAddSubjectDialog()
     {
-        var getMajorsUri = new Uri("https://localhost:7184/api/Major");
         MajorsDtos = await AppHttpClient.Get<List<MajorGetDto>>(getMajorsUri.ToString());
         _dialogIsOpen = true;
     }
@@ -75,7 +74,9 @@
             var subjectPostUri = new Uri("https://localhost:7184/api/Subject");
             var createdSubjectId= await AppHttpClient.Post(subjectPostUri.ToString(), SubjectToSendDto);
             MatToaster.Add("Dodano nowy przedmiot!", MatToastType.Success, "Sukces!");
-            AppHttpClient.Post($"https://localhost:7184/api/SubjectGroup/placeholder/{createdSubjectId}", 1);
+            await AppHttpClient.Post($"https://localhost:7184/api/SubjectGroup/placeholder/{createdSubjectId}", 1);
+            TeacherSubjectGetDtos = await AppHttpClient.Get<List<TeacherSubjectGetDto>>(getTeacherSubjectsUri.ToString());
+            StateHasChanged();
         }
         
     }
