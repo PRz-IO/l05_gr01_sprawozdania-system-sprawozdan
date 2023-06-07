@@ -50,16 +50,16 @@ namespace SystemSprawozdan.Backend.Controllers
 
         //TODO: Bartek: Trzeba zrobic GETa, który wyświetli podstawowe informacje o uzytkowniku localhots:/studentCredentials?isStudent=true/false
         [HttpGet("userCredentials")]
-        public ActionResult GetUserInfo()
+        public ActionResult GetUserInfo([FromQuery] bool isStudent)
         {
-            var info = _accountService.GetUserInfo();
+            var info = _accountService.GetUserInfo(isStudent);
             return Ok(info); 
         }
         //TODO: Bartek: Trzeba zrobić PUTa, którym będzie mozna zresetowac haslo
         [HttpPut("changePassword")]
-        public ActionResult ChangePassword([FromBody] string newPassword)
+        public ActionResult ChangePassword([FromBody] string newPassword, [FromQuery] bool isStudent)
         {
-            _accountService.ChangePassword(newPassword);
+            _accountService.ChangePassword(newPassword, isStudent);
             return Ok();
         }
     }

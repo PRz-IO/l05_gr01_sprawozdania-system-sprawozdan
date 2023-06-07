@@ -27,7 +27,7 @@
     public UserInfoGetDto User = new();
     protected override async Task OnInitializedAsync()
     {
-        User = await AppHttpClient.Get<UserInfoGetDto>("Account/userCredentials");
+        User = await AppHttpClient.Get<UserInfoGetDto>("Account/userCredentials?isStudent=true");
     }
     public async void changePassword()
     {
@@ -39,7 +39,7 @@
             Toaster.Add("Hasło musi mieć co najmniej 8 znaków", MatToastType.Danger, "Błąd");
         else
         {
-            await AppHttpClient.Put("Account/changePassword", newPassword);
+            await AppHttpClient.Put("Account/changePassword?isStudent=true", newPassword);
             Toaster.Add("Zmieniono hasło", MatToastType.Success, "Sukces");
         }
     }

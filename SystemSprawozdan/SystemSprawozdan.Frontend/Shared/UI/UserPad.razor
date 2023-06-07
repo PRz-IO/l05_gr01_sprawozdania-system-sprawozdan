@@ -21,8 +21,18 @@
 </div>
 
 @code {
+	/// SPRAWDZIĆ!
 	public string FirstName { get; set; }
 	public string LastName { get; set; }
+
+	public UserInfoGetDto User = new();
+	protected override async Task OnInitializedAsync()
+	{
+		/// Wiem, pamiętam! Poprawię jak będę pushować Teachera ;)
+		//User = await AppHttpClient.Get<UserInfoGetDto>("Account/userCredentials");
+		//FirstName = User.Name;
+		//LastName = User.Surname;
+	}
 
 	public bool IsUserPadActive = false;
 

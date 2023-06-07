@@ -8,4 +8,5 @@ public class UserInfoGetDto
     public string Email { get; set; }
     public string? Degree { get; set; }
     public string? Position { get; set; }
+
 }

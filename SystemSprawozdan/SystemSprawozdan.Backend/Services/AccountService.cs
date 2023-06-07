@@ -22,8 +22,8 @@ namespace SystemSprawozdan.Backend.Services
         void RegisterStudent(RegisterStudentDto registerStudentDto);
         void RegisterTeacherOrAdmin(RegisterTeacherOrAdminDto registerTeacherOrAdminDto);
         void RestoreUserPassword(RestoreUserPasswordDto restoreUserPasswordDto);
-        UserInfoGetDto GetUserInfo();
-        void ChangePassword(string newPassword);
+        UserInfoGetDto GetUserInfo(bool isStudent);
+        void ChangePassword(string newPassword, bool isStudent);
 
     }
 
@@ -218,14 +218,13 @@ namespace SystemSprawozdan.Backend.Services
                 throw new BadRequestException("Wrong username or password!");
         }
 
-        public UserInfoGetDto GetUserInfo()
+        public UserInfoGetDto GetUserInfo(bool isStudent)
         {
             var userId = _userContextService.GetUserId;
-            var role = _userContextService.GetUserRole;
 
             UserInfoGetDto info = new();
 
-            if (role == UserRoleEnum.Student)
+            if (isStudent == true)
             {
                 var student = _dbContext.Student.FirstOrDefault(student => student.Id == userId);
                 
@@ -254,19 +253,18 @@ namespace SystemSprawozdan.Backend.Services
                     info.Position = teacher.Position;
                 }
                 else
-                    throw new NotFoundException("Couldn't find teacher with that id");
+                    throw new NotFoundException("couldn't find teacher with that id");
 
             }
 
             return info;
         }
 
-        public void ChangePassword(string newPassword)
+        public void ChangePassword(string newPassword, bool isStudent)
         {
             var userId = _userContextService.GetUserId;
-            var role = _userContextService.GetUserRole;
 
-            if (role == UserRoleEnum.Student)
+            if (isStudent == true)
             {
                 var student = _dbContext.Student.FirstOrDefault(student => student.Id == userId);
                 if (student == null)
