@@ -63,7 +63,7 @@ namespace SystemSprawozdan.Backend.Controllers
                 TeacherId = createdObject.TeacherId
             };
 
-            return Created($"https://localhost:7184/api/SubjectGroup/placeholder/{subjectId}", result);
+            return Created($"{subjectId}", result);
         }
 
     }
