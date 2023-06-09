@@ -79,7 +79,7 @@
                 };
             await AppHttpClient.Post("SubjectSubgroup", subgroup);
             Toaster.Add("Poprawnie stworzono grupę", MatToastType.Success, "Sukces");
-            NavigationManager.NavigateTo("/teams");
+            NavigationManager.NavigateTo("Student/subjects");
         }
         else
         {
@@ -98,7 +98,7 @@
                     };
                 await AppHttpClient.Post("SubjectSubgroup", subgroup);
                 Toaster.Add("Poprawnie stworzono grupę", MatToastType.Success, "Sukces");
-                NavigationManager.NavigateTo("/teams");
+                NavigationManager.NavigateTo("Student/subjects");
             }
             else
             {
@@ -108,7 +108,7 @@
 
                 await AppHttpClient.Post("SubjectSubgroup/AddUserToSubgroup", subgroupId);
                 Toaster.Add("Poprawnie dołączono do grupy", MatToastType.Success, "Sukces");
-                NavigationManager.NavigateTo("/teams");
+                NavigationManager.NavigateTo("Student/subjects");
             }
         }
     }

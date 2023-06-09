@@ -22,7 +22,7 @@
                 var counterCapture = counter;
                 <MatExpansionPanel>
                     <MatExpansionPanelSummary>
-                        <MatExpansionPanelHeader>@Subject[counterCapture].Name</MatExpansionPanelHeader>
+                            <MatExpansionPanelHeader>@Subject[counterCapture].Name</MatExpansionPanelHeader>
                     </MatExpansionPanelSummary>
                     <MatExpansionPanelDetails>
                         @if (SubjectGroup[counterCapture].Count() != 0)
@@ -54,7 +54,7 @@
                     </MatExpansionPanelDetails>
                 </MatExpansionPanel>
             }
-        </MatAccordion>
+        </MatAccordion> 
     }
 </div>
 @code {
@@ -76,6 +76,7 @@
         Subject = null;
         SubjectGroup = new();
         Subject = await AppHttpClient.Get<List<SubjectGetDto>>("Subject");
+
         foreach (var subject in Subject)
         {
             var parameter = new HttpParameter("isUser", isUserBelong);
@@ -83,6 +84,17 @@
 
             SubjectGroup.Add(subjectGroup);
         }
+            for (int i = 0; i < Subject.Count(); i++)
+            {
+                if (!(SubjectGroup[i].Count() != 0))
+                {
+                    var subjectGroup = SubjectGroup[i];
+                    SubjectGroup.Remove(subjectGroup);
+                    var subject = Subject[i];
+                    Subject.Remove(subject);
+                    i--;
+                }
+            }
         StateHasChanged();
     }
 
