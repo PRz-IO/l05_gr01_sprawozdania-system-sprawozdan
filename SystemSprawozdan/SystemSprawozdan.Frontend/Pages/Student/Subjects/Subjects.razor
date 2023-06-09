@@ -86,12 +86,10 @@
         }
             for (int i = 0; i < Subject.Count(); i++)
             {
-                if (!(SubjectGroup[i].Count() != 0))
+                if (SubjectGroup[i].Count() == 0)
                 {
-                    var subjectGroup = SubjectGroup[i];
-                    SubjectGroup.Remove(subjectGroup);
-                    var subject = Subject[i];
-                    Subject.Remove(subject);
+                    SubjectGroup.RemoveAt(i);
+                    Subject.RemoveAt(i);
                     i--;
                 }
             }
