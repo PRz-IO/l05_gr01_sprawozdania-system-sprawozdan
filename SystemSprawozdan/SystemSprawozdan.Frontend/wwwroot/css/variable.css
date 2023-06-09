@@ -1,5 +1,7 @@
 ﻿:root {
     --primary-color: #4099E5;
+    --primary-color-transparent-90: #4099E5DD;
+    --primary-color-transparent-80: #4099E5BB;
     --primary-color-transparent-20: #4099E551;
     --primary-color-transparent-10: #4099E535;
     --background-color: #EAEAEA;

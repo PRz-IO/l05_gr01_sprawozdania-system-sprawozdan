@@ -62,11 +62,17 @@ namespace SystemSprawozdan.Backend.Services
                 .ThenInclude(subjectGroup => subjectGroup.Subject)
                 .ThenInclude(subject => subject.Major)  
                 .Where(reportTopic => reportTopic.SubjectGroup.TeacherId == teacherId);
-
-            if (toCheck != null)
+            
+            if (toCheck == true)
                 reportsFromDb = reportsFromDb.Where(reportTopic =>
-                    reportTopic.StudentReports.Any(studentReport => studentReport.ToCheck == toCheck));
-
+                    reportTopic.StudentReports.Any(studentReport => studentReport.ToCheck == true)
+                    || reportTopic.StudentReports.Count == 0);
+            
+            else if(toCheck == false)
+                reportsFromDb = reportsFromDb.Where(reportTopic =>
+                    !(reportTopic.StudentReports.Any(studentReport => studentReport.ToCheck == true)
+                    || reportTopic.StudentReports.Count == 0));
+            
             var reportsFromDbList = reportsFromDb.OrderBy(reportTopic => reportTopic.Deadline).ToList();
             
             var reportsDto = _mapper.Map<List<ReportTopicGetDto>>(reportsFromDbList);

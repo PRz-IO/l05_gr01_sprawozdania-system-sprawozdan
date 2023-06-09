@@ -1,0 +1,73 @@
+﻿@page "/teacher/view-students/{GroupId:int}"
+
+@inject IAppHttpClient AppHttpClient
+@inject IMatToaster Toaster
+@inject NavigationManager NavigationManager
+<TitleBar Text="@Title"></TitleBar>
+<MatTable Striped="true" Items="@students" class="mat-elevation-z5" ShowPaging="false">
+    <MatTableHeader>
+        <th class="table-header">Nr albumu</th>
+        <th class="table-header">Imię</th>
+        <th class="table-header">Nazwisko</th>
+        <th class="table-header"> </th>
+    </MatTableHeader>
+    <MatTableRow>
+        <td>@context.Id</td>
+        <td>@context.Name</td>
+        <td>@context.Surname</td>
+        <td>
+            <MatButton Outlined="true" OnClick="@(e => { studentToDelete = context.Id; studentName = context.Name; studentSurname = context.Surname; dialogIsOpen = true;  })">
+                <MatIcon Icon="@MatIconNames.Delete_forever"></MatIcon>
+            </MatButton>
+            <MatButton Raised="true" OnClick="@(e => { NavigationManager.NavigateTo($"/teacher/view-students/{GroupId}"); })"><!--Placeholder url-->
+                <MatIcon Icon="@MatIconNames.Arrow_forward"></MatIcon>
+            </MatButton>
+        </td>
+    </MatTableRow>
+</MatTable>
+
+<MatDialog @bind-IsOpen="@dialogIsOpen">
+    <MatDialogTitle>Uwaga</MatDialogTitle>
+    <MatDialogContent>
+        <p>Na pewno chcesz usunąć studenta <b>@studentName @studentSurname</b> z grupy <b>@Title</b>?</p>
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton Outlined="true" OnClick="@DeleteStudent">Tak</MatButton>
+        <MatButton Outlined="true" OnClick="@(e => { dialogIsOpen = false; })">Nie</MatButton>
+    </MatDialogActions>
+</MatDialog>
+
+@code {
+    [Parameter]
+    public int GroupId { get; set; }
+    public int? studentToDelete = null;
+    public string? studentName, studentSurname;
+
+    bool dialogIsOpen = false;
+    async void DeleteStudent()
+    {
+        if(studentToDelete == 0 || studentToDelete == null)
+        {
+            Toaster.Add("Coś poszło nie tak", MatToastType.Danger, "Błąd");
+        }
+        else
+        {
+            await AppHttpClient.Delete($"SubjectGroup/{GroupId}/RemoveStudentFromGroup/{studentToDelete}");
+            
+            dialogIsOpen = false;
+            NavigationManager.NavigateTo($"/teacher/view-students/{GroupId}");
+            Toaster.Add("Student został usunięty z grupy", MatToastType.Success, "Sukces");
+        }
+    }
+
+    List<StudentBasicGetDto> students = new();
+    SubjectGroupGetDetailsDto SubjectGroup;
+    public string? Title;
+    protected override async Task OnInitializedAsync()
+    {
+        students = await AppHttpClient.Get<List<StudentBasicGetDto>>($"SubjectGroup/{GroupId}/GetStudentsFromGroup");
+
+        SubjectGroup = await AppHttpClient.Get<SubjectGroupGetDetailsDto>($"SubjectGroup/{GroupId}/GetSubjectGroupDetails");
+        Title = SubjectGroup.SubjectName + "/" + SubjectGroup.Name;
+    }
+}
