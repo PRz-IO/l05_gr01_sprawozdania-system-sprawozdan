@@ -21,6 +21,7 @@ namespace SystemSprawozdan.Backend.Services
         SubjectGroupGetDetailsDto GetSubjectGroupDetails(int groupId);
         List<StudentBasicGetDto> GetSubjectGroupStudents(int groupId);
         void DeleteStudentFromGroup(int studentId, int groupId);
+        public SubjectGroup AddPlaceholderSubjectGroup(int subjectId);
     }
 
     public class SubjectGroupService : ISubjectGroupService
@@ -125,6 +126,24 @@ namespace SystemSprawozdan.Backend.Services
                 }
             }
             _dbContext.SaveChanges();
+        }
+
+        public SubjectGroup AddPlaceholderSubjectGroup(int subjectId)
+        {
+            var teacherId = _userContextService.GetUserId;
+
+            var SubjectGroupToAdd = new SubjectGroup
+            {
+                Name = "L00",
+                GroupType = "Laboratorium",
+                SubjectId = subjectId,
+                TeacherId = teacherId.Value
+            };
+
+            _dbContext.SubjectGroup.Add(SubjectGroupToAdd);
+            _dbContext.SaveChanges();
+
+            return SubjectGroupToAdd;
         }
     }
 }

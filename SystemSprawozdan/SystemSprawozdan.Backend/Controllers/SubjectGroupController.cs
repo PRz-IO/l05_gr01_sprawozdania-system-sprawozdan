@@ -48,5 +48,23 @@ namespace SystemSprawozdan.Backend.Controllers
             return Ok();
         }
 
+        [HttpPost("placeholder/{subjectId:int}")]
+        [Authorize(Roles = nameof(UserRoleEnum.Teacher))]
+        public ActionResult AddPlaceholderSubjectGroup([FromRoute] int subjectId)
+        {
+            var createdObject = _subjectGorupServices.AddPlaceholderSubjectGroup(subjectId);
+
+            var result = new
+            {
+                Id = createdObject.Id,
+                Name = createdObject.Name,
+                GroupType = createdObject.GroupType,
+                SubjectId = createdObject.SubjectId,
+                TeacherId = createdObject.TeacherId
+            };
+
+            return Created($"{subjectId}", result);
+        }
+
     }
 }

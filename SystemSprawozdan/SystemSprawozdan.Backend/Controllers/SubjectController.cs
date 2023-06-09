@@ -43,16 +43,7 @@ namespace SystemSprawozdan.Backend.Controllers
         public ActionResult AddSubject([FromBody] SubjectPostDto subjectPostDto)
         {
             var createdObject = _subjectService.AddSubject(subjectPostDto);
-            var result = new
-            {
-                Id = createdObject.Id,
-                Name = createdObject.Name,
-                Description = createdObject.Description,
-                MajorId = createdObject.MajorId,
-                Term = createdObject.Term
-            };
-            return Created("https://localhost:7184/api/Subject" , result);
-
+            return Ok(createdObject.Id);
         }
     }
 }
