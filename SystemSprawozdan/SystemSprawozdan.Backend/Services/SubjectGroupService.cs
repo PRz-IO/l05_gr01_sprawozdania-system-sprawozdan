@@ -17,7 +17,8 @@ namespace SystemSprawozdan.Backend.Services
 {
     public interface ISubjectGroupService
     {
-        List<SubjectGroupGetDto> GetSubjectGroup(int subjectId, bool isUser);
+        List<SubjectGroupGetDto> GetSubjectGroup(int subjectId, bool? isUser);
+        List<SubjectGroupGetDto> GetSubjectGroupTeacher(int subjectId);
         SubjectGroupGetDetailsDto GetSubjectGroupDetails(int groupId);
         List<StudentBasicGetDto> GetSubjectGroupStudents(int groupId);
         void DeleteStudentFromGroup(int studentId, int groupId);
@@ -35,7 +36,7 @@ namespace SystemSprawozdan.Backend.Services
             _userContextService = userContextService;
             _mapper = mapper;
         }
-        public List<SubjectGroupGetDto> GetSubjectGroup(int subjectId, bool isUserBelong)
+        public List<SubjectGroupGetDto> GetSubjectGroup(int subjectId, bool? isUserBelong)
         {
             var loginUserId = _userContextService.GetUserId;
 
@@ -45,14 +46,31 @@ namespace SystemSprawozdan.Backend.Services
                 .Include(subjectGroup => subjectGroup.Teacher)
                 .Where(subjectGroup => subjectGroup.SubjectId == subjectId);
 
-            if (isUserBelong)
+            if (isUserBelong == true)
                 subjectGroupsFromDb = subjectGroupsFromDb.Where(subjectGroup =>
                     subjectGroup.SubjectSubgroups.Any(subjectSubgroup =>
                         subjectSubgroup.Students.Any(student => student.Id == loginUserId)));
-            else
+            else if( isUserBelong == false)
                 subjectGroupsFromDb = subjectGroupsFromDb.Where(subjectGroup =>
                     !subjectGroup.SubjectSubgroups.Any(subjectSubgroup =>
                         subjectSubgroup.Students.Any(student => student.Id == loginUserId)));
+
+            var subjectGroups = subjectGroupsFromDb.ToList();
+            var subjectGroupsDto = _mapper.Map<List<SubjectGroupGetDto>>(subjectGroups);
+            return subjectGroupsDto;
+        }
+        public List<SubjectGroupGetDto> GetSubjectGroupTeacher(int subjectId)
+        {
+            var loginUserId = _userContextService.GetUserId;
+
+            var subjectGroupsFromDb = _dbContext.SubjectGroup
+                .Include(subjectGroup => subjectGroup.Subject)
+                    .ThenInclude(subject => subject.Major)
+                .Include(subjectGroup => subjectGroup.Teacher)
+                .Where(subjectGroup => subjectGroup.SubjectId == subjectId);
+
+                subjectGroupsFromDb = subjectGroupsFromDb.Where(subjectGroup =>
+                    subjectGroup.TeacherId == loginUserId);
 
             var subjectGroups = subjectGroupsFromDb.ToList();
             var subjectGroupsDto = _mapper.Map<List<SubjectGroupGetDto>>(subjectGroups);

@@ -19,13 +19,18 @@ namespace SystemSprawozdan.Backend.Controllers
 
         //TODO: Mateusz: Trzeba zrobić GETa, który wyświetla wszystkie grupy, do których nalezy i nie należy dany użytkownik
         [HttpGet("{subjectId}")]
-        [Authorize(Roles = nameof(UserRoleEnum.Student))]
-        public ActionResult GetSubjectGroup([FromRoute] int subjectId, [FromQuery] bool isUser)
+        public ActionResult GetSubjectGroup([FromRoute] int subjectId, [FromQuery] bool? isUser)
         {
             var subjectGroup = _subjectGorupServices.GetSubjectGroup(subjectId, isUser);
             return Ok(subjectGroup);
         }
-        
+        [HttpGet("{subjectId}/Teacher")]
+        public ActionResult GetSubjectGroupTeacher([FromRoute] int subjectId)
+        {
+            var subjectGroup = _subjectGorupServices.GetSubjectGroupTeacher(subjectId);
+            return Ok(subjectGroup);
+        }
+
         [HttpGet("{groupId}/GetSubjectGroupDetails")]
         public ActionResult GetSubjectGroupDetails([FromRoute] int groupId)
         {
