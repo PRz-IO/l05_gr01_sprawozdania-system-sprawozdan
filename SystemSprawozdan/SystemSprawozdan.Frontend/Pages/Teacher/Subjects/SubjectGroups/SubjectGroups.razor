@@ -29,22 +29,6 @@ else if (SubjectGroupGetDtos.Count != 0)
             </td>
         </MatTableRow>
     </MatTable>
-    <!--
-    <MatDialog @bind-IsOpen="_dialogIsOpen" SurfaceStyle="background-color: white">
-        <MatDialogTitle>Uzupełnij dane</MatDialogTitle>
-        <MatDialogContent style="display: flex; flex-direction: column; justify-content: space-evenly; height: 50vh;">
-            <MatTextField Label="Nazwa" Required="true" TValue="string" @bind-Value="@GroupToSendDto.Name"></MatTextField>
-
-            <MatSelectItem ValidationDisabled="false" Label="Semestr" Items="Types" @bind-Value="GroupToSendDto.GroupType"></MatSelectItem>
-
-            <div class="dialog-buttons">
-                <MatButton OnClick="@(e => { _dialogIsOpen = false; })">Anuluj</MatButton>
-                <MatButton OnClick="AddNewGroup">Ok</MatButton>
-            </div>
-
-        </MatDialogContent>
-    </MatDialog>
-    -->
 }
 
 
@@ -63,26 +47,6 @@ else if (SubjectGroupGetDtos.Count != 0)
         SubjectGroupGetDtos = null;
         SubjectGroupGetDtos = await AppHttpClient.Get<List<SubjectGroupGetDto>>($"SubjectGroup/{SubjectId}/Teacher");
     }
-    /*
-    public async Task OpenAddGroupDialog()
-    {
-        _dialogIsOpen = true;
-    }
-
-    public async Task AddNewGroup()
-    {
-        if (GroupToSendDto.Name == null || GroupToSendDto.GroupType == null)
-        {
-            MatToaster.Add("Nie udało się dodać grupy!", MatToastType.Danger, "Błąd!");
-            MatToaster.Add("Nie wypełniono wymaganych pól!", MatToastType.Danger, "Błąd!");
-        }
-        else
-        {
-            _dialogIsOpen = false;    
-            MatToaster.Add("Dodano nowyą grupę!", MatToastType.Success, "Sukces!");
-        }
-    }
-    */
     public void GoToStudents(int groupId)
     {
         NavigationManager.NavigateTo($"teacher/view-students/" + groupId);
