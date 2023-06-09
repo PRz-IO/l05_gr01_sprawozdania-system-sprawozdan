@@ -7,7 +7,7 @@
 <div>
     <TabBar TValue="bool" @bind-Value="@isStudent" Data="@TabBarData" FlexDirection="row" />
 </div>
-@if (isStudent == true)
+@if (isStudent)
 {
        
 <MatTable Striped="true" Items="@students" class="mat-elevation-z5" ShowPaging="false">
@@ -74,7 +74,7 @@ else
         </MatDialogContent>
         <MatDialogActions>
             <MatButton Outlined="true" OnClick="@AddReportTopic">Dodaj sprawozdanie</MatButton>
-            <MatButton Outlined="true" OnClick="@(e => { reportTopicDialogIsOpen = false; })">Anuluj</MatButton>
+            <MatButton Outlined="true" OnClick="@(e => { reportName = null; reportDeadline = DateTime.MinValue; reportTopicDialogIsOpen = false; })">Anuluj</MatButton>
         </MatDialogActions>
     </MatDialog>
 }
@@ -86,7 +86,7 @@ else
     public int? studentToDelete = null;
     public string? studentName, studentSurname;
     public string? reportName;
-    public DateTime reportDeadline { get; set; }
+    public DateTime reportDeadline { get; set; } = DateTime.MinValue;
 
     bool isStudent = true;
     bool dialogIsOpen = false;
@@ -109,11 +109,12 @@ else
     async void AddReportTopic()
     {
         var newReportTopic = new ReportTopicPostDto()
-        {
-            Name = reportName,
-            Deadline = reportDeadline,
-            GroupId = GroupId
-        };
+            {
+                Name = reportName,
+                Deadline = reportDeadline,
+                GroupId = GroupId
+            };
+
 
         await AppHttpClient.Post($"ReportTopic/AddTopic", newReportTopic);
 
