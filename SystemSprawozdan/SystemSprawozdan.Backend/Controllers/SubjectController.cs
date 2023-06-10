@@ -28,8 +28,7 @@ namespace SystemSprawozdan.Backend.Controllers
             var subjects = _subjectService.GetSubjects();
             return Ok(subjects);
         }
-        
-        
+
         [HttpGet("forTeacher")]
         [Authorize(Roles = nameof(UserRoleEnum.Teacher))]
         public ActionResult<IEnumerable<TeacherSubjectGetDto>> GetTeacherSubjects()
