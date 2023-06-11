@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SystemSprawozdan.Backend.Services;
-using SystemSprawozdan.Shared.Dto;
 using SystemSprawozdan.Shared.Enums;
 
 namespace SystemSprawozdan.Backend.Controllers
@@ -20,13 +19,18 @@ namespace SystemSprawozdan.Backend.Controllers
 
         //TODO: Mateusz: Trzeba zrobić GETa, który wyświetla wszystkie grupy, do których nalezy i nie należy dany użytkownik
         [HttpGet("{subjectId}")]
-        [Authorize(Roles = nameof(UserRoleEnum.Student))]
-        public ActionResult GetSubjectGroup([FromRoute] int subjectId, [FromQuery] bool isUser)
+        public ActionResult GetSubjectGroup([FromRoute] int subjectId, [FromQuery] bool? isUser)
         {
             var subjectGroup = _subjectGorupServices.GetSubjectGroup(subjectId, isUser);
             return Ok(subjectGroup);
         }
-        
+        [HttpGet("{subjectId}/Teacher")]
+        public ActionResult GetSubjectGroupTeacher([FromRoute] int subjectId)
+        {
+            var subjectGroup = _subjectGorupServices.GetSubjectGroupTeacher(subjectId);
+            return Ok(subjectGroup);
+        }
+
         [HttpGet("{groupId}/GetSubjectGroupDetails")]
         public ActionResult GetSubjectGroupDetails([FromRoute] int groupId)
         {
@@ -49,12 +53,22 @@ namespace SystemSprawozdan.Backend.Controllers
             return Ok();
         }
 
-        [HttpPost("CreateSubjectGroup")]
+        [HttpPost("placeholder/{subjectId:int}")]
         [Authorize(Roles = nameof(UserRoleEnum.Teacher))]
-        public ActionResult CreateSubjectGroup([FromBody] SubjectGroupPostDto newGroup)
+        public ActionResult AddPlaceholderSubjectGroup([FromRoute] int subjectId)
         {
-            _subjectGorupServices.CreateSubjectGroup(newGroup);
-            return Ok();
+            var createdObject = _subjectGorupServices.AddPlaceholderSubjectGroup(subjectId);
+
+            var result = new
+            {
+                Id = createdObject.Id,
+                Name = createdObject.Name,
+                GroupType = createdObject.GroupType,
+                SubjectId = createdObject.SubjectId,
+                TeacherId = createdObject.TeacherId
+            };
+
+            return Created($"{subjectId}", result);
         }
 
     }

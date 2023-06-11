@@ -5,6 +5,8 @@ using SystemSprawozdan.Backend.Authorization;
 using SystemSprawozdan.Backend.Data;
 using SystemSprawozdan.Shared.Dto;
 using SystemSprawozdan.Backend.Exceptions;
+using System.Text.RegularExpressions;
+using SystemSprawozdan.Backend.Data.Models.DbModels;
 
 namespace SystemSprawozdan.Backend.Services
 {
@@ -13,6 +15,8 @@ namespace SystemSprawozdan.Backend.Services
         ReportTopicGetDto GetReportTopic(int? reportTopicId, int? studentReportId);
         IEnumerable<ReportTopicGetDto> GetReports(bool? toCheck);
         ReportTopicGetDto GetReportById(int reportTopicId);
+        List<ReportTopicGetDto> GetReportTopicForGroup(int groupId);
+        void PostReportTopic(ReportTopicPostDto reportTopic);
     }
 
     public class ReportTopicService : IReportTopicService
@@ -97,6 +101,37 @@ namespace SystemSprawozdan.Backend.Services
             var reportDto = _mapper.Map<ReportTopicGetDto>(reportFromDb);
             
             return reportDto;
+        }
+        //! Zwraca tematy sprawozdañ dla danej grupy
+        public List<ReportTopicGetDto> GetReportTopicForGroup(int groupId)
+        {
+            List<ReportTopicGetDto> reportTopics = new List<ReportTopicGetDto>();
+
+            var topics = _dbContext.ReportTopic.Where(topic => topic.SubjectGroupId == groupId).ToList();
+
+            foreach ( var topic in topics)
+            {
+                reportTopics.Add(new ReportTopicGetDto
+                {
+                    Id = topic.Id,
+                    ReportTopicName = topic.Name,
+                    ReportTopicDeadline = topic.Deadline
+                });
+            }
+
+            return reportTopics;
+        }
+        //! Dodaje temat sprawozdania dla danej grupy
+        public void PostReportTopic(ReportTopicPostDto reportTopic)
+        {
+            var newReportTopic = new ReportTopic()
+            {
+                Name = reportTopic.Name,
+                Deadline = reportTopic.Deadline,
+                SubjectGroupId = reportTopic.GroupId
+            };
+            _dbContext.ReportTopic.Add(newReportTopic);
+            _dbContext.SaveChanges();
         }
     }
 }

@@ -1,13 +1,54 @@
-﻿@page "/teacher/subjects/{SubjectGroup:int}"
-<h3>Grupy zajęciowe do przedmiotu o ID równym @SubjectGroup:</h3>
-<h3>L05</h3>
-<h3>L02</h3>
-<h3>L01</h3>
+﻿@page "/teacher/subjects/{SubjectId:int}"
+
+@inject IAppHttpClient AppHttpClient
+@inject NavigationManager NavigationManager
+@inject IMatToaster MatToaster
+
+<PageTitle>Grupy</PageTitle>
+@if (SubjectGroupGetDtos is null)
+{
+    <LoadingBar IsLoading="true" />
+}
+else if (SubjectGroupGetDtos.Count == 0)
+{
+    <div class="table__no-data"><h3>Brak grup do wyświetlenia</h3></div>
+}
+else if (SubjectGroupGetDtos.Count != 0)
+{
+    <MatTable Items="SubjectGroupGetDtos" ShowPaging="false">
+        <MatTableHeader>
+            <th class="table__header-cell--small">Grupy </th>
+            <th class="table__header-cell--normal"> </th>
+            <th class="table__header-cell--small"><MatButton Raised="true">Dodaj grupę</MatButton> </th>
+        </MatTableHeader>
+        <MatTableRow>
+            <td>@context.Name</td>
+            <td>@context.GroupType</td>
+            <td align="right">
+                <div class="arrow-button"> <MatIcon Icon="@MatIconNames.Arrow_forward"  @onclick="() => GoToStudents(context.Id)"></MatIcon></div>
+            </td>
+        </MatTableRow>
+    </MatTable>
+}
+
 
 
 @code {
+    public List<SubjectGroupGetDto> SubjectGroupGetDtos;
 
+    public GroupPostDto GroupToSendDto = new();
+    public string[] Types = { "Laboratoria", "Ćwiczenia", "Projekt" };
+    private bool _dialogIsOpen = false;
     [Parameter]
-    public int SubjectGroup { get; set; }
+    public int SubjectId { get; set; }
 
+    protected override async Task OnInitializedAsync()
+    {
+        SubjectGroupGetDtos = null;
+        SubjectGroupGetDtos = await AppHttpClient.Get<List<SubjectGroupGetDto>>($"SubjectGroup/{SubjectId}/Teacher");
+    }
+    public void GoToStudents(int groupId)
+    {
+        NavigationManager.NavigateTo($"teacher/view-students/" + groupId);
+    }    
 }

@@ -32,15 +32,15 @@ else
         <MatTableRow>
             @if (IsIndividualReports)
             {
-                <td>@context.SubjectSubgroup.Students.First().Login</td>
-                <td>@context.SubjectSubgroup.Students.First().Name</td>
-                <td>@context.SubjectSubgroup.Students.First().Surname</td>
+                <td style="@BoldUncheckedReportOwner(context.ToCheck)">@context.SubjectSubgroup.Students.First().Login</td>
+                <td style="@BoldUncheckedReportOwner(context.ToCheck)">@context.SubjectSubgroup.Students.First().Name</td>
+                <td style="@BoldUncheckedReportOwner(context.ToCheck)">@context.SubjectSubgroup.Students.First().Surname</td>
             }
             else
             {
-                <td>@context.SubjectSubgroup.Name</td>
+                <td style="@BoldUncheckedReportOwner(context.ToCheck)">@context.SubjectSubgroup.Name</td>
             }
-            <td>@(context.Mark is not null ? EnumTranslator.Mark[context.Mark] : "") </td>
+            <td style="@BoldUncheckedReportOwner(context.ToCheck) @MarkColor(context.Mark)">@(context.Mark is not null ? EnumTranslator.Mark[context.Mark] : "") </td>
             <td><div class="table__row-icon"><MatIcon Icon="@MatIconNames.Arrow_forward" Style="height: 100%" Class="pointer" @onclick="() => HandleSelectedStudentReport(context)"/></div></td>
         </MatTableRow>
     </MatTable>
@@ -64,4 +64,17 @@ else
     {
         SelectedStudentReportId.InvokeAsync(studentReport.Id);
     }
+
+    public string BoldUncheckedReportOwner(bool toCheck)
+    {
+        return toCheck ? "font-weight: var(--font-weight-bold);" : "";
+    }
+
+    private string MarkColor(MarkEnum? mark)
+    {
+        return mark is null || mark == MarkEnum.Two || mark == MarkEnum.Failed ?
+            "color: red" :
+            "color: green";
+    }
+
 }
