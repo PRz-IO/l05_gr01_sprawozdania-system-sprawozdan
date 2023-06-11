@@ -36,6 +36,7 @@ namespace SystemSprawozdan.Backend.Services
             _userContextService = userContextService;
             _mapper = mapper;
         }
+        //! Pobieranie grup, do których należy, bądź nie należy student
         public List<SubjectGroupGetDto> GetSubjectGroup(int subjectId, bool? isUserBelong)
         {
             var loginUserId = _userContextService.GetUserId;
@@ -50,7 +51,7 @@ namespace SystemSprawozdan.Backend.Services
                 subjectGroupsFromDb = subjectGroupsFromDb.Where(subjectGroup =>
                     subjectGroup.SubjectSubgroups.Any(subjectSubgroup =>
                         subjectSubgroup.Students.Any(student => student.Id == loginUserId)));
-            else if( isUserBelong == false)
+            else if (isUserBelong == false)
                 subjectGroupsFromDb = subjectGroupsFromDb.Where(subjectGroup =>
                     !subjectGroup.SubjectSubgroups.Any(subjectSubgroup =>
                         subjectSubgroup.Students.Any(student => student.Id == loginUserId)));
@@ -59,6 +60,7 @@ namespace SystemSprawozdan.Backend.Services
             var subjectGroupsDto = _mapper.Map<List<SubjectGroupGetDto>>(subjectGroups);
             return subjectGroupsDto;
         }
+        //! Pobieranie grup, które prowadzi dany nauczyciel 
         public List<SubjectGroupGetDto> GetSubjectGroupTeacher(int subjectId)
         {
             var loginUserId = _userContextService.GetUserId;
@@ -69,13 +71,14 @@ namespace SystemSprawozdan.Backend.Services
                 .Include(subjectGroup => subjectGroup.Teacher)
                 .Where(subjectGroup => subjectGroup.SubjectId == subjectId);
 
-                subjectGroupsFromDb = subjectGroupsFromDb.Where(subjectGroup =>
-                    subjectGroup.TeacherId == loginUserId);
+            subjectGroupsFromDb = subjectGroupsFromDb.Where(subjectGroup =>
+                subjectGroup.TeacherId == loginUserId);
 
             var subjectGroups = subjectGroupsFromDb.ToList();
             var subjectGroupsDto = _mapper.Map<List<SubjectGroupGetDto>>(subjectGroups);
             return subjectGroupsDto;
         }
+        //! Pobiera szczegóły do danej grupy
         public SubjectGroupGetDetailsDto GetSubjectGroupDetails(int groupId)
         {
             var details = new SubjectGroupGetDetailsDto();
@@ -89,6 +92,7 @@ namespace SystemSprawozdan.Backend.Services
             details.TeacherName = TeacherName;
             return details;
         }
+        //! Pobiera studentów z grupy 
         public List<StudentBasicGetDto> GetSubjectGroupStudents(int groupId)
         {
             if (!(_dbContext.SubjectGroup.Any(group => group.Id == groupId)))
@@ -104,7 +108,7 @@ namespace SystemSprawozdan.Backend.Services
             foreach (var subgroup in subgroups)
             {
                 var students = subgroup.Students;
-                foreach(var student in students)
+                foreach (var student in students)
                 {
                     studentsFromGroup.Add(new StudentBasicGetDto
                     {
@@ -115,8 +119,9 @@ namespace SystemSprawozdan.Backend.Services
                     });
                 }
             }
-                return studentsFromGroup;
+            return studentsFromGroup;
         }
+        //! Usuwa studentów z grupy 
         public void DeleteStudentFromGroup(int studentId, int groupId)
         {
             if (!(_dbContext.SubjectGroup.Any(group => group.Id == groupId)))
@@ -136,7 +141,7 @@ namespace SystemSprawozdan.Backend.Services
             {
                 subgroup.Students.Remove(student);
                 _dbContext.SubjectSubgroup.Update(subgroup);
-                if(subgroup.Students.Count == 0)
+                if (subgroup.Students.Count == 0)
                 {
                     var group = _dbContext.SubjectGroup.FirstOrDefault(group => group.Id == groupId);
                     group.SubjectSubgroups.Remove(subgroup);
@@ -145,7 +150,7 @@ namespace SystemSprawozdan.Backend.Services
             }
             _dbContext.SaveChanges();
         }
-
+        //! Dodaje pustą grupę
         public SubjectGroup AddPlaceholderSubjectGroup(int subjectId)
         {
             var teacherId = _userContextService.GetUserId;
