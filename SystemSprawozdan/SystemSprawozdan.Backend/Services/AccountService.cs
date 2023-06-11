@@ -218,16 +218,17 @@ namespace SystemSprawozdan.Backend.Services
                 throw new BadRequestException("Wrong username or password!");
         }
 
+        //! Zwraca informacje o użytkowniku
         public UserInfoGetDto GetUserInfo(bool isStudent)
         {
             var userId = _userContextService.GetUserId;
-
+            
             UserInfoGetDto info = new();
 
             if (isStudent == true)
             {
                 var student = _dbContext.Student.FirstOrDefault(student => student.Id == userId);
-                
+
                 if (student != null)
                 {
                     info.Login = student.Login;
@@ -235,8 +236,8 @@ namespace SystemSprawozdan.Backend.Services
                     info.Surname = student.Surname;
                     info.Email = student.Email;
                 }
-                else
-                    throw new NotFoundException("Couldn't find student with that id");
+                //else
+                    //throw new NotFoundException("Couldn't find student with that id");
 
             }
             else
@@ -252,14 +253,15 @@ namespace SystemSprawozdan.Backend.Services
                     info.Degree = teacher.Degree;
                     info.Position = teacher.Position;
                 }
-                else
-                    throw new NotFoundException("couldn't find teacher with that id");
+                //else
+                    //throw new NotFoundException("couldn't find teacher with that id");
 
             }
 
             return info;
         }
 
+        //! Zmienia hasło użytkownika
         public void ChangePassword(string newPassword, bool isStudent)
         {
             var userId = _userContextService.GetUserId;
