@@ -23,9 +23,11 @@ namespace SystemSprawozdan.Backend.Services
         List<StudentBasicGetDto> GetSubjectGroupStudents(int groupId);
         void DeleteStudentFromGroup(int studentId, int groupId);
         public SubjectGroup AddPlaceholderSubjectGroup(int subjectId);
-    }
+        void CreateSubjectGroup(SubjectGroupPostDto newGroup);
 
-    public class SubjectGroupService : ISubjectGroupService
+	}
+
+	public class SubjectGroupService : ISubjectGroupService
     {
         private readonly ApiDbContext _dbContext;
         private readonly IUserContextService _userContextService;
@@ -168,5 +170,21 @@ namespace SystemSprawozdan.Backend.Services
 
             return SubjectGroupToAdd;
         }
-    }
+
+        //! Tworzy nową grupę 
+		public void CreateSubjectGroup(SubjectGroupPostDto newGroup)
+		{
+			var Id = _userContextService.GetUserId;
+			var Teacher = _dbContext.Teacher.FirstOrDefault(t => t.Id == Id);
+			var group = new SubjectGroup();
+			group.Name = newGroup.Name;
+			group.GroupType = newGroup.Type;
+			group.SubjectId = newGroup.SubjectId;
+			group.TeacherId = Teacher.Id;
+
+			_dbContext.SubjectGroup.Add(group);
+			_dbContext.SaveChanges();
+		}
+
+	}
 }

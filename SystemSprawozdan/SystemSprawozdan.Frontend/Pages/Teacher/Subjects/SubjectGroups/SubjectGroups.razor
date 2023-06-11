@@ -19,7 +19,7 @@ else if (SubjectGroupGetDtos.Count != 0)
         <MatTableHeader>
             <th class="table__header-cell--small">Grupy </th>
             <th class="table__header-cell--normal"> </th>
-            <th class="table__header-cell--small"><MatButton Raised="true">Dodaj grupę</MatButton> </th>
+            <th class="table__header-cell--small"><MatButton Raised="true" OnClick="@(e => { _dialogIsOpen = true; })">Dodaj grupę</MatButton> </th>
         </MatTableHeader>
         <MatTableRow>
             <td>@context.Name</td>
@@ -29,6 +29,22 @@ else if (SubjectGroupGetDtos.Count != 0)
             </td>
         </MatTableRow>
     </MatTable>
+
+    <MatDialog @bind-IsOpen="_dialogIsOpen" SurfaceStyle="background-color: white">
+        <MatDialogTitle>Uzupełnij dane</MatDialogTitle>
+        <MatDialogContent style="display: flex; flex-direction: column; justify-content: space-evenly; height: 50vh;">
+            
+            <MatTextField Label="Nazwa" Required="true" TValue="string" @bind-Value="@newGroup.Name"></MatTextField>
+
+            <MatSelectItem ValidationDisabled="false" Label="Typ" Items="Types" @bind-Value="newGroup.Type"></MatSelectItem>
+
+            <div class="dialog-buttons">
+                <MatButton OnClick="@(e => { _dialogIsOpen = false; })">Anuluj</MatButton>
+                <MatButton OnClick="CreateGroup">Ok</MatButton>
+            </div>
+
+        </MatDialogContent>
+    </MatDialog>
 }
 
 
@@ -41,6 +57,7 @@ else if (SubjectGroupGetDtos.Count != 0)
     private bool _dialogIsOpen = false;
     [Parameter]
     public int SubjectId { get; set; }
+    public SubjectGroupPostDto newGroup = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -51,4 +68,16 @@ else if (SubjectGroupGetDtos.Count != 0)
     {
         NavigationManager.NavigateTo($"teacher/view-students/" + groupId);
     }    
+
+    public async void CreateGroup()
+    {
+        newGroup.SubjectId = SubjectId;
+
+        await AppHttpClient.Post("SubjectGroup/CreateSubjectGroup", newGroup);
+        MatToaster.Add("Dodano nową grupę!", MatToastType.Success, "Sukces!");
+
+        _dialogIsOpen = false;
+
+        NavigationManager.NavigateTo($"teacher/subjects/" + SubjectId);
+    }
 }
