@@ -171,6 +171,7 @@ namespace SystemSprawozdan.Backend.Services
             return SubjectGroupToAdd;
         }
 
+        //! Tworzy nową grupę 
 		public void CreateSubjectGroup(SubjectGroupPostDto newGroup)
 		{
 			var Id = _userContextService.GetUserId;
