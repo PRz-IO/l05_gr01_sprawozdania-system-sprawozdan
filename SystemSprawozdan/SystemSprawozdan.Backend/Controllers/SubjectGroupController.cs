@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SystemSprawozdan.Backend.Services;
+using SystemSprawozdan.Shared.Dto;
 using SystemSprawozdan.Shared.Enums;
 
 namespace SystemSprawozdan.Backend.Controllers
@@ -45,6 +46,14 @@ namespace SystemSprawozdan.Backend.Controllers
         public ActionResult RemoveStudentFromGroup([FromRoute] int studentId, [FromRoute] int groupId)
         {
             _subjectGorupServices.DeleteStudentFromGroup(studentId, groupId);
+            return Ok();
+        }
+
+        [HttpPost("CreateSubjectGroup")]
+        [Authorize(Roles = nameof(UserRoleEnum.Teacher))]
+        public ActionResult CreateSubjectGroup([FromBody] SubjectGroupPostDto newGroup)
+        {
+            _subjectGorupServices.CreateSubjectGroup(newGroup);
             return Ok();
         }
 
