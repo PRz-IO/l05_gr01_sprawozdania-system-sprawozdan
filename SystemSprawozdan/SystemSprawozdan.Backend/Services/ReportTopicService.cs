@@ -102,6 +102,7 @@ namespace SystemSprawozdan.Backend.Services
             
             return reportDto;
         }
+        //! Zwraca tematy sprawozdañ dla danej grupy
         public List<ReportTopicGetDto> GetReportTopicForGroup(int groupId)
         {
             List<ReportTopicGetDto> reportTopics = new List<ReportTopicGetDto>();
@@ -120,6 +121,7 @@ namespace SystemSprawozdan.Backend.Services
 
             return reportTopics;
         }
+        //! Dodaje temat sprawozdania dla danej grupy
         public void PostReportTopic(ReportTopicPostDto reportTopic)
         {
             var newReportTopic = new ReportTopic()
