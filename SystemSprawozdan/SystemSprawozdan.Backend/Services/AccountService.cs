@@ -22,7 +22,7 @@ namespace SystemSprawozdan.Backend.Services
         void RegisterStudent(RegisterStudentDto registerStudentDto);
         void RegisterTeacherOrAdmin(RegisterTeacherOrAdminDto registerTeacherOrAdminDto);
         void RestoreUserPassword(RestoreUserPasswordDto restoreUserPasswordDto);
-        UserInfoGetDto GetUserInfo(bool? isStudent);
+        UserInfoGetDto GetUserInfo(bool isStudent);
         void ChangePassword(string newPassword, bool isStudent);
 
     }
@@ -219,7 +219,7 @@ namespace SystemSprawozdan.Backend.Services
         }
 
         //! Zwraca informacje o użytkowniku
-        public UserInfoGetDto GetUserInfo(bool? isStudent)
+        public UserInfoGetDto GetUserInfo(bool isStudent)
         {
             var userId = _userContextService.GetUserId;
             
