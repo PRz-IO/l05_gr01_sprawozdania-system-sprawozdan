@@ -4,9 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SystemSprawozdan.Shared.Dto.SubjectGroup
+namespace SystemSprawozdan.Shared.Dto
 {
-	internal class SbujectGroupPostDto
+	public class SubjectGroupPostDto
 	{
+		public string Name { get; set; }
+		public string Type { get; set; }
+		public int SubjectId { get; set; }
+
 	}
 }

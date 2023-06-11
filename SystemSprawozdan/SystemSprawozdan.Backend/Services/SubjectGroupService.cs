@@ -129,7 +129,7 @@ namespace SystemSprawozdan.Backend.Services
             _dbContext.SaveChanges();
         }
 
-		void CreateSubjectGroup(SubjectGroupPostDto newGroup)
+		public void CreateSubjectGroup(SubjectGroupPostDto newGroup)
         {
             var Id = _userContextService.GetUserId;
             var Teacher = _dbContext.Teacher.FirstOrDefault(t => t.Id == Id);
