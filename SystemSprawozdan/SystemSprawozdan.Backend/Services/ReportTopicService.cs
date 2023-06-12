@@ -1,12 +1,15 @@
+using System.Security.Claims;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using SystemSprawozdan.Backend.Authorization;
 using SystemSprawozdan.Backend.Data;
+using SystemSprawozdan.Backend.Exceptions;
 using SystemSprawozdan.Shared.Dto;
 using SystemSprawozdan.Backend.Exceptions;
 using System.Text.RegularExpressions;
 using SystemSprawozdan.Backend.Data.Models.DbModels;
+using SystemSprawozdan.Shared.Dto.ReportTopic;
 
 namespace SystemSprawozdan.Backend.Services
 {
@@ -17,6 +20,9 @@ namespace SystemSprawozdan.Backend.Services
         ReportTopicGetDto GetReportById(int reportTopicId);
         List<ReportTopicGetDto> GetReportTopicForGroup(int groupId);
         void PostReportTopic(ReportTopicPostDto reportTopic);
+        
+        List<ReportTopicForStudentGetDto> GetReportTopicForStudent(bool isSubmitted);
+
     }
 
     public class ReportTopicService : IReportTopicService
@@ -132,6 +138,98 @@ namespace SystemSprawozdan.Backend.Services
             };
             _dbContext.ReportTopic.Add(newReportTopic);
             _dbContext.SaveChanges();
+        }
+        
+        private List<ReportTopicForStudentGetDto> GetReportTopicsByUserId()
+        {
+            var loginUserId = int.Parse(_userContextService.User.FindFirst(claim => claim.Type == ClaimTypes.NameIdentifier).Value);
+
+            var reportTopics = _dbContext.ReportTopic
+                    .Where(rt => rt.SubjectGroup.SubjectSubgroups
+                        .Any(ss => ss.Students.Any(s => s.Id == loginUserId)))
+                    .Select(rt => new ReportTopicForStudentGetDto
+                    {
+                        Id = rt.Id,
+                        ReportTopicName = rt.Name,
+                        Deadline = rt.Deadline,
+                        Teacher = new TeacherBasicGetDto
+                        {
+                            Degree = rt.SubjectGroup.Teacher.Degree,
+                            Name = rt.SubjectGroup.Teacher.Name,
+                            Surname = rt.SubjectGroup.Teacher.Surname
+                        },
+                        SubjectName = rt.SubjectGroup.Subject.Name,
+                        GroupType = rt.SubjectGroup.GroupType
+                    })
+                    .ToList();
+
+            return reportTopics;
+        }
+
+
+        private List<ReportTopicForStudentGetDto> GetSubmittedReportsByStudentId()
+        { var loginUserId = int.Parse(_userContextService.User.FindFirst(claim => claim.Type == ClaimTypes.NameIdentifier).Value);
+
+            var subjectSubgroups = _dbContext.SubjectSubgroup
+            .Where(sg => sg.Students.Any(s => s.Id == loginUserId))
+            .ToList();
+
+            var submittedReportsDto = new List<ReportTopicForStudentGetDto>();
+            foreach (var subjectSubgroup in subjectSubgroups)
+            {
+                var submittedReports = _dbContext.StudentReport
+                .Where(r => r.SubjectSubgroupId == subjectSubgroup.Id)
+                .OrderByDescending(r => r.SentAt)
+                .ToList();
+
+                foreach (var report in submittedReports)
+                {
+                    
+                    var subjectGroup = _dbContext.SubjectGroup
+                        .FirstOrDefault(g => g.Id == report.SubjectSubgroupId);
+
+                    var subject = _dbContext.Subject
+                        .FirstOrDefault(s => s.Id == subjectGroup.SubjectId);
+
+                    var teacher = _dbContext.Teacher
+                        .FirstOrDefault(t => t.SubjectGroups.Contains(subjectGroup));
+
+                    var reportTopic = _dbContext.ReportTopic
+                        .FirstOrDefault(rt => rt.Id == report.ReportTopicId);
+
+                    var submittedReportDto = new ReportTopicForStudentGetDto
+                    {
+                        StudentReportId = report.Id,
+                        SubjectName = subject.Name,
+                        GroupType = subjectGroup.GroupType,
+                        Teacher = new TeacherBasicGetDto
+                        {
+                            Degree = teacher.Degree,
+                            Name = teacher.Name,
+                            Surname = teacher.Surname
+                        },
+                        ReportTopicName = reportTopic.Name,
+                        Deadline = reportTopic.Deadline,
+                        Mark = report.Mark
+                    };
+                    submittedReportsDto.Add(submittedReportDto);
+                }
+            }
+            return submittedReportsDto;
+        }
+
+        public List<ReportTopicForStudentGetDto> GetReportTopicForStudent(bool isSubmitted)
+        {
+            List<ReportTopicForStudentGetDto> report = new List<ReportTopicForStudentGetDto>();
+            if (isSubmitted)
+            {
+                report = GetSubmittedReportsByStudentId();
+            }
+            else
+            {
+                report = GetReportTopicsByUserId();
+            }
+            return report;
         }
     }
 }
