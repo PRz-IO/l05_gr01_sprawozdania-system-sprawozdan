@@ -86,6 +86,9 @@ builder.Services.AddScoped<IReportCommentService, ReportCommentService>();
 builder.Services.AddScoped<ISubjectService, SubjectService>();
 builder.Services.AddScoped<IMajorService, MajorService>();
 
+
+
+
 var app = builder.Build();
 
 var scope = app.Services.CreateScope();

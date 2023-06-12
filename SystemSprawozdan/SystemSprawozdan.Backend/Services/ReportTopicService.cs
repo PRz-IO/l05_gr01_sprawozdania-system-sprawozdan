@@ -7,6 +7,8 @@ using SystemSprawozdan.Backend.Data;
 using SystemSprawozdan.Shared.Dto;
 using SystemSprawozdan.Backend.Exceptions;
 using SystemSprawozdan.Shared.Dto.ReportTopic;
+using System.Linq;
+using Microsoft.AspNetCore.Mvc;
 
 namespace SystemSprawozdan.Backend.Services
 {
@@ -195,7 +197,6 @@ namespace SystemSprawozdan.Backend.Services
             }
             return report;
         }
-        
-        
+
     }
 }
