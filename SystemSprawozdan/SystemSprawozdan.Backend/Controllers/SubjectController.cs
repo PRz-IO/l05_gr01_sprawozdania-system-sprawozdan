@@ -29,6 +29,14 @@ namespace SystemSprawozdan.Backend.Controllers
             return Ok(subjects);
         }
 
+        //TODO: Mateusz: Trzeba zrobić GETa, który wyświetla wszystkie przedmioty 
+        [HttpGet("{subjectId}")]
+        public ActionResult GetSubject(int subjectId) 
+        {
+            var subject = _subjectService.GetSubject(subjectId);
+            return Ok(subject);
+        }
+
         [HttpGet("forTeacher")]
         [Authorize(Roles = nameof(UserRoleEnum.Teacher))]
         public ActionResult<IEnumerable<TeacherSubjectGetDto>> GetTeacherSubjects()

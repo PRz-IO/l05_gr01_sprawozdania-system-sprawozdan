@@ -4,7 +4,7 @@
 @inject IMatToaster Toaster
 @inject NavigationManager NavigationManager
 
-<PageTitle>Dołącz do grupy</PageTitle>
+<TitleBar Text="@(SubjectGroup.SubjectName + " / " + SubjectGroup.Name)"></TitleBar>
 
 <style>
     .edit-field{
@@ -50,7 +50,8 @@
 @code {
     [Parameter]
     public int GroupId { get; set; }
-    public SubjectGroupGetDetailsDto SubjectGroup { get; set; }
+
+    public SubjectGroupGetDetailsDto SubjectGroup { get; set; } = new();
     
     string subgroupType = "individual";
     string? subgroupName;

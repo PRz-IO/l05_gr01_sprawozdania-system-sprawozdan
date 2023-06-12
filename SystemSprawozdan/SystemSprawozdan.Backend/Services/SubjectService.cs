@@ -11,6 +11,7 @@ namespace SystemSprawozdan.Backend.Services
         public List<SubjectGetDto> GetSubjects();
         public List<TeacherSubjectGetDto> GetTeacherSubjects();
         public Subject AddSubject(SubjectPostDto subjectPostDto);
+        public SubjectGetDto GetSubject(int subjectId);
     }
     public class SubjectService : ISubjectService
     {
@@ -42,6 +43,22 @@ namespace SystemSprawozdan.Backend.Services
             }
             return allSubjects;
         }
+
+        public SubjectGetDto GetSubject(int subjectId)
+        {
+            var subject = _dbContext.Subject.Include(subject => subject.Major).FirstOrDefault(subject => subject.Id == subjectId);
+            
+            var subjectDto = new SubjectGetDto()
+            {
+                Id = subject.Id,
+                Name = subject.Name,
+                MajorCode = subject.Major.MajorCode,
+                SubjectGroups = new List<SubjectGroupGetDto>()
+            };  
+            
+            return subjectDto;
+        }
+        
         //! Pobieranie przedmiotów z bazy danych, do których należy prowadzący
         public List<TeacherSubjectGetDto> GetTeacherSubjects()
         {

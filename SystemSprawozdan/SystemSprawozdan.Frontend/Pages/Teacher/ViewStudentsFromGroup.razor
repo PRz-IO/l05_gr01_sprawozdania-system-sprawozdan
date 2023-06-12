@@ -3,7 +3,9 @@
 @inject IAppHttpClient AppHttpClient
 @inject IMatToaster Toaster
 @inject NavigationManager NavigationManager
-<TitleBar Text="@Title"></TitleBar>
+
+<TitleBar Text="@Title"/>
+
 <div>
     <TabBar TValue="bool" @bind-Value="@isStudent" Data="@TabBarData" FlexDirection="row" />
 </div>
@@ -101,9 +103,11 @@ else
         {
             await AppHttpClient.Delete($"SubjectGroup/{GroupId}/RemoveStudentFromGroup/{studentToDelete}");
 
-            dialogIsOpen = false;
             NavigationManager.NavigateTo($"/teacher/view-students/{GroupId}");
             Toaster.Add("Student został usunięty z grupy", MatToastType.Success, "Sukces");
+            
+            dialogIsOpen = false;
+            StateHasChanged();
         }
     }
     async void AddReportTopic()
@@ -116,11 +120,12 @@ else
             };
 
 
-        await AppHttpClient.Post($"ReportTopic/AddTopic", newReportTopic);
-
-        reportTopicDialogIsOpen = false;
+        await AppHttpClient.Post("ReportTopic/AddTopic", newReportTopic);
         NavigationManager.NavigateTo($"/teacher/view-students/{GroupId}");
         Toaster.Add("Dodano sprawozdanie", MatToastType.Success, "Sukces");
+
+        reportTopicDialogIsOpen = false;
+        StateHasChanged();
     }
 
     List<StudentBasicGetDto> students = new();

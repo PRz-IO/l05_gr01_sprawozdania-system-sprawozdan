@@ -5,6 +5,8 @@
 @inject IMatToaster MatToaster
 
 <PageTitle>Grupy</PageTitle>
+<TitleBar Text="@(Subject.MajorCode + " / " + Subject.Name)"></TitleBar>
+
 @if (SubjectGroupGetDtos is null)
 {
     <LoadingBar IsLoading="true" />
@@ -50,6 +52,7 @@ else if (SubjectGroupGetDtos.Count != 0)
 
 
 @code {
+    public SubjectGetDto Subject { get; set; } = new();
     public List<SubjectGroupGetDto> SubjectGroupGetDtos;
 
     public GroupPostDto GroupToSendDto = new();
@@ -63,6 +66,7 @@ else if (SubjectGroupGetDtos.Count != 0)
     {
         SubjectGroupGetDtos = null;
         SubjectGroupGetDtos = await AppHttpClient.Get<List<SubjectGroupGetDto>>($"SubjectGroup/{SubjectId}/Teacher");
+        Subject = await AppHttpClient.Get<SubjectGetDto>($"Subject/{SubjectId}");
     }
     public void GoToStudents(int groupId)
     {
