@@ -32,6 +32,7 @@ namespace SystemSprawozdan.Backend.Services
         }
 
         //metodki
+        //! Tworzy podgrupę
         public void CreateSubgroup(SubjectSubgroupPostDto createSubgroupDto)
         {
             var userId = _userContextService.GetUserId;
@@ -57,6 +58,7 @@ namespace SystemSprawozdan.Backend.Services
             _dbContext.SaveChanges();
             
         }
+        //! Zwraca podgrupy danej grupy
         public List<SubjectSubgroupGetDto> GetSubgroups(int groupId)
         {
             if(!(_dbContext.SubjectGroup.Any(group => group.Id == groupId)))
@@ -80,6 +82,7 @@ namespace SystemSprawozdan.Backend.Services
 
             return groupTypeSubgroups;
         }
+        //! Dodaje użytkownika do podgrupy
         public void AddUserToSubgroup(int subgroupId)
         {
             var userId = _userContextService.GetUserId;

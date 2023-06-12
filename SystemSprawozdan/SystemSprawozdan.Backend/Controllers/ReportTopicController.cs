@@ -57,5 +57,19 @@ namespace SystemSprawozdan.Backend.Controllers
 
 
         }
+
+        [HttpGet("{groupId}/GetTopicsForGroup")]
+        public ActionResult GetReportTopicForGroup([FromRoute] int groupId)
+        {
+            var reportTopics = _reportTopicService.GetReportTopicForGroup(groupId);
+
+            return Ok(reportTopics);
+        }
+        [HttpPost("AddTopic")]
+        public ActionResult PostReportTopic([FromBody] ReportTopicPostDto reportTopic)
+        {
+            _reportTopicService.PostReportTopic(reportTopic);
+            return Ok();
+        }
     }
 }

@@ -1,5 +1,7 @@
 ﻿@inject ITReportHttpService ITReportHttpService
 
+<TitleBar Text="Sprawozdania"/>
+
 <TabBar Data="@TabBarData" @bind-Value="@ToCheck"/>
 <ReportTopicsTable ReportTopics="@ReportTopicGetDtos" SelectedReportTopicId="selectedReportTopicId => SelectedReportTopicId.InvokeAsync(selectedReportTopicId)"/>
 @code

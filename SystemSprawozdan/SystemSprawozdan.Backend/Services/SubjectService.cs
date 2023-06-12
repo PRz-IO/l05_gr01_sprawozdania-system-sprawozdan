@@ -11,6 +11,7 @@ namespace SystemSprawozdan.Backend.Services
         public List<SubjectGetDto> GetSubjects();
         public List<TeacherSubjectGetDto> GetTeacherSubjects();
         public Subject AddSubject(SubjectPostDto subjectPostDto);
+        public SubjectGetDto GetSubject(int subjectId);
     }
     public class SubjectService : ISubjectService
     {
@@ -23,6 +24,7 @@ namespace SystemSprawozdan.Backend.Services
             _userContextService = userContextService;
             _mapper = mapper;
         }
+        //! Pobieranie przedmiotów z bazy danych 
         public List<SubjectGetDto> GetSubjects() 
         {
             var subjects = _dbContext.Subject.Include(subject => subject.Major).ToList();
@@ -42,6 +44,22 @@ namespace SystemSprawozdan.Backend.Services
             return allSubjects;
         }
 
+        public SubjectGetDto GetSubject(int subjectId)
+        {
+            var subject = _dbContext.Subject.Include(subject => subject.Major).FirstOrDefault(subject => subject.Id == subjectId);
+            
+            var subjectDto = new SubjectGetDto()
+            {
+                Id = subject.Id,
+                Name = subject.Name,
+                MajorCode = subject.Major.MajorCode,
+                SubjectGroups = new List<SubjectGroupGetDto>()
+            };  
+            
+            return subjectDto;
+        }
+        
+        //! Pobieranie przedmiotów z bazy danych, do których należy prowadzący
         public List<TeacherSubjectGetDto> GetTeacherSubjects()
         {
             var teacherId = _userContextService.GetUserId;
@@ -60,7 +78,7 @@ namespace SystemSprawozdan.Backend.Services
             }
             return subjectDtos;
         }
-
+        //! Dodawanie nowego przedmiotu
         public Subject AddSubject(SubjectPostDto subjectPostDto)
         {
             var major = _dbContext.Major.FirstOrDefault(major => major.MajorCode == subjectPostDto.MajorCode);

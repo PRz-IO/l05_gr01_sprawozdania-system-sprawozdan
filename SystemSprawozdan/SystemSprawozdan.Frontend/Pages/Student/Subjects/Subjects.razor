@@ -2,6 +2,9 @@
 @inject NavigationManager NavigationManager
 @inject IAppHttpClient AppHttpClient
 
+<PageTitle>Przedmioty</PageTitle>
+<TitleBar Text="Przedmioty"/>
+
 <div>
     <TabBar TValue="bool" @bind-Value="@isUserBelong" Data="@TabBarData" FlexDirection="row" />
 </div>
@@ -22,7 +25,7 @@
                 var counterCapture = counter;
                 <MatExpansionPanel>
                     <MatExpansionPanelSummary>
-                        <MatExpansionPanelHeader>@Subject[counterCapture].Name</MatExpansionPanelHeader>
+                            <MatExpansionPanelHeader>@Subject[counterCapture].Name</MatExpansionPanelHeader>
                     </MatExpansionPanelSummary>
                     <MatExpansionPanelDetails>
                         @if (SubjectGroup[counterCapture].Count() != 0)
@@ -54,7 +57,7 @@
                     </MatExpansionPanelDetails>
                 </MatExpansionPanel>
             }
-        </MatAccordion>
+        </MatAccordion> 
     }
 </div>
 @code {
@@ -62,7 +65,7 @@
     public List<List<SubjectGroupGetDto>> SubjectGroup = new List<List<SubjectGroupGetDto>>();
     public async void HandleSelectedSubject(int groupId)
     {
-        NavigationManager.NavigateTo("student/teams/" + groupId);
+        NavigationManager.NavigateTo("student/subjects/" + groupId);
     }
 
     protected override Task OnInitializedAsync()
@@ -76,6 +79,7 @@
         Subject = null;
         SubjectGroup = new();
         Subject = await AppHttpClient.Get<List<SubjectGetDto>>("Subject");
+
         foreach (var subject in Subject)
         {
             var parameter = new HttpParameter("isUser", isUserBelong);
@@ -83,6 +87,15 @@
 
             SubjectGroup.Add(subjectGroup);
         }
+            for (int i = 0; i < Subject.Count(); i++)
+            {
+                if (SubjectGroup[i].Count() == 0)
+                {
+                    SubjectGroup.RemoveAt(i);
+                    Subject.RemoveAt(i);
+                    i--;
+                }
+            }
         StateHasChanged();
     }
 

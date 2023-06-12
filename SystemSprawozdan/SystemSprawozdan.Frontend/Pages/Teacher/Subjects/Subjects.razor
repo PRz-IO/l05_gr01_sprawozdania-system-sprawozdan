@@ -5,6 +5,7 @@
 @inject IMatToaster MatToaster
 
 <PageTitle>Przedmioty</PageTitle>
+<TitleBar Text="Przedmioty"/>
 
 <MatTable Items="TeacherSubjectGetDtos" ShowPaging="false">
     <MatTableHeader>
@@ -48,17 +49,14 @@
     public SubjectPostDto SubjectToSendDto = new();
     public int[] Numbers = { 1, 2, 3, 4, 5, 6, 7, 8 };
     private bool _dialogIsOpen = false;
-
     protected override async Task OnInitializedAsync()
     {
-        var getTeacherSubjectsUri = new Uri("https://localhost:7184/api/Subject/forTeacher");
-        TeacherSubjectGetDtos = await AppHttpClient.Get<List<TeacherSubjectGetDto>>(getTeacherSubjectsUri.ToString());
+        TeacherSubjectGetDtos = await AppHttpClient.Get<List<TeacherSubjectGetDto>>("Subject/forTeacher");
     }
 
     public async Task OpenAddSubjectDialog()
     {
-        var getMajorsUri = new Uri("https://localhost:7184/api/Major");
-        MajorsDtos = await AppHttpClient.Get<List<MajorGetDto>>(getMajorsUri.ToString());
+        MajorsDtos = await AppHttpClient.Get<List<MajorGetDto>>("Major");
         _dialogIsOpen = true;
     }
 
@@ -72,9 +70,11 @@
         else
         {
             _dialogIsOpen = false;
-            var SubjectPostUri = new Uri("https://localhost:7184/api/Subject");
-            var result = AppHttpClient.Post(SubjectPostUri.ToString(), SubjectToSendDto);
+            var createdSubjectId= await AppHttpClient.Post("Subject", SubjectToSendDto);
             MatToaster.Add("Dodano nowy przedmiot!", MatToastType.Success, "Sukces!");
+            await AppHttpClient.Post($"SubjectGroup/placeholder/{createdSubjectId}", 1);
+            TeacherSubjectGetDtos = await AppHttpClient.Get<List<TeacherSubjectGetDto>>("Subject/forTeacher");
+            StateHasChanged();
         }
         
     }

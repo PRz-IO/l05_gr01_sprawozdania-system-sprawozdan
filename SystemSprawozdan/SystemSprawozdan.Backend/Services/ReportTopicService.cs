@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
@@ -6,9 +5,8 @@ using SystemSprawozdan.Backend.Authorization;
 using SystemSprawozdan.Backend.Data;
 using SystemSprawozdan.Shared.Dto;
 using SystemSprawozdan.Backend.Exceptions;
-using SystemSprawozdan.Shared.Dto.ReportTopic;
-using System.Linq;
-using Microsoft.AspNetCore.Mvc;
+using System.Text.RegularExpressions;
+using SystemSprawozdan.Backend.Data.Models.DbModels;
 
 namespace SystemSprawozdan.Backend.Services
 {
@@ -17,9 +15,8 @@ namespace SystemSprawozdan.Backend.Services
         ReportTopicGetDto GetReportTopic(int? reportTopicId, int? studentReportId);
         IEnumerable<ReportTopicGetDto> GetReports(bool? toCheck);
         ReportTopicGetDto GetReportById(int reportTopicId);
-
-        List<ReportTopicForStudentGetDto> GetReportTopicForStudent(bool isSubmitted);
-
+        List<ReportTopicGetDto> GetReportTopicForGroup(int groupId);
+        void PostReportTopic(ReportTopicPostDto reportTopic);
     }
 
     public class ReportTopicService : IReportTopicService
@@ -105,98 +102,36 @@ namespace SystemSprawozdan.Backend.Services
             
             return reportDto;
         }
-        
-        private List<ReportTopicForStudentGetDto> GetReportTopicsByUserId()
+        //! Zwraca tematy sprawozda� dla danej grupy
+        public List<ReportTopicGetDto> GetReportTopicForGroup(int groupId)
         {
-            var loginUserId = int.Parse(_userContextService.User.FindFirst(claim => claim.Type == ClaimTypes.NameIdentifier).Value);
+            List<ReportTopicGetDto> reportTopics = new List<ReportTopicGetDto>();
 
-            var reportTopics = _dbContext.ReportTopic
-                    .Where(rt => rt.SubjectGroup.SubjectSubgroups
-                        .Any(ss => ss.Students.Any(s => s.Id == loginUserId)))
-                    .Select(rt => new ReportTopicForStudentGetDto
-                    {
-                        Id = rt.Id,
-                        ReportTopicName = rt.Name,
-                        Deadline = rt.Deadline,
-                        Teacher = new TeacherBasicGetDto
-                        {
-                            Degree = rt.SubjectGroup.Teacher.Degree,
-                            Name = rt.SubjectGroup.Teacher.Name,
-                            Surname = rt.SubjectGroup.Teacher.Surname
-                        },
-                        SubjectName = rt.SubjectGroup.Subject.Name,
-                        GroupType = rt.SubjectGroup.GroupType
-                    })
-                    .ToList();
+            var topics = _dbContext.ReportTopic.Where(topic => topic.SubjectGroupId == groupId).ToList();
+
+            foreach ( var topic in topics)
+            {
+                reportTopics.Add(new ReportTopicGetDto
+                {
+                    Id = topic.Id,
+                    ReportTopicName = topic.Name,
+                    ReportTopicDeadline = topic.Deadline
+                });
+            }
 
             return reportTopics;
         }
-
-
-        private List<ReportTopicForStudentGetDto> GetSubmittedReportsByStudentId()
-        { var loginUserId = int.Parse(_userContextService.User.FindFirst(claim => claim.Type == ClaimTypes.NameIdentifier).Value);
-
-            var subjectSubgroups = _dbContext.SubjectSubgroup
-            .Where(sg => sg.Students.Any(s => s.Id == loginUserId))
-            .ToList();
-
-            var submittedReportsDto = new List<ReportTopicForStudentGetDto>();
-            foreach (var subjectSubgroup in subjectSubgroups)
-            {
-                var submittedReports = _dbContext.StudentReport
-                .Where(r => r.SubjectSubgroupId == subjectSubgroup.Id)
-                .OrderByDescending(r => r.SentAt)
-                .ToList();
-
-                foreach (var report in submittedReports)
-                {
-                    
-                    var subjectGroup = _dbContext.SubjectGroup
-                        .FirstOrDefault(g => g.Id == report.SubjectSubgroupId);
-
-                    var subject = _dbContext.Subject
-                        .FirstOrDefault(s => s.Id == subjectGroup.SubjectId);
-
-                    var teacher = _dbContext.Teacher
-                        .FirstOrDefault(t => t.SubjectGroups.Contains(subjectGroup));
-
-                    var reportTopic = _dbContext.ReportTopic
-                        .FirstOrDefault(rt => rt.Id == report.ReportTopicId);
-
-                    var submittedReportDto = new ReportTopicForStudentGetDto
-                    {
-                        StudentReportId = report.Id,
-                        SubjectName = subject.Name,
-                        GroupType = subjectGroup.GroupType,
-                        Teacher = new TeacherBasicGetDto
-                        {
-                            Degree = teacher.Degree,
-                            Name = teacher.Name,
-                            Surname = teacher.Surname
-                        },
-                        ReportTopicName = reportTopic.Name,
-                        Deadline = reportTopic.Deadline,
-                        Mark = report.Mark
-                    };
-                    submittedReportsDto.Add(submittedReportDto);
-                }
-            }
-            return submittedReportsDto;
-        }
-
-        public List<ReportTopicForStudentGetDto> GetReportTopicForStudent(bool isSubmitted)
+        //! Dodaje temat sprawozdania dla danej grupy
+        public void PostReportTopic(ReportTopicPostDto reportTopic)
         {
-            List<ReportTopicForStudentGetDto> report = new List<ReportTopicForStudentGetDto>();
-            if (isSubmitted)
+            var newReportTopic = new ReportTopic()
             {
-                report = GetSubmittedReportsByStudentId();
-            }
-            else
-            {
-                report = GetReportTopicsByUserId();
-            }
-            return report;
+                Name = reportTopic.Name,
+                Deadline = reportTopic.Deadline,
+                SubjectGroupId = reportTopic.GroupId
+            };
+            _dbContext.ReportTopic.Add(newReportTopic);
+            _dbContext.SaveChanges();
         }
-
     }
 }
