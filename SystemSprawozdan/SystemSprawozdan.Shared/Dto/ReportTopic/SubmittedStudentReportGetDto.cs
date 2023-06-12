@@ -3,7 +3,8 @@
 namespace SystemSprawozdan.Shared.Dto
 {
     public class SubmittedStudentReportGetDto
-    {
+    {   
+        
         public string SubjectName { get; set; }
         public string SubjectType { get; set; }
         public string TeacherName { get; set; }

@@ -1,10 +1,10 @@
-﻿@page "/student/teams/{GroupId:int}"
+﻿@page "/Student/subjects/{GroupId:int}"
 
 @inject IAppHttpClient AppHttpClient
 @inject IMatToaster Toaster
 @inject NavigationManager NavigationManager
 
-<PageTitle>Dołącz do grupy</PageTitle>
+<TitleBar Text="@(SubjectGroup.SubjectName + " / " + SubjectGroup.Name)"></TitleBar>
 
 <style>
     .edit-field{
@@ -50,7 +50,8 @@
 @code {
     [Parameter]
     public int GroupId { get; set; }
-    public SubjectGroupGetDetailsDto SubjectGroup { get; set; }
+
+    public SubjectGroupGetDetailsDto SubjectGroup { get; set; } = new();
     
     string subgroupType = "individual";
     string? subgroupName;
@@ -79,7 +80,7 @@
                 };
             await AppHttpClient.Post("SubjectSubgroup", subgroup);
             Toaster.Add("Poprawnie stworzono grupę", MatToastType.Success, "Sukces");
-            NavigationManager.NavigateTo("/teams");
+            NavigationManager.NavigateTo("Student/subjects");
         }
         else
         {
@@ -98,7 +99,7 @@
                     };
                 await AppHttpClient.Post("SubjectSubgroup", subgroup);
                 Toaster.Add("Poprawnie stworzono grupę", MatToastType.Success, "Sukces");
-                NavigationManager.NavigateTo("/teams");
+                NavigationManager.NavigateTo("Student/subjects");
             }
             else
             {
@@ -108,7 +109,7 @@
 
                 await AppHttpClient.Post("SubjectSubgroup/AddUserToSubgroup", subgroupId);
                 Toaster.Add("Poprawnie dołączono do grupy", MatToastType.Success, "Sukces");
-                NavigationManager.NavigateTo("/teams");
+                NavigationManager.NavigateTo("Student/subjects");
             }
         }
     }

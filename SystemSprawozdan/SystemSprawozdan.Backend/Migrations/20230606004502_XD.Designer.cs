@@ -12,8 +12,8 @@ using SystemSprawozdan.Backend.Data;
 namespace SystemSprawozdan.Backend.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    [Migration("20230524231222_Added_TeacherNote_to_StudentReport")]
-    partial class Added_TeacherNote_to_StudentReport
+    [Migration("20230606004502_XD")]
+    partial class XD
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -30,12 +30,12 @@ namespace SystemSprawozdan.Backend.Migrations
                     b.Property<int>("StudentsId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("SubjectSubgroupId")
+                    b.Property<int>("SubjectSubgroupsId")
                         .HasColumnType("integer");
 
-                    b.HasKey("StudentsId", "SubjectSubgroupId");
+                    b.HasKey("StudentsId", "SubjectSubgroupsId");
 
-                    b.HasIndex("SubjectSubgroupId");
+                    b.HasIndex("SubjectSubgroupsId");
 
                     b.ToTable("StudentSubjectSubgroup");
                 });
@@ -264,14 +264,17 @@ namespace SystemSprawozdan.Backend.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("TermId")
+                    b.Property<int>("Term")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("TermObjectId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
                     b.HasIndex("MajorId");
 
-                    b.HasIndex("TermId");
+                    b.HasIndex("TermObjectId");
 
                     b.ToTable("Subject");
                 });
@@ -405,7 +408,7 @@ namespace SystemSprawozdan.Backend.Migrations
 
                     b.HasOne("SystemSprawozdan.Backend.Data.Models.DbModels.SubjectSubgroup", null)
                         .WithMany()
-                        .HasForeignKey("SubjectSubgroupId")
+                        .HasForeignKey("SubjectSubgroupsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -436,7 +439,7 @@ namespace SystemSprawozdan.Backend.Migrations
             modelBuilder.Entity("SystemSprawozdan.Backend.Data.Models.DbModels.ReportTopic", b =>
                 {
                     b.HasOne("SystemSprawozdan.Backend.Data.Models.DbModels.SubjectGroup", "SubjectGroup")
-                        .WithMany("reportTopics")
+                        .WithMany("ReportTopics")
                         .HasForeignKey("SubjectGroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -480,15 +483,13 @@ namespace SystemSprawozdan.Backend.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SystemSprawozdan.Backend.Data.Models.DbModels.Term", "Term")
+                    b.HasOne("SystemSprawozdan.Backend.Data.Models.DbModels.Term", "TermObject")
                         .WithMany("Subjects")
-                        .HasForeignKey("TermId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("TermObjectId");
 
                     b.Navigation("Major");
 
-                    b.Navigation("Term");
+                    b.Navigation("TermObject");
                 });
 
             modelBuilder.Entity("SystemSprawozdan.Backend.Data.Models.DbModels.SubjectGroup", b =>
@@ -513,7 +514,7 @@ namespace SystemSprawozdan.Backend.Migrations
             modelBuilder.Entity("SystemSprawozdan.Backend.Data.Models.DbModels.SubjectSubgroup", b =>
                 {
                     b.HasOne("SystemSprawozdan.Backend.Data.Models.DbModels.SubjectGroup", "SubjectGroup")
-                        .WithMany("subjectSubgroups")
+                        .WithMany("SubjectSubgroups")
                         .HasForeignKey("SubjectGroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -550,9 +551,9 @@ namespace SystemSprawozdan.Backend.Migrations
 
             modelBuilder.Entity("SystemSprawozdan.Backend.Data.Models.DbModels.SubjectGroup", b =>
                 {
-                    b.Navigation("reportTopics");
+                    b.Navigation("ReportTopics");
 
-                    b.Navigation("subjectSubgroups");
+                    b.Navigation("SubjectSubgroups");
                 });
 
             modelBuilder.Entity("SystemSprawozdan.Backend.Data.Models.DbModels.SubjectSubgroup", b =>

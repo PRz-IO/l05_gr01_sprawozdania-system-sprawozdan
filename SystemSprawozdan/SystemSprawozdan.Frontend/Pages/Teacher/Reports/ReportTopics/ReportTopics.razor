@@ -1,5 +1,7 @@
 ﻿@inject ITReportHttpService ITReportHttpService
 
+<TitleBar Text="Sprawozdania"/>
+
 <TabBar Data="@TabBarData" @bind-Value="@ToCheck"/>
 <ReportTopicsTable ReportTopics="@ReportTopicGetDtos" SelectedReportTopicId="selectedReportTopicId => SelectedReportTopicId.InvokeAsync(selectedReportTopicId)"/>
 @code
@@ -39,13 +41,13 @@
         },
         new()
         {
-            Text = "Nieocenione",
-            Value = false
+            Text = "Do Sprawdzenia / Nieocenione",
+            Value = true
         },
         new()
         {
             Text = "Ocenione",
-            Value = true
+            Value = false
         },
     };
 }

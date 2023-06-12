@@ -1,12 +1,14 @@
-using System.Collections.Generic;
 using System.Security.Claims;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SystemSprawozdan.Backend.Authorization;
 using SystemSprawozdan.Backend.Data;
+using SystemSprawozdan.Backend.Exceptions;
 using SystemSprawozdan.Shared.Dto;
+using SystemSprawozdan.Backend.Exceptions;
+using System.Text.RegularExpressions;
+using SystemSprawozdan.Backend.Data.Models.DbModels;
 using SystemSprawozdan.Shared.Dto.ReportTopic;
 
 namespace SystemSprawozdan.Backend.Services
@@ -16,10 +18,10 @@ namespace SystemSprawozdan.Backend.Services
         ReportTopicGetDto GetReportTopic(int? reportTopicId, int? studentReportId);
         IEnumerable<ReportTopicGetDto> GetReports(bool? toCheck);
         ReportTopicGetDto GetReportById(int reportTopicId);
-
+        List<ReportTopicGetDto> GetReportTopicForGroup(int groupId);
+        void PostReportTopic(ReportTopicPostDto reportTopic);
+        
         List<ReportTopicForStudentGetDto> GetReportTopicForStudent(bool isSubmitted);
-
-
 
     }
 
@@ -70,11 +72,17 @@ namespace SystemSprawozdan.Backend.Services
                 .ThenInclude(subjectGroup => subjectGroup.Subject)
                 .ThenInclude(subject => subject.Major)  
                 .Where(reportTopic => reportTopic.SubjectGroup.TeacherId == teacherId);
-
-            if (toCheck != null)
+            
+            if (toCheck == true)
                 reportsFromDb = reportsFromDb.Where(reportTopic =>
-                    reportTopic.StudentReports.Any(studentReport => studentReport.ToCheck == toCheck));
-
+                    reportTopic.StudentReports.Any(studentReport => studentReport.ToCheck == true)
+                    || reportTopic.StudentReports.Count == 0);
+            
+            else if(toCheck == false)
+                reportsFromDb = reportsFromDb.Where(reportTopic =>
+                    !(reportTopic.StudentReports.Any(studentReport => studentReport.ToCheck == true)
+                    || reportTopic.StudentReports.Count == 0));
+            
             var reportsFromDbList = reportsFromDb.OrderBy(reportTopic => reportTopic.Deadline).ToList();
             
             var reportsDto = _mapper.Map<List<ReportTopicGetDto>>(reportsFromDbList);
@@ -100,13 +108,44 @@ namespace SystemSprawozdan.Backend.Services
             
             return reportDto;
         }
+        //! Zwraca tematy sprawozda� dla danej grupy
+        public List<ReportTopicGetDto> GetReportTopicForGroup(int groupId)
+        {
+            List<ReportTopicGetDto> reportTopics = new List<ReportTopicGetDto>();
 
-        public List<ReportTopicForStudentGetDto> GetReportTopicsByUserId()
+            var topics = _dbContext.ReportTopic.Where(topic => topic.SubjectGroupId == groupId).ToList();
+
+            foreach ( var topic in topics)
+            {
+                reportTopics.Add(new ReportTopicGetDto
+                {
+                    Id = topic.Id,
+                    ReportTopicName = topic.Name,
+                    ReportTopicDeadline = topic.Deadline
+                });
+            }
+
+            return reportTopics;
+        }
+        //! Dodaje temat sprawozdania dla danej grupy
+        public void PostReportTopic(ReportTopicPostDto reportTopic)
+        {
+            var newReportTopic = new ReportTopic()
+            {
+                Name = reportTopic.Name,
+                Deadline = reportTopic.Deadline,
+                SubjectGroupId = reportTopic.GroupId
+            };
+            _dbContext.ReportTopic.Add(newReportTopic);
+            _dbContext.SaveChanges();
+        }
+        
+        private List<ReportTopicForStudentGetDto> GetReportTopicsByUserId()
         {
             var loginUserId = int.Parse(_userContextService.User.FindFirst(claim => claim.Type == ClaimTypes.NameIdentifier).Value);
 
             var reportTopics = _dbContext.ReportTopic
-                    .Where(rt => rt.SubjectGroup.subjectSubgroups
+                    .Where(rt => rt.SubjectGroup.SubjectSubgroups
                         .Any(ss => ss.Students.Any(s => s.Id == loginUserId)))
                     .Select(rt => new ReportTopicForStudentGetDto
                     {
@@ -125,27 +164,19 @@ namespace SystemSprawozdan.Backend.Services
                     .ToList();
 
             return reportTopics;
-            }
+        }
 
 
-            public List<ReportTopicForStudentGetDto> GetSubmittedReportsByStudentId()
-            {
-            var loginUserId = int.Parse(_userContextService.User.FindFirst(claim => claim.Type == ClaimTypes.NameIdentifier).Value);
-
-            //var submittedReports = _context.StudentReport
-            //    .Where(r => r.SubjectSubgroup.Students.Any(s => s.Id == loginUserId))
-            //    .OrderByDescending(r => r.SentAt)
-            //    .ToList();
+        private List<ReportTopicForStudentGetDto> GetSubmittedReportsByStudentId()
+        { var loginUserId = int.Parse(_userContextService.User.FindFirst(claim => claim.Type == ClaimTypes.NameIdentifier).Value);
 
             var subjectSubgroups = _dbContext.SubjectSubgroup
             .Where(sg => sg.Students.Any(s => s.Id == loginUserId))
             .ToList();
 
             var submittedReportsDto = new List<ReportTopicForStudentGetDto>();
-
             foreach (var subjectSubgroup in subjectSubgroups)
             {
-
                 var submittedReports = _dbContext.StudentReport
                 .Where(r => r.SubjectSubgroupId == subjectSubgroup.Id)
                 .OrderByDescending(r => r.SentAt)
@@ -153,6 +184,7 @@ namespace SystemSprawozdan.Backend.Services
 
                 foreach (var report in submittedReports)
                 {
+                    
                     var subjectGroup = _dbContext.SubjectGroup
                         .FirstOrDefault(g => g.Id == report.SubjectSubgroupId);
 
@@ -167,6 +199,7 @@ namespace SystemSprawozdan.Backend.Services
 
                     var submittedReportDto = new ReportTopicForStudentGetDto
                     {
+                        StudentReportId = report.Id,
                         SubjectName = subject.Name,
                         GroupType = subjectGroup.GroupType,
                         Teacher = new TeacherBasicGetDto
@@ -179,9 +212,6 @@ namespace SystemSprawozdan.Backend.Services
                         Deadline = reportTopic.Deadline,
                         Mark = report.Mark
                     };
-
-
-
                     submittedReportsDto.Add(submittedReportDto);
                 }
             }
@@ -201,6 +231,5 @@ namespace SystemSprawozdan.Backend.Services
             }
             return report;
         }
-
     }
 }

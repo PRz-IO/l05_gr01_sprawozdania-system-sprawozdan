@@ -1,0 +1,34 @@
+﻿<div class="table__label">Osoby które nie oddały sprawozdania</div>
+@if (Students is null)
+{  
+    <LoadingBar IsLoading="true"/>
+}
+else if(Students.Count == 0)
+{
+    <div class="table__no-data">Wszyscy studenci oddali sprawozdanie</div>
+}
+else
+{
+     <MatTable
+         TableItem="StudentBasicGetDto"
+         Items="@Students"
+         ShowPaging="false">
+         <MatTableHeader>
+             <th class="table__header-cell">Nr albumu</th>
+             <th class="table__header-cell">Imię</th>
+             <th class="table__header-cell-wider">Nazwisko</th>
+             <th></th>
+         </MatTableHeader>
+         <MatTableRow>
+             <td>@context.Login</td>
+             <td>@context.Name</td>
+             <td>@context.Surname</td>
+             <td></td>
+         </MatTableRow>
+     </MatTable>
+}
+
+@code {
+    [Parameter]
+    public List<StudentBasicGetDto> Students { get; set; }
+}

@@ -17,13 +17,17 @@ namespace SystemSprawozdan.Backend.Services
 {
     public interface ISubjectGroupService
     {
-        List<SubjectGroupGetDto> GetSubjectGroup(int subjectId, bool isUser);
+        List<SubjectGroupGetDto> GetSubjectGroup(int subjectId, bool? isUser);
+        List<SubjectGroupGetDto> GetSubjectGroupTeacher(int subjectId);
         SubjectGroupGetDetailsDto GetSubjectGroupDetails(int groupId);
         List<StudentBasicGetDto> GetSubjectGroupStudents(int groupId);
         void DeleteStudentFromGroup(int studentId, int groupId);
-    }
+        public SubjectGroup AddPlaceholderSubjectGroup(int subjectId);
+        void CreateSubjectGroup(SubjectGroupPostDto newGroup);
 
-    public class SubjectGroupService : ISubjectGroupService
+	}
+
+	public class SubjectGroupService : ISubjectGroupService
     {
         private readonly ApiDbContext _dbContext;
         private readonly IUserContextService _userContextService;
@@ -34,7 +38,8 @@ namespace SystemSprawozdan.Backend.Services
             _userContextService = userContextService;
             _mapper = mapper;
         }
-        public List<SubjectGroupGetDto> GetSubjectGroup(int subjectId, bool isUserBelong)
+        //! Pobieranie grup, do których należy, bądź nie należy student
+        public List<SubjectGroupGetDto> GetSubjectGroup(int subjectId, bool? isUserBelong)
         {
             var loginUserId = _userContextService.GetUserId;
 
@@ -44,19 +49,38 @@ namespace SystemSprawozdan.Backend.Services
                 .Include(subjectGroup => subjectGroup.Teacher)
                 .Where(subjectGroup => subjectGroup.SubjectId == subjectId);
 
-            if (isUserBelong)
+            if (isUserBelong == true)
                 subjectGroupsFromDb = subjectGroupsFromDb.Where(subjectGroup =>
-                    subjectGroup.subjectSubgroups.Any(subjectSubgroup =>
+                    subjectGroup.SubjectSubgroups.Any(subjectSubgroup =>
                         subjectSubgroup.Students.Any(student => student.Id == loginUserId)));
-            else
+            else if (isUserBelong == false)
                 subjectGroupsFromDb = subjectGroupsFromDb.Where(subjectGroup =>
-                    !subjectGroup.subjectSubgroups.Any(subjectSubgroup =>
+                    !subjectGroup.SubjectSubgroups.Any(subjectSubgroup =>
                         subjectSubgroup.Students.Any(student => student.Id == loginUserId)));
 
             var subjectGroups = subjectGroupsFromDb.ToList();
             var subjectGroupsDto = _mapper.Map<List<SubjectGroupGetDto>>(subjectGroups);
             return subjectGroupsDto;
         }
+        //! Pobieranie grup, które prowadzi dany nauczyciel 
+        public List<SubjectGroupGetDto> GetSubjectGroupTeacher(int subjectId)
+        {
+            var loginUserId = _userContextService.GetUserId;
+
+            var subjectGroupsFromDb = _dbContext.SubjectGroup
+                .Include(subjectGroup => subjectGroup.Subject)
+                    .ThenInclude(subject => subject.Major)
+                .Include(subjectGroup => subjectGroup.Teacher)
+                .Where(subjectGroup => subjectGroup.SubjectId == subjectId);
+
+            subjectGroupsFromDb = subjectGroupsFromDb.Where(subjectGroup =>
+                subjectGroup.TeacherId == loginUserId);
+
+            var subjectGroups = subjectGroupsFromDb.ToList();
+            var subjectGroupsDto = _mapper.Map<List<SubjectGroupGetDto>>(subjectGroups);
+            return subjectGroupsDto;
+        }
+        //! Pobiera szczegóły do danej grupy
         public SubjectGroupGetDetailsDto GetSubjectGroupDetails(int groupId)
         {
             var details = new SubjectGroupGetDetailsDto();
@@ -70,6 +94,7 @@ namespace SystemSprawozdan.Backend.Services
             details.TeacherName = TeacherName;
             return details;
         }
+        //! Pobiera studentów z grupy 
         public List<StudentBasicGetDto> GetSubjectGroupStudents(int groupId)
         {
             if (!(_dbContext.SubjectGroup.Any(group => group.Id == groupId)))
@@ -85,7 +110,7 @@ namespace SystemSprawozdan.Backend.Services
             foreach (var subgroup in subgroups)
             {
                 var students = subgroup.Students;
-                foreach(var student in students)
+                foreach (var student in students)
                 {
                     studentsFromGroup.Add(new StudentBasicGetDto
                     {
@@ -96,8 +121,9 @@ namespace SystemSprawozdan.Backend.Services
                     });
                 }
             }
-                return studentsFromGroup;
+            return studentsFromGroup;
         }
+        //! Usuwa studentów z grupy 
         public void DeleteStudentFromGroup(int studentId, int groupId)
         {
             if (!(_dbContext.SubjectGroup.Any(group => group.Id == groupId)))
@@ -117,14 +143,48 @@ namespace SystemSprawozdan.Backend.Services
             {
                 subgroup.Students.Remove(student);
                 _dbContext.SubjectSubgroup.Update(subgroup);
-                if(subgroup.Students.Count == 0)
+                if (subgroup.Students.Count == 0)
                 {
                     var group = _dbContext.SubjectGroup.FirstOrDefault(group => group.Id == groupId);
-                    group.subjectSubgroups.Remove(subgroup);
+                    group.SubjectSubgroups.Remove(subgroup);
                     _dbContext.SubjectGroup.Update(group);
                 }
             }
             _dbContext.SaveChanges();
         }
-    }
+        //! Dodaje pustą grupę
+        public SubjectGroup AddPlaceholderSubjectGroup(int subjectId)
+        {
+            var teacherId = _userContextService.GetUserId;
+
+            var SubjectGroupToAdd = new SubjectGroup
+            {
+                Name = "L00",
+                GroupType = "Laboratorium",
+                SubjectId = subjectId,
+                TeacherId = teacherId.Value
+            };
+
+            _dbContext.SubjectGroup.Add(SubjectGroupToAdd);
+            _dbContext.SaveChanges();
+
+            return SubjectGroupToAdd;
+        }
+
+        //! Tworzy nową grupę 
+		public void CreateSubjectGroup(SubjectGroupPostDto newGroup)
+		{
+			var Id = _userContextService.GetUserId;
+			var Teacher = _dbContext.Teacher.FirstOrDefault(t => t.Id == Id);
+			var group = new SubjectGroup();
+			group.Name = newGroup.Name;
+			group.GroupType = newGroup.Type;
+			group.SubjectId = newGroup.SubjectId;
+			group.TeacherId = Teacher.Id;
+
+			_dbContext.SubjectGroup.Add(group);
+			_dbContext.SaveChanges();
+		}
+
+	}
 }

@@ -30,7 +30,7 @@ namespace SystemSprawozdan.Backend.Controllers
         [Authorize(Roles = nameof(UserRoleEnum.Student))]
         public ActionResult PutStudentReportAsStudent([FromRoute] int studentReportId, [FromBody] StudentReportAsStudentPutDto studentReportAsStudentPutDto)
         {
-             _studentReportService.PutStudentReport(studentReportId, studentReportAsStudentPutDto);
+             _studentReportService.PutStudentReportAsStudent(studentReportId, studentReportAsStudentPutDto);
             return Ok();
         }
 
@@ -38,7 +38,7 @@ namespace SystemSprawozdan.Backend.Controllers
         [Authorize(Roles = nameof(UserRoleEnum.Teacher))]
         public ActionResult PutStudentReportAsTeacher([FromRoute] int studentReportId, [FromBody] StudentReportAsTeacherPutDto studentReportAsTeacherPutDto)
         {
-             _studentReportService.studentReportAsTeacherPutDto(studentReportId, studentReportAsTeacherPutDto);
+             _studentReportService.PutStudentReportAsTeacher(studentReportId, studentReportAsTeacherPutDto);
             return Ok();
         }
 
@@ -52,9 +52,18 @@ namespace SystemSprawozdan.Backend.Controllers
         //TODO: Paweł: Trzeba stworzyc GETa, ktory wyswietla wszystkie sprawozdania, ktore sa przypisane do danej grupy
         [HttpGet("/api/ReportTopic/{reportTopicId}/StudentReports")]
         [Authorize(Roles = nameof(UserRoleEnum.Teacher))]
-        public ActionResult<IEnumerable<StudentReportGetDto>> GetCollaborateReportsByTopicId([FromRoute] int reportTopicId, [FromQuery] bool? isIndividual, [FromQuery] bool? isMarked)
+        public ActionResult<IEnumerable<StudentReportGetDto>> GetCollaborateReportsByTopicId([FromRoute] int reportTopicId, [FromQuery] bool? isIndividual, [FromQuery] bool? toCheck)
         {
-            var result = _studentReportService.GetStudentReportsByTopicId(reportTopicId, isIndividual, isMarked);
+            var result = _studentReportService.GetStudentReportsByTopicId(reportTopicId, isIndividual, toCheck);
+            return Ok(result);
+        }
+
+        //TODO: Paweł: Trzeba stworzyc GETa, ktory wyswietla wszystkie sprawozdania, ktore sa przypisane do danej grupy
+        [HttpGet("/api/ReportTopic/{reportTopicId}/StudentReports/StudentsWithoutReport")]
+        [Authorize(Roles = nameof(UserRoleEnum.Teacher))]
+        public ActionResult<IEnumerable<StudentBasicGetDto>> GetStudentWithoutReportByTopicId([FromRoute] int reportTopicId)
+        {
+            var result = _studentReportService.GetStudentWithoutReportByTopicId(reportTopicId);
             return Ok(result);
         }
     }

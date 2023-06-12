@@ -1,0 +1,87 @@
+﻿@page "/teacher/subjects/{SubjectId:int}"
+
+@inject IAppHttpClient AppHttpClient
+@inject NavigationManager NavigationManager
+@inject IMatToaster MatToaster
+
+<PageTitle>Grupy</PageTitle>
+<TitleBar Text="@(Subject.MajorCode + " / " + Subject.Name)"></TitleBar>
+
+@if (SubjectGroupGetDtos is null)
+{
+    <LoadingBar IsLoading="true" />
+}
+else if (SubjectGroupGetDtos.Count == 0)
+{
+    <div class="table__no-data"><h3>Brak grup do wyświetlenia</h3></div>
+}
+else if (SubjectGroupGetDtos.Count != 0)
+{
+    <MatTable Items="SubjectGroupGetDtos" ShowPaging="false">
+        <MatTableHeader>
+            <th class="table__header-cell--small">Grupy </th>
+            <th class="table__header-cell--normal"> </th>
+            <th class="table__header-cell--small"><MatButton Raised="true" OnClick="@(e => { _dialogIsOpen = true; })">Dodaj grupę</MatButton> </th>
+        </MatTableHeader>
+        <MatTableRow>
+            <td>@context.Name</td>
+            <td>@context.GroupType</td>
+            <td align="right">
+                <div class="arrow-button"> <MatIcon Icon="@MatIconNames.Arrow_forward"  @onclick="() => GoToStudents(context.Id)"></MatIcon></div>
+            </td>
+        </MatTableRow>
+    </MatTable>
+
+    <MatDialog @bind-IsOpen="_dialogIsOpen" SurfaceStyle="background-color: white">
+        <MatDialogTitle>Uzupełnij dane</MatDialogTitle>
+        <MatDialogContent style="display: flex; flex-direction: column; justify-content: space-evenly; height: 50vh;">
+            
+            <MatTextField Label="Nazwa" Required="true" TValue="string" @bind-Value="@newGroup.Name"></MatTextField>
+
+            <MatSelectItem ValidationDisabled="false" Label="Typ" Items="Types" @bind-Value="newGroup.Type"></MatSelectItem>
+
+            <div class="dialog-buttons">
+                <MatButton OnClick="@(e => { _dialogIsOpen = false; })">Anuluj</MatButton>
+                <MatButton OnClick="CreateGroup">Ok</MatButton>
+            </div>
+
+        </MatDialogContent>
+    </MatDialog>
+}
+
+
+
+@code {
+    public SubjectGetDto Subject { get; set; } = new();
+    public List<SubjectGroupGetDto> SubjectGroupGetDtos;
+
+    public GroupPostDto GroupToSendDto = new();
+    public string[] Types = { "Laboratoria", "Ćwiczenia", "Projekt" };
+    private bool _dialogIsOpen = false;
+    [Parameter]
+    public int SubjectId { get; set; }
+    public SubjectGroupPostDto newGroup = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        SubjectGroupGetDtos = null;
+        SubjectGroupGetDtos = await AppHttpClient.Get<List<SubjectGroupGetDto>>($"SubjectGroup/{SubjectId}/Teacher");
+        Subject = await AppHttpClient.Get<SubjectGetDto>($"Subject/{SubjectId}");
+    }
+    public void GoToStudents(int groupId)
+    {
+        NavigationManager.NavigateTo($"teacher/view-students/" + groupId);
+    }    
+
+    public async void CreateGroup()
+    {
+        newGroup.SubjectId = SubjectId;
+
+        await AppHttpClient.Post("SubjectGroup/CreateSubjectGroup", newGroup);
+        MatToaster.Add("Dodano nową grupę!", MatToastType.Success, "Sukces!");
+
+        _dialogIsOpen = false;
+
+        NavigationManager.NavigateTo($"teacher/subjects/" + SubjectId);
+    }
+}

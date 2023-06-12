@@ -1,0 +1,86 @@
+﻿@page "/teacher/subjects"
+
+@inject IAppHttpClient AppHttpClient
+@inject NavigationManager NavigationManager
+@inject IMatToaster MatToaster
+
+<PageTitle>Przedmioty</PageTitle>
+<TitleBar Text="Przedmioty"/>
+
+<MatTable Items="TeacherSubjectGetDtos" ShowPaging="false">
+    <MatTableHeader>
+        <th class="table-header">Przedmiot <MatButton Raised="true" OnClick="OpenAddSubjectDialog">Dodaj przedmiot</MatButton></th>
+    </MatTableHeader>
+    <MatTableRow>
+        <td style="width: 100%">@context.Name</td>  
+        <td>
+            <div class="arrow-button"> <MatIcon Icon="@MatIconNames.Arrow_forward" Style="height: 100%" @onclick="() => GoToSubjectGroups(context.Id)"></MatIcon></div>
+        </td>
+    </MatTableRow>
+</MatTable>
+
+<MatDialog @bind-IsOpen="_dialogIsOpen" SurfaceStyle="background-color: white">
+    <MatDialogTitle>Uzupełnij dane</MatDialogTitle>
+    <MatDialogContent style="display: flex; flex-direction: column; justify-content: space-evenly; height: 50vh;">
+        <MatSelectValue Label="Kierunek" @bind-Value="@SubjectToSendDto.MajorCode" Items="@MajorsDtos" ValueSelector="dto => dto.MajorCode">
+            <ItemTemplate>
+                @context.MajorCode (@context.Name)
+            </ItemTemplate>
+        </MatSelectValue>
+        
+        <MatTextField Label="Nazwa" Required="true" TValue="string" @bind-Value="@SubjectToSendDto.Name"></MatTextField>
+        
+        <MatTextField Label="Opis" TValue="string" @bind-Value="@SubjectToSendDto.Description"></MatTextField>
+        
+        <MatSelectItem ValidationDisabled="false" Label="Semestr" Items="Numbers" @bind-Value="SubjectToSendDto.Term"></MatSelectItem>
+        
+        <div class="dialog-buttons">
+            <MatButton OnClick="@(e => { _dialogIsOpen = false; })">Anuluj</MatButton>
+            <MatButton OnClick="AddNewSubject" >Ok</MatButton>
+        </div>
+        
+    </MatDialogContent>
+</MatDialog>
+
+
+@code {
+    public List<TeacherSubjectGetDto> TeacherSubjectGetDtos = new();
+    public List<MajorGetDto> MajorsDtos = new();
+    public SubjectPostDto SubjectToSendDto = new();
+    public int[] Numbers = { 1, 2, 3, 4, 5, 6, 7, 8 };
+    private bool _dialogIsOpen = false;
+    protected override async Task OnInitializedAsync()
+    {
+        TeacherSubjectGetDtos = await AppHttpClient.Get<List<TeacherSubjectGetDto>>("Subject/forTeacher");
+    }
+
+    public async Task OpenAddSubjectDialog()
+    {
+        MajorsDtos = await AppHttpClient.Get<List<MajorGetDto>>("Major");
+        _dialogIsOpen = true;
+    }
+
+    public async Task AddNewSubject()
+    {
+        if (SubjectToSendDto.Name == null || SubjectToSendDto.Term == null || SubjectToSendDto.MajorCode == null)
+        {
+            MatToaster.Add("Nie udało się dodać przedmiotu!", MatToastType.Danger, "Błąd!");
+            MatToaster.Add("Nie wypełniono wymaganych pól!", MatToastType.Danger, "Błąd!");
+        }
+        else
+        {
+            _dialogIsOpen = false;
+            var createdSubjectId= await AppHttpClient.Post("Subject", SubjectToSendDto);
+            MatToaster.Add("Dodano nowy przedmiot!", MatToastType.Success, "Sukces!");
+            await AppHttpClient.Post($"SubjectGroup/placeholder/{createdSubjectId}", 1);
+            TeacherSubjectGetDtos = await AppHttpClient.Get<List<TeacherSubjectGetDto>>("Subject/forTeacher");
+            StateHasChanged();
+        }
+        
+    }
+
+    public void GoToSubjectGroups(int subjectGroupId)
+    {
+        NavigationManager.NavigateTo($"teacher/subjects/{subjectGroupId}");
+    }
+}

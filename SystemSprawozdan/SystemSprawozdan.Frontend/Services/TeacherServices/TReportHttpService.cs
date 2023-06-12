@@ -10,7 +10,8 @@ public interface ITReportHttpService
     Task DownloadFileFromStudentReport(StudentReportFileGetDto file);
     Task<List<ReportTopicGetDto>?> GetReportTopics(bool? toCheck);
     Task<ReportTopicGetDto?> GetReportTopicById(int reportTopicId);
-    Task<List<StudentReportGetDto>?> GetStudentReportsByReportTopicId(int reportTopicId, bool isIndividual, bool? isMarked);
+    Task<List<StudentReportGetDto>?> GetStudentReportsByReportTopicId(int reportTopicId, bool isIndividual, bool? toCheck);
+    Task<List<StudentBasicGetDto>?> GetStudentWithoutReportByReportTopicId(int reportTopicId);
     Task PutStudentReport(int studentReportId, StudentReportAsTeacherPutDto ratedReport);
 }
 
@@ -56,14 +57,19 @@ public class TReportHttpService : ITReportHttpService
         return await _httpClient.Get<ReportTopicGetDto>($"ReportTopic/{reportTopicId}");
     }
 
-    public async Task<List<StudentReportGetDto>?> GetStudentReportsByReportTopicId(int reportTopicId, bool isIndividual, bool? isMarked)
+    public async Task<List<StudentReportGetDto>?> GetStudentReportsByReportTopicId(int reportTopicId, bool isIndividual, bool? toCheck)
     {
         List<HttpParameter> parameters = new()
         {
             new(nameof(isIndividual), isIndividual),
-            new(nameof(isMarked), isMarked),
+            new(nameof(toCheck), toCheck),
         };
         return await _httpClient.Get<List<StudentReportGetDto>>($"ReportTopic/{reportTopicId}/StudentReports", parameters);
+    }
+
+    public async Task<List<StudentBasicGetDto>?> GetStudentWithoutReportByReportTopicId(int reportTopicId)
+    {
+        return await _httpClient.Get<List<StudentBasicGetDto>>($"ReportTopic/{reportTopicId}/StudentReports/StudentsWithoutReport");
     }
 
 }
