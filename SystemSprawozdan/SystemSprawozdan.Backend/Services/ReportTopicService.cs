@@ -22,6 +22,8 @@ namespace SystemSprawozdan.Backend.Services
         void PostReportTopic(ReportTopicPostDto reportTopic);
         List<ReportTopicForStudentGetDto> GetReportTopicForStudent(bool isSubmitted);
         List<ReportTopicForStudentGetDto> GetSubmittedReportsByStudentAndSubject(int studentId, int subjectId);
+ 
+
 
     }
 
@@ -233,14 +235,14 @@ namespace SystemSprawozdan.Backend.Services
         }
         
         public List<ReportTopicForStudentGetDto> GetSubmittedReportsByStudentAndSubject(int studentId, int subjectId)
-    {
-        var subjectSubgroups = _dbContext.SubjectSubgroup
+        {
+            var subjectSubgroups = _dbContext.SubjectSubgroup
             .Where(sg => sg.Students.Any(s => s.Id == studentId))
             .ToList();
 
-        var submittedReportsDto = new List<ReportTopicForStudentGetDto>();
-        foreach (var subjectSubgroup in subjectSubgroups)
-        {
+            var submittedReportsDto = new List<ReportTopicForStudentGetDto>();
+            foreach (var subjectSubgroup in subjectSubgroups)
+            {
             var submittedReports = _dbContext.StudentReport
                 .Where(r => r.SubjectSubgroupId == subjectSubgroup.Id)
                 .OrderByDescending(r => r.SentAt)
@@ -260,6 +262,8 @@ namespace SystemSprawozdan.Backend.Services
                 var reportTopic = _dbContext.ReportTopic
                     .FirstOrDefault(rt => rt.Id == report.ReportTopicId);
 
+                var studentName = GetStudentName(studentId);
+
                 var submittedReportDto = new ReportTopicForStudentGetDto
                 {
                     StudentReportId = report.Id,
@@ -273,12 +277,20 @@ namespace SystemSprawozdan.Backend.Services
                     },
                     ReportTopicName = reportTopic.Name,
                     SentAt = report.SentAt,
-                    Mark = report.Mark
+                    Mark = report.Mark,
+                    StudentName = GetStudentName(studentId)
                 };
                 submittedReportsDto.Add(submittedReportDto);
             }
+            }
+            
+            return submittedReportsDto;
         }
-        return submittedReportsDto;
-    }
+
+        private string GetStudentName(int studentId)
+        {
+            var student = _dbContext.Student.FirstOrDefault(s => s.Id == studentId);
+            return $"{student?.Name} {student?.Surname}";
+        }
     }
 }
