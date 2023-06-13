@@ -4,6 +4,7 @@
 @inject IMatToaster Toaster
 @inject NavigationManager NavigationManager
 
+<PageTitle>Szczególy grupy</PageTitle>
 <TitleBar Text="@Title"/>
 
 <div>
@@ -27,7 +28,7 @@
             <MatButton Outlined="true" OnClick="@(e => { studentToDelete = context.Id; studentName = context.Name; studentSurname = context.Surname; dialogIsOpen = true;  })">
                 <MatIcon Icon="@MatIconNames.Delete_forever"></MatIcon>
             </MatButton>
-            <MatButton Raised="true" OnClick="@(e => { NavigationManager.NavigateTo($"/teacher/view-students/{GroupId}"); })"><!--Placeholder url-->
+                <MatButton Raised="true" OnClick="@(() => MoveToStudent(context.Id))">
                 <MatIcon Icon="@MatIconNames.Arrow_forward"></MatIcon>
             </MatButton>
         </td>
@@ -105,7 +106,7 @@ else
 
             NavigationManager.NavigateTo($"/teacher/view-students/{GroupId}");
             Toaster.Add("Student został usunięty z grupy", MatToastType.Success, "Sukces");
-            
+
             dialogIsOpen = false;
             StateHasChanged();
         }
@@ -126,6 +127,12 @@ else
 
         reportTopicDialogIsOpen = false;
         StateHasChanged();
+    }
+
+    async void MoveToStudent(int studentId)
+    {
+        var subjectId = await AppHttpClient.Get<int>($"SubjectGroup/{GroupId}/GetSubjectId");
+        NavigationManager.NavigateTo($"/teacher/view-students/{studentId}/{subjectId}");
     }
 
     List<StudentBasicGetDto> students = new();

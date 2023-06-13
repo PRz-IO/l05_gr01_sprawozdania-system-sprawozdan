@@ -17,7 +17,7 @@ else if (SubjectGroupGetDtos.Count == 0)
 }
 else if (SubjectGroupGetDtos.Count != 0)
 {
-    <MatTable Items="SubjectGroupGetDtos" ShowPaging="false">
+    <MatTable Items="SubjectGroupGetDtosWithoutPlaceholder" ShowPaging="false">
         <MatTableHeader>
             <th class="table__header-cell--small">Grupy </th>
             <th class="table__header-cell--normal"> </th>
@@ -54,6 +54,7 @@ else if (SubjectGroupGetDtos.Count != 0)
 @code {
     public SubjectGetDto Subject { get; set; } = new();
     public List<SubjectGroupGetDto> SubjectGroupGetDtos;
+    public List<SubjectGroupGetDto> SubjectGroupGetDtosWithoutPlaceholder = new();
 
     public GroupPostDto GroupToSendDto = new();
     public string[] Types = { "Laboratoria", "Ćwiczenia", "Projekt" };
@@ -66,6 +67,11 @@ else if (SubjectGroupGetDtos.Count != 0)
     {
         SubjectGroupGetDtos = null;
         SubjectGroupGetDtos = await AppHttpClient.Get<List<SubjectGroupGetDto>>($"SubjectGroup/{SubjectId}/Teacher");
+        foreach (var subjectGroup in SubjectGroupGetDtos)
+        {
+            if (subjectGroup.Name == "L00") continue;
+            SubjectGroupGetDtosWithoutPlaceholder.Add(subjectGroup);
+        }
         Subject = await AppHttpClient.Get<SubjectGetDto>($"Subject/{SubjectId}");
     }
     public void GoToStudents(int groupId)
@@ -79,9 +85,14 @@ else if (SubjectGroupGetDtos.Count != 0)
 
         await AppHttpClient.Post("SubjectGroup/CreateSubjectGroup", newGroup);
         MatToaster.Add("Dodano nową grupę!", MatToastType.Success, "Sukces!");
-
+        SubjectGroupGetDtos = await AppHttpClient.Get<List<SubjectGroupGetDto>>($"SubjectGroup/{SubjectId}/Teacher");
+        SubjectGroupGetDtosWithoutPlaceholder.Clear();
+        foreach (var subjectGroup in SubjectGroupGetDtos)
+        {
+            if (subjectGroup.Name == "L00") continue;
+            SubjectGroupGetDtosWithoutPlaceholder.Add(subjectGroup);
+        }
         _dialogIsOpen = false;
-
-        NavigationManager.NavigateTo($"teacher/subjects/" + SubjectId);
+        StateHasChanged();
     }
 }
