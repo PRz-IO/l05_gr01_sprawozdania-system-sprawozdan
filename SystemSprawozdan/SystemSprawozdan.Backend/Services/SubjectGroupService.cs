@@ -24,6 +24,7 @@ namespace SystemSprawozdan.Backend.Services
         void DeleteStudentFromGroup(int studentId, int groupId);
         public SubjectGroup AddPlaceholderSubjectGroup(int subjectId);
         void CreateSubjectGroup(SubjectGroupPostDto newGroup);
+        int GetSubjectId(int groupId);
 
 	}
 
@@ -186,5 +187,12 @@ namespace SystemSprawozdan.Backend.Services
 			_dbContext.SaveChanges();
 		}
 
-	}
+        //! Zwraca id przedmiotu danej grupy
+        public int GetSubjectId(int groupId)
+        {
+            var subjectGroup = _dbContext.SubjectGroup.FirstOrDefault(group => group.Id == groupId);
+
+            return subjectGroup.SubjectId;
+        }
+    }
 }
