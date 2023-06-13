@@ -1,16 +1,16 @@
 ﻿@page "/Student/reports"
 @using SystemSprawozdan.Shared.Dto.ReportTopic 
-@using SystemSprawozdan.Shared.Enums
 @inject NavigationManager navigationManager
 @inject IReportTopicFrontendService reportTopicService
 
-<div style="margin-top: 20px; width: 100%;">
+<TitleBar Text="Sprawozdania"/>
+<div style="width: 100%;">
     <MatTabGroup @bind-ActiveIndex="@tabIndex">
         <MatTab Label="Przypisane">
                     @if (assignedReportTopics != null)
                     {
                         <div class="tableWrapper"> 
-                            <MatTable Items="@assignedReportTopics"  AllowSelection="true" RowClass="tester" class="mat-elevation-z5" ShowPaging="false" PageSize="assignedReportTopics.Count">
+                            <MatTable Items="@assignedReportTopics"  AllowSelection="true" RowClass="tester" ShowPaging="false" PageSize="assignedReportTopics.Count">
                                 <MatTableHeader>
                                     <th class="mat-table-header">Przedmiot</th>
                                     <th class="mat-table-header">Rodzaj</th>
@@ -38,7 +38,7 @@
             @if (submittedReportTopics != null)
             {
                 <div class="tableWrapper"> 
-                    <MatTable Items="@submittedReportTopics"  AllowSelection="true" RowClass="tester" class="mat-elevation-z5"  ShowPaging="false" PageSize="submittedReportTopics.Count">
+                    <MatTable Items="@submittedReportTopics"  AllowSelection="true" RowClass="tester" ShowPaging="false" PageSize="submittedReportTopics.Count">
                         <MatTableHeader>
                             <th class="mat-table-header-submitted">Przedmiot</th>
                             <th class="mat-table-header-submitted">Rodzaj</th>

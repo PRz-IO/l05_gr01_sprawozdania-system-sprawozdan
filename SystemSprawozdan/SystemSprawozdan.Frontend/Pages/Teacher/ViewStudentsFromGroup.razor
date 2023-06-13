@@ -13,7 +13,7 @@
 @if (isStudent)
 {
        
-<MatTable Striped="true" Items="@students" class="mat-elevation-z5" ShowPaging="false">
+<MatTable Striped="true" Items="@students" ShowPaging="false">
     <MatTableHeader>
         <th class="table-header">Nr albumu</th>
         <th class="table-header">Imię</th>
@@ -48,7 +48,7 @@
 }
 else
 {
-    <MatTable Striped="true" Items="@reportTopics" class="mat-elevation-z5" ShowPaging="false">
+    <MatTable Striped="true" Items="@reportTopics" ShowPaging="false">
         <MatTableHeader>
             <th class="table-header-report">Zadanie</th>
             <th class="table-header-report">Termin oddania</th>
