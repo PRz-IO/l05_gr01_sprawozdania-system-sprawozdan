@@ -35,10 +35,13 @@
     public async void TryLogin()
     {
         await AuthService.Login(User);
-        await AuthStateProvider.GetAuthenticationStateAsync();
-        
+        var auth = await AuthStateProvider.GetAuthenticationStateAsync();
+
         if (string.IsNullOrEmpty(ReturnUrl))
-            NavigatorManager.NavigateTo("/");
+        {
+            var userRole = auth.User.FindFirst(claim => claim.Type == ClaimTypes.Role).Value;
+            NavigatorManager.NavigateTo($"{userRole}/reports");
+        }
         else
             NavigatorManager.NavigateTo(ReturnUrl);
     }
