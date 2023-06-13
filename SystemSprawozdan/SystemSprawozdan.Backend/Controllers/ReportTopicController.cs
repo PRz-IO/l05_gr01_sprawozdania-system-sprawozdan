@@ -6,6 +6,7 @@ using SystemSprawozdan.Shared.Dto;
 using SystemSprawozdan.Shared.Dto.ReportTopic;
 using SystemSprawozdan.Shared.Enums;
 
+
 namespace SystemSprawozdan.Backend.Controllers
 {
     [Route("api/[controller]")]
@@ -70,6 +71,13 @@ namespace SystemSprawozdan.Backend.Controllers
         {
             _reportTopicService.PostReportTopic(reportTopic);
             return Ok();
+        }
+        
+        [HttpGet("ForTeacher")]
+        public IActionResult GetSubmittedReportsByStudentAndSubject(int studentId, int subjectId)
+        {
+            var submittedReports = _reportTopicService.GetSubmittedReportsByStudentAndSubject(studentId, subjectId);
+            return Ok(submittedReports);
         }
     }
 }
