@@ -79,6 +79,14 @@ namespace SystemSprawozdan.Backend.Controllers
             _subjectGorupServices.CreateSubjectGroup(newGroup);
             return Ok();
         }
-	}
+
+        [HttpGet("{groupId}/GetSubjectId")]
+        [Authorize(Roles = nameof(UserRoleEnum.Teacher))]
+        public ActionResult GetSubjectId([FromRoute] int groupId)
+        {
+            var subjectId = _subjectGorupServices.GetSubjectId(groupId);
+            return Ok(subjectId);
+        }
+    }
 
 }
