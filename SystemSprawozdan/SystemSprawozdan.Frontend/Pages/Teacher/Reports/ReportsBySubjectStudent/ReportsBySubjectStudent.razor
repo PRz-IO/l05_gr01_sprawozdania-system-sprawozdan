@@ -1,6 +1,83 @@
-﻿@page "/ReportsBySubjectStudent"
-<h3>ReportsBySubjectStudent</h3>
+﻿@page "/teacher/view-students/{studentId:int}/{subjectId:int}"
+@using SystemSprawozdan.Shared.Dto.ReportTopic
+@inject NavigationManager navigationManager
+@inject IReportTopicPageService ReportTopicPageService
+
+
+<div style="margin-top: 20px; width: 100%;">
+    <MatTabGroup @bind-ActiveIndex="@tabIndex">
+        <MatTab Label="@studentId.ToString()">
+            @if (reportTopics != null)
+            {
+                <div class="tableWrapper">
+                    <MatTable Items="@reportTopics" AllowSelection="true" RowClass="tester" class="mat-elevation-z5" ShowPaging="false" PageSize="reportTopics.Count">
+                        <MatTableHeader>
+                            <th class="mat-table-header">Zadanie</th>
+                            <th class="mat-table-header">Data Dodania</th>
+                            <th class="mat-table-header">Ocena</th>
+                        </MatTableHeader>
+                        <MatTableRow>
+                            <td class="mat-table-row">@context.ReportTopicName</td>
+                            <td class="mat-table-row">@context.SentAt</td>
+                            <td class="mat-table-row">
+                                                            @if (context.Mark.HasValue)
+                                                            {
+                                                                var markTranslation = EnumTranslator.Mark.TryGetValue(context.Mark.Value, out var translatedMark)
+                                                                    ? translatedMark
+                                                                    : context.Mark.Value.ToString();
+                                                                var markClass = GetMarkClass(context.Mark.Value);
+                                                                <span class="@markClass">@markTranslation</span>
+                                                            }
+                                                        </td>
+                            <td>
+                                <div class="table__row-icon">
+                                    <MatIcon Icon="@MatIconNames.Arrow_forward" Style="height: 100%" Class="pointer" @onclick="() => NavigateToDetails(context)" />
+                                </div>
+                            </td>
+                        </MatTableRow>
+                    </MatTable>
+                </div>
+            }
+            else
+            {
+                <LoadingBar IsLoading="true" />
+            }
+        </MatTab>
+    </MatTabGroup>
+</div>
 
 @code {
+    [Parameter]
+    public int studentId { get; set; }
+
+    [Parameter]
+    public int subjectId { get; set; }
     
+    private int tabIndex = 0;
+    
+    private List<ReportTopicForStudentGetDto> reportTopics;
+
+    protected override async Task OnInitializedAsync()
+    {
+        reportTopics = await ReportTopicPageService.GetSubmittedReportsByStudentAndSubject(studentId, subjectId);
+    }
+    
+    private string GetMarkClass(MarkEnum mark)
+    {
+        if (mark == MarkEnum.Failed || mark == MarkEnum.Two)
+        {
+            return "failed";
+        }
+
+        else
+        {
+            return "green";
+        }
+    }
+    
+    private void NavigateToDetails(ReportTopicForStudentGetDto reportTopic)
+    {
+        navigationManager.NavigateTo($"/student/reports/{(reportTopic.Id)+1}/{reportTopic.StudentReportId}");
+    }
 }
+

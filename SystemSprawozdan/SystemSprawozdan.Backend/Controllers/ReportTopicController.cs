@@ -71,5 +71,12 @@ namespace SystemSprawozdan.Backend.Controllers
             _reportTopicService.PostReportTopic(reportTopic);
             return Ok();
         }
+        
+        [HttpGet("ForTeacher")]
+        public IActionResult GetSubmittedReportsByStudentAndSubject(int studentId, int subjectId)
+        {
+            var submittedReports = _reportTopicService.GetSubmittedReportsByStudentAndSubject(studentId, subjectId);
+            return Ok(submittedReports);
+        }
     }
 }

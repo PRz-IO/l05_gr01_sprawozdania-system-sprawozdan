@@ -20,8 +20,8 @@ namespace SystemSprawozdan.Backend.Services
         ReportTopicGetDto GetReportById(int reportTopicId);
         List<ReportTopicGetDto> GetReportTopicForGroup(int groupId);
         void PostReportTopic(ReportTopicPostDto reportTopic);
-        
         List<ReportTopicForStudentGetDto> GetReportTopicForStudent(bool isSubmitted);
+        List<ReportTopicForStudentGetDto> GetSubmittedReportsByStudentAndSubject(int studentId, int subjectId);
 
     }
 
@@ -231,5 +231,54 @@ namespace SystemSprawozdan.Backend.Services
             }
             return report;
         }
+        
+        public List<ReportTopicForStudentGetDto> GetSubmittedReportsByStudentAndSubject(int studentId, int subjectId)
+    {
+        var subjectSubgroups = _dbContext.SubjectSubgroup
+            .Where(sg => sg.Students.Any(s => s.Id == studentId))
+            .ToList();
+
+        var submittedReportsDto = new List<ReportTopicForStudentGetDto>();
+        foreach (var subjectSubgroup in subjectSubgroups)
+        {
+            var submittedReports = _dbContext.StudentReport
+                .Where(r => r.SubjectSubgroupId == subjectSubgroup.Id)
+                .OrderByDescending(r => r.SentAt)
+                .ToList();
+
+            foreach (var report in submittedReports)
+            {
+                var subjectGroup = _dbContext.SubjectGroup
+                    .FirstOrDefault(g => g.Id == report.SubjectSubgroupId);
+
+                var subject = _dbContext.Subject
+                    .FirstOrDefault(s => s.Id == subjectGroup.SubjectId && s.Id == subjectId);
+
+                var teacher = _dbContext.Teacher
+                    .FirstOrDefault(t => t.SubjectGroups.Contains(subjectGroup));
+
+                var reportTopic = _dbContext.ReportTopic
+                    .FirstOrDefault(rt => rt.Id == report.ReportTopicId);
+
+                var submittedReportDto = new ReportTopicForStudentGetDto
+                {
+                    StudentReportId = report.Id,
+                    SubjectName = subject.Name,
+                    GroupType = subjectGroup.GroupType,
+                    Teacher = new TeacherBasicGetDto
+                    {
+                        Degree = teacher.Degree,
+                        Name = teacher.Name,
+                        Surname = teacher.Surname
+                    },
+                    ReportTopicName = reportTopic.Name,
+                    SentAt = report.SentAt,
+                    Mark = report.Mark
+                };
+                submittedReportsDto.Add(submittedReportDto);
+            }
+        }
+        return submittedReportsDto;
+    }
     }
 }

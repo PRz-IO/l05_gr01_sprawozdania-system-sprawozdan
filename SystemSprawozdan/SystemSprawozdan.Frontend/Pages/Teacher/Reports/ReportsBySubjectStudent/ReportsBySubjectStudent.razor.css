@@ -1,0 +1,39 @@
+.mat-table-header {
+    background-color: #f2f2f2;
+    font-weight: bold;
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    width: 33.33%;
+}
+
+.mat-table-row {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    flex-grow: 1;
+}
+
+.green {
+    color: green;
+    font-weight: bold;
+}
+
+.failed {
+    color: red;
+    font-weight: bold;
+}
+
+.table__row-icon{
+    display: flex;
+    padding: 5px;
+    background-color: var(--primary-color);
+    border-radius: 5px;
+    color: var(--panel-background-color);
+}
+
+.tableWrapper{
+    max-height: 75vh;
+    overflow-y: auto;
+}
+    
