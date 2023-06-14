@@ -22,6 +22,9 @@ namespace SystemSprawozdan.Backend.Services
         void RegisterStudent(RegisterStudentDto registerStudentDto);
         void RegisterTeacherOrAdmin(RegisterTeacherOrAdminDto registerTeacherOrAdminDto);
         void RestoreUserPassword(RestoreUserPasswordDto restoreUserPasswordDto);
+        UserInfoGetDto GetUserInfo(bool isStudent);
+        void ChangePassword(string newPassword, bool isStudent);
+
     }
 
     public class AccountService : IAccountService
@@ -214,5 +217,77 @@ namespace SystemSprawozdan.Backend.Services
             if (result == PasswordVerificationResult.Failed)
                 throw new BadRequestException("Wrong username or password!");
         }
+
+        //! Zwraca informacje o użytkowniku
+        public UserInfoGetDto GetUserInfo(bool isStudent)
+        {
+            var userId = _userContextService.GetUserId;
+            
+            UserInfoGetDto info = new();
+
+            if (isStudent == true)
+            {
+                var student = _dbContext.Student.FirstOrDefault(student => student.Id == userId);
+
+                if (student != null)
+                {
+                    info.Login = student.Login;
+                    info.Name = student.Name;
+                    info.Surname = student.Surname;
+                    info.Email = student.Email;
+                }
+                //else
+                    //throw new NotFoundException("Couldn't find student with that id");
+
+            }
+            else
+            {
+                var teacher = _dbContext.Teacher.FirstOrDefault(teacher => teacher.Id == userId);
+
+                if (teacher != null)
+                {
+                    info.Login = teacher.Login;
+                    info.Name = teacher.Name;
+                    info.Surname = teacher.Surname;
+                    info.Email = teacher.Email;
+                    info.Degree = teacher.Degree;
+                    info.Position = teacher.Position;
+                }
+                //else
+                    //throw new NotFoundException("couldn't find teacher with that id");
+
+            }
+
+            return info;
+        }
+
+        //! Zmienia hasło użytkownika
+        public void ChangePassword(string newPassword, bool isStudent)
+        {
+            var userId = _userContextService.GetUserId;
+
+            if (isStudent == true)
+            {
+                var student = _dbContext.Student.FirstOrDefault(student => student.Id == userId);
+                if (student == null)
+                {
+                    throw new NotFoundException("User not found");
+                }
+                student.Password = _passwordHasherStudent.HashPassword(student, newPassword);
+                _dbContext.SaveChanges();
+            }
+            else
+            {
+                var teacher = _dbContext.Teacher.FirstOrDefault(teacher => teacher.Id == userId);
+                if (teacher == null)
+                {
+                    throw new NotFoundException("User not found");
+                }
+                teacher.Password = _passwordHasherTeacher.HashPassword(teacher, newPassword);
+                _dbContext.SaveChanges();
+
+            }
+        }
+
     }
 }

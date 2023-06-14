@@ -1,4 +1,6 @@
 ﻿@inject NavigationManager NavigationManager
+@inject IAppHttpClient AppHttpClient
+
 <div class="user-pad">
 	<div class="options @DropListClass()">
 		<ul class="options-list">
@@ -21,8 +23,36 @@
 </div>
 
 @code {
+	/// SPRAWDZIĆ!
 	public string FirstName { get; set; }
 	public string LastName { get; set; }
+
+	public UserInfoGetDto User = new();
+	protected override async Task OnInitializedAsync()
+	{
+		var student = await AppHttpClient.Get<UserInfoGetDto>("Account/userCredentials?isStudent=true");
+		
+		if (student != null)
+		{
+			FirstName = student.Name;
+			LastName = student.Surname;
+		}
+		else
+		{
+			var teacher = await AppHttpClient.Get<UserInfoGetDto>("Account/userCredentials?isStudent=false");
+
+			FirstName = teacher.Name;
+			LastName = teacher.Surname;
+		}
+		
+
+
+
+		/// Wiem, pamiętam! Poprawię jak będę pushować Teachera ;)
+		//User = await AppHttpClient.Get<UserInfoGetDto>("Account/userCredentials");
+		//FirstName = User.Name;
+		//LastName = User.Surname;
+	}
 
 	public bool IsUserPadActive = false;
 
@@ -40,4 +70,5 @@
 	{
 		NavigationManager.NavigateTo("/login");
 	} 
+
 }
