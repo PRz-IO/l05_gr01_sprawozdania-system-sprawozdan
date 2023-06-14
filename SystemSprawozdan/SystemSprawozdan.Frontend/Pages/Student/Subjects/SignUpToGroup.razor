@@ -80,7 +80,7 @@
                     SubgroupName = ""
                 };
             await AppHttpClient.Post("SubjectSubgroup", subgroup);
-            Toaster.Add("Poprawnie stworzono grupę", MatToastType.Success, "Sukces");
+            Toaster.Add("Poprawnie dołączono do grupy", MatToastType.Success, "Sukces");
             NavigationManager.NavigateTo("Student/subjects");
         }
         else
@@ -99,7 +99,7 @@
                         SubgroupName = subgroupName
                     };
                 await AppHttpClient.Post("SubjectSubgroup", subgroup);
-                Toaster.Add("Poprawnie stworzono grupę", MatToastType.Success, "Sukces");
+                Toaster.Add("Poprawnie dołączono do grupy", MatToastType.Success, "Sukces");
                 NavigationManager.NavigateTo("Student/subjects");
             }
             else

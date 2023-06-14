@@ -226,7 +226,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                     Name = "L06",
                     GroupType = "Laboratorium",
                     SubjectId = 1, // Gnębienie studentów 1
-                    TeacherId = 2
+                    TeacherId = 3
                 },
 
                 new SubjectGroup()
@@ -235,7 +235,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                     Name = "L05",
                     GroupType = "Laboratorium",
                     SubjectId = 1, // Gnębienie studentów 1
-                    TeacherId = 2
+                    TeacherId = 1
                 },
 
                 new SubjectGroup()
@@ -479,7 +479,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                 new ReportTopic()
                 {
                     //Id = 4,
-                    Name = "Adresacja IP (przedmiot sieci komputerowe 1)",
+                    Name = "Adresacja IP",
                     Deadline = DateTime.UtcNow,
                     SubjectGroupId = 3
                 },
@@ -487,7 +487,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                 new ReportTopic()
                 {
                     //Id = 5,
-                    Name = "Adresacja IP (przedmiot sieci komputerowe 1)",
+                    Name = "Adresacja IP",
                     Deadline = DateTime.UtcNow,
                     SubjectGroupId = 4
                 },
@@ -495,7 +495,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                 new ReportTopic()
                 {
                     //Id = 6,
-                    Name = "Zajęcia nr 1 z gnębienia studentów (przedmiot gnębienie studentów 1)",
+                    Name = "Zajęcia nr 1 z gnębienia studentów",
                     Deadline = DateTime.UtcNow,
                     SubjectGroupId = 5
                 },
@@ -503,7 +503,7 @@ namespace SystemSprawozdan.Backend.Data.Seeder
                 new ReportTopic()
                 {
                     //Id = 7,
-                    Name = "Zajęcia nr 2 z gnębienia studentów (przedmiot gnębienie studentów 1)",
+                    Name = "Zajęcia nr 1 z gnębienia studentów",
                     Deadline = DateTime.UtcNow,
                     SubjectGroupId = 6
                 },
@@ -626,6 +626,17 @@ namespace SystemSprawozdan.Backend.Data.Seeder
             teacher2.Degree = "Magister inżynier";
             teacher2.Position = "Asystent";
             teachers.Add(teacher2);
+
+            var teacher3 = new Teacher();
+            //teacher1.Id = 3;
+            teacher3.Name = "Aneta";
+            teacher3.Surname = "Rogoz";
+            teacher3.Email = "a.rogoz@prz.edu.pl";
+            teacher3.Login = "arogoz";
+            teacher3.Password = _passwordHasherTeacher.HashPassword(teacher1, "Hasło123");
+            teacher3.Degree = "Magister";
+            teacher3.Position = "Asystent w grupie pracowników badawczo-dydaktycznych";
+            teachers.Add(teacher3);
 
             return teachers;
         }

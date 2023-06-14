@@ -186,9 +186,11 @@ namespace SystemSprawozdan.Backend.Services
 
                 foreach (var report in submittedReports)
                 {
-                    
+                    var subjectSubGroup = _dbContext.SubjectSubgroup
+                       .FirstOrDefault(g => g.Id == report.SubjectSubgroupId);
+
                     var subjectGroup = _dbContext.SubjectGroup
-                        .FirstOrDefault(g => g.Id == report.SubjectSubgroupId);
+                        .FirstOrDefault(g => g.Id == subjectSubGroup.SubjectGroupId);
 
                     var subject = _dbContext.Subject
                         .FirstOrDefault(s => s.Id == subjectGroup.SubjectId);

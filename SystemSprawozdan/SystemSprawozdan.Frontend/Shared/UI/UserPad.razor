@@ -32,7 +32,7 @@
 	{
 		var student = await AppHttpClient.Get<UserInfoGetDto>("Account/userCredentials?isStudent=true");
 		
-		if (student != null)
+		if (student.Name != null)
 		{
 			FirstName = student.Name;
 			LastName = student.Surname;

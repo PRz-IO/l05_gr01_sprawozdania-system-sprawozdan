@@ -50,6 +50,7 @@ namespace SystemSprawozdan.Backend.Controllers
 
         //TODO: Bartek: Trzeba zrobic GETa, który wyświetli podstawowe informacje o uzytkowniku localhots:/studentCredentials?isStudent=true/false
         [HttpGet("userCredentials")]
+        [Authorize]
         public ActionResult GetUserInfo([FromQuery] bool isStudent)
         {
             var info = _accountService.GetUserInfo(isStudent);

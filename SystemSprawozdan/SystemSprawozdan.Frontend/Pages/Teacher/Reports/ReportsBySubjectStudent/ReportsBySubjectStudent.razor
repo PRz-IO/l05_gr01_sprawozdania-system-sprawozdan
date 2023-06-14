@@ -7,7 +7,7 @@
     @if (reportTopics != null)
     {
         <div class="tableWrapper">
-            <MatTable Items="@reportTopics" AllowSelection="true" RowClass="tester" class="mat-elevation-z5" ShowPaging="false" PageSize="reportTopics.Count">
+            <MatTable Items="@reportTopics" AllowSelection="true" RowClass="tester" ShowPaging="false" PageSize="reportTopics.Count">
                 <MatTableHeader>
                     <th class="mat-table-header">Zadanie</th>
                     <th class="mat-table-header">Data Dodania</th>
@@ -79,7 +79,7 @@
     
     private void NavigateToDetails(ReportTopicForStudentGetDto reportTopic)
     {
-        navigationManager.NavigateTo($"/student/reports/{(reportTopic.Id)+1}/{reportTopic.StudentReportId}");
+        navigationManager.NavigateTo($"/teacher/reports/{(reportTopic.Id)+1}/{reportTopic.StudentReportId}");
     }
 }
 
