@@ -52,7 +52,7 @@ namespace SystemSprawozdan.Backend.Controllers
         //TODO: Paweł: Trzeba stworzyc GETa, ktory wyswietla wszystkie sprawozdania, ktore sa przypisane do danej grupy
         [HttpGet("/api/ReportTopic/{reportTopicId}/StudentReports")]
         [Authorize(Roles = nameof(UserRoleEnum.Teacher))]
-        public ActionResult<IEnumerable<StudentReportGetDto>> GetCollaborateReportsByTopicId([FromRoute] int reportTopicId, [FromQuery] bool? isIndividual, [FromQuery] bool? toCheck)
+        public ActionResult<IEnumerable<StudentReportGetDto>> GetStudentReportsByTopicId([FromRoute] int reportTopicId, [FromQuery] bool? isIndividual, [FromQuery] bool? toCheck)
         {
             var result = _studentReportService.GetStudentReportsByTopicId(reportTopicId, isIndividual, toCheck);
             return Ok(result);
